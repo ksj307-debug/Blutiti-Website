@@ -26,6 +26,27 @@ export const NAVER_REVIEW_URL = "https://m.place.naver.com/place/2039948985/revi
  * - concept 은 lib/concepts.ts id (세이지 포레스트 리뷰는 basic-color)
  * - 비어 있으면 컨셉별 자리 표시 카드를 보여줌
  */
-export type Review = { concept: ConceptId; text: string; date?: string };
+export type Review = {
+  concept: ConceptId;
+  /** 원문에서 고른 한 문장 (이모지만 빼고 그대로) */
+  text: string;
+  /** 방문일 */
+  date?: string;
+  /** 네이버 '이런 점이 좋았어요' 키워드 */
+  tags?: string[];
+};
 
-export const REVIEWS: Review[] = [];
+export const REVIEWS: Review[] = [
+  {
+    concept: "basic-color",
+    text: "서로 어떤 자세를 취해도 부끄럽지 않고 여러 번 마음껏 찍을 수 있어서 너무 좋았어요.",
+    date: "10.27 방문",
+    tags: ["친절해요", "분위기가 편안해요"],
+  },
+  {
+    concept: "basic-color",
+    text: "시설도 깨끗하고, 주차도 편하고 친절하셔서 자주 이용하려구요!",
+    date: "10.31 방문",
+    tags: ["소품이 다양해요", "아이와 가기 좋아요"],
+  },
+];

@@ -17,7 +17,16 @@ export function ReviewCard({ group, review, compact }: { group?: ReviewGroup; re
     >
       <span className="stars">★★★★★{group ? ` ${group.score}` : ""}</span>
       {review ? (
-        <q>{review.text}</q>
+        <>
+          <q>{review.text}</q>
+          {review.tags && (
+            <span className="rtags">
+              {review.tags.map((t) => (
+                <span key={t}>{t}</span>
+              ))}
+            </span>
+          )}
+        </>
       ) : (
         <q className="ph-q">리뷰 핵심 문장이 들어갈 자리예요. 네이버 리뷰 캡처를 받으면 채워요.</q>
       )}

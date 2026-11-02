@@ -56,7 +56,8 @@ export function Review() {
                 // 같은 카드가 4줄에 반복되므로 첫 줄만 읽히고 탭 이동되게
                 inert={i > 0 || undefined}
               >
-                {cards}
+                {/* 줄마다 시작 카드를 달리해 같은 카드가 나란히 보이지 않게 */}
+                {[...cards.slice(i % cards.length), ...cards.slice(0, i % cards.length)]}
               </Marquee>
             ))}
           </div>

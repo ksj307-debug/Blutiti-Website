@@ -339,6 +339,8 @@ a { color: inherit; }
 }
 .rcard-compact { width: 13rem; min-height: 0; gap: var(--space-2); padding: var(--space-4); background: var(--night); }
 .rcard-compact q { font-size: 15px; line-height: 24px; }
+.rtags { display: flex; flex-wrap: wrap; gap: 4px; }
+.rtags span { padding: 0 8px; border: 1px solid currentColor; border-radius: var(--radius-pill); font-size: 11px; line-height: 20px; opacity: .8; }
 .rev-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: var(--space-6); margin-bottom: var(--space-10); }
 .rev-head .display { font-size: clamp(34px, 5vw, 44px); line-height: 1.05; }
 .rev-actions { display: flex; flex-wrap: wrap; gap: 8px; }

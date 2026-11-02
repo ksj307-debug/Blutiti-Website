@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ReviewCard } from "@/components/site/review-card";
-import { NAVER_URL, REVIEW_GROUPS } from "@/lib/reviews";
+import { NAVER_URL, REVIEW_GROUPS, REVIEWS } from "@/lib/reviews";
 
 const ALL = "전체";
 
@@ -32,9 +32,11 @@ export function ReviewGroups() {
             <span className="score">★ {g.score}</span>
           </div>
           <div className="rcards">
-            {Array.from({ length: Math.min(g.count, 3) }, (_, i) => (
-              <ReviewCard key={i} group={g} />
-            ))}
+            {/* 등록된 리뷰 문장을 먼저, 모자라면 자리 표시 카드로 최대 3장 */}
+            {Array.from({ length: Math.min(g.count, 3) }, (_, i) => {
+              const review = REVIEWS.filter((r) => r.concept === g.concept)[i];
+              return <ReviewCard key={i} group={g} review={review} />;
+            })}
           </div>
           <p style={{ margin: "var(--space-6) 0 0" }}>
             <a className="link" href={NAVER_URL} target="_blank" rel="noopener">
