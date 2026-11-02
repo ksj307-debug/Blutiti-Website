@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/site/logo";
-import { BOOKING_HREF, INSTAGRAM_URL, KAKAO_LABEL, PHONE } from "@/lib/nav";
+import { MobileBar } from "@/components/site/mobile-bar";
+import { INSTAGRAM_URL, KAKAO_LABEL, PHONE } from "@/lib/nav";
 
 export function Footer() {
   return (
@@ -42,14 +43,7 @@ export function Footer() {
         </div>
       </footer>
 
-      <div className="bar" role="navigation" aria-label="빠른 메뉴">
-        <a className="btn" href="#contact">
-          카카오톡 문의
-        </a>
-        <Link className="btn btn-primary" href={BOOKING_HREF}>
-          예약하기
-        </Link>
-      </div>
+      <MobileBar />
     </>
   );
 }

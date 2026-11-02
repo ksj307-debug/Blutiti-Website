@@ -3,7 +3,7 @@ import { Footer } from "@/components/site/footer";
 import HeroSection from "@/components/sections/hero-section";
 import { Message } from "@/components/sections/message";
 import { Guide } from "@/components/sections/guide";
-import { Concept } from "@/components/sections/concept";
+import ConceptSection from "@/components/sections/concept-section";
 import { ForYou } from "@/components/sections/for-you";
 import { Gallery } from "@/components/sections/gallery";
 import { Price } from "@/components/sections/price";
@@ -21,7 +21,7 @@ export default function Home() {
         <HeroSection />
         <Message />
         <Guide />
-        <Concept />
+        <ConceptSection />
         <ForYou />
         <Gallery />
         <Price />

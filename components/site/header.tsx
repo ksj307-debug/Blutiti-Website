@@ -5,13 +5,17 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Logo } from "@/components/site/logo";
 import { BOOKING_HREF, LOGIN_HREF, MAIN_NAV } from "@/lib/nav";
+import { useOwnCtaVisible } from "@/lib/use-own-cta-visible";
 
 /**
  * 상단 고정 헤더
  * - 메뉴 클릭: 메인에서는 해당 섹션으로 부드럽게 스크롤, 다른 페이지에서는 메인의 해당 섹션으로 이동
  * - 스크롤 위치에 따라 현재 섹션 메뉴 표시 (aria-current)
- * - '예약하기'는 히어로([data-hero])가 보이는 동안 보조 버튼, 지나면 코발트 버튼 (히어로 CTA 와 코발트 2개 방지)
+ * - '예약하기'는 자체 코발트 예약 버튼이 있는 섹션(히어로 [data-hero], [data-own-cta])이 보이는 동안
+ *   보조 버튼, 그 밖에서는 코발트 버튼 (한 화면 코발트 한 곳)
  */
+/** 섹션 노출 판단에서 빼는 헤더 높이 (데스크톱 2줄 헤더 기준 근사값) */
+const HEADER_FALLBACK_H = 100;
 /** 메뉴에 없는 섹션: 여기에 닿으면 현재 메뉴 표시 해제 */
 const SPY_STOPS = ["booking"];
 
@@ -22,8 +26,7 @@ export function Header() {
   const barRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
-  // 히어로는 메인에만 있음. 첫 화면은 히어로가 보이는 상태로 시작
-  const [heroVisible, setHeroVisible] = useState(true);
+  const ownCtaVisible = useOwnCtaVisible(HEADER_FALLBACK_H);
 
   // 실제 헤더 높이 → --header-h (섹션 scroll-margin-top, 예약 요약 sticky 위치에 사용)
   // 모바일 메뉴가 열려도 값이 바뀌지 않게 메뉴 줄(top-bar) + 하단 헤어라인만 잼
@@ -35,17 +38,6 @@ export function Header() {
     ro.observe(el);
     sync();
     return () => ro.disconnect();
-  }, []);
-
-  // 히어로가 화면에 보이는지
-  useEffect(() => {
-    const hero = document.querySelector("[data-hero]");
-    if (!hero) return;
-    const io = new IntersectionObserver(([entry]) => setHeroVisible(entry.isIntersecting), {
-      rootMargin: `-${headerRef.current?.offsetHeight ?? 0}px 0px 0px 0px`,
-    });
-    io.observe(hero);
-    return () => io.disconnect();
   }, []);
 
   // 스크롤 위치 → 현재 섹션
@@ -94,7 +86,7 @@ export function Header() {
   };
 
   const current = isHome ? active : null;
-  const bookClass = isHome && heroVisible ? "btn-secondary" : "btn-primary";
+  const bookClass = isHome && ownCtaVisible ? "btn-secondary" : "btn-primary";
 
   return (
     <header className="top" ref={headerRef}>

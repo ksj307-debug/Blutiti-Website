@@ -1,8 +1,8 @@
 import { CONCEPTS, type ConceptId } from "@/lib/concepts";
 
 /**
- * CONCEPT 카드 (레퍼런스 레이아웃). 컨셉 목록·순서는 lib/concepts.ts
- * 5단계에서 스퀴즈 캐러셀(concept-section.tsx)로 교체 예정
+ * 미사용: CONCEPT 카드 (레퍼런스 레이아웃). 컨셉 목록·순서는 lib/concepts.ts
+ * 5단계에서 스퀴즈 캐러셀(components/sections/concept-section.tsx)로 교체. 되돌릴 때를 위해 보관
  */
 const COPY: Record<ConceptId, { en: string; desc: string; image?: string; alt?: string }> = {
   "basic-color": {
