@@ -13,7 +13,7 @@ import {
   type ConceptId,
   type PlanId,
 } from "@/lib/concepts";
-import { KAKAO_URL } from "@/lib/nav";
+import { KakaoChatButton } from "@/components/site/kakao";
 import { EXTRA_PERSON_PRICE, PRE_ADD_ONS, REVISIT_OPTION } from "@/lib/options";
 
 /**
@@ -459,9 +459,9 @@ function BookingForm() {
             <p className="cap muted" style={{ margin: "0 0 var(--space-4)" }}>
               이 구성은 금액을 따로 안내해 드려요. 카카오톡 채널 &apos;블루티티&apos;로 문의해 주세요.
             </p>
-            <a className="btn btn-primary" href={KAKAO_URL} target="_blank" rel="noopener" style={{ width: "100%" }}>
+            <KakaoChatButton className="btn btn-primary" style={{ width: "100%" }}>
               카카오톡으로 문의하기
-            </a>
+            </KakaoChatButton>
           </>
         ) : (
           <>

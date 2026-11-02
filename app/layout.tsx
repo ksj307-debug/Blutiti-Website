@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Gowun_Batang, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import { KakaoSdkLoader } from "@/components/site/kakao";
 
 // Pretendard 는 styles/blutiti-tokens.css 의 @font-face(public/fonts) 로 로드
 const cormorant = Cormorant_Garamond({
@@ -35,7 +36,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-scroll-behavior="smooth"
       className={`${cormorant.variable} ${gowun.variable} ${plexMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <KakaoSdkLoader />
+      </body>
     </html>
   );
 }
