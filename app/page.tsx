@@ -1,6 +1,6 @@
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
-import { Hero } from "@/components/sections/hero";
+import HeroSection from "@/components/sections/hero-section";
 import { Message } from "@/components/sections/message";
 import { Guide } from "@/components/sections/guide";
 import { Concept } from "@/components/sections/concept";
@@ -16,8 +16,9 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main id="top">
-        <Hero />
+      {/* id="top" 은 히어로 섹션에 있음 */}
+      <main>
+        <HeroSection />
         <Message />
         <Guide />
         <Concept />

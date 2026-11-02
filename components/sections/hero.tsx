@@ -2,7 +2,10 @@ import Link from "next/link";
 import { Logo } from "@/components/site/logo";
 import { BOOKING_HREF } from "@/lib/nav";
 
-/** 히어로 (레퍼런스). 3단계에서 사진 마키(hero-section.tsx)로 교체 예정 */
+/**
+ * 미사용: 레퍼런스 히어로 (사진 + 워드마크 + CAPTURE OUR LITTLE DAYS)
+ * 3단계에서 사진 마키 히어로(components/sections/hero-section.tsx)로 교체. 되돌릴 때를 위해 보관
+ */
 export function Hero() {
   return (
     // data-hero: 헤더 '예약하기' 버튼이 히어로 노출 여부를 판단하는 기준 (히어로 교체 시 유지)
