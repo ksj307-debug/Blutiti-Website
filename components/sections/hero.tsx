@@ -5,7 +5,8 @@ import { BOOKING_HREF } from "@/lib/nav";
 /** 히어로 (레퍼런스). 3단계에서 사진 마키(hero-section.tsx)로 교체 예정 */
 export function Hero() {
   return (
-    <section className="hero wrap" aria-label="소개">
+    // data-hero: 헤더 '예약하기' 버튼이 히어로 노출 여부를 판단하는 기준 (히어로 교체 시 유지)
+    <section className="hero wrap" aria-label="소개" data-hero>
       <figure className="hero-photo">
         <img src="/images/reference/hero.jpg" alt="초록 러그와 원목 스툴이 놓인 베이직 컬러 세트에서 노는 아이" />
         <figcaption className="ph-tag">대표 사진 자리 · 원본으로 교체 예정</figcaption>

@@ -10,7 +10,7 @@ export function Review() {
       <div className="wrap">
         <div className="rev-head">
           <div className="section-head" style={{ marginBottom: 0 }}>
-            <p className="eyebrow">REVIEW · NAVER</p>
+            <p className="eyebrow">REVIEW</p>
             <h2 id="rev-h" className="display">
               Kind <em>words</em> from families
             </h2>
