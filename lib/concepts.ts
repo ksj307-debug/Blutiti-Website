@@ -18,11 +18,12 @@
 export type ConceptId = "basic-color" | "classic-bw" | "100days" | "id-profile" | "season";
 export type PlanId = "value" | "package";
 
-export const PLANS: { id: PlanId; name: string; includes: string[]; badge?: string }[] = [
-  { id: "value", name: "가성비", includes: ["원본 무제한 (웹사이즈)"] },
+export const PLANS: { id: PlanId; name: string; summary: string; includes: string[]; badge?: string }[] = [
+  { id: "value", name: "가성비", summary: "보정·인화 없이 원본만 받는 구성", includes: ["원본 무제한 (웹사이즈)"] },
   {
     id: "package",
     name: "패키지",
+    summary: "보정과 인화까지 한 번에",
     badge: "인기",
     includes: ["원본 무제한 (웹사이즈)", "2컷 보정 (수정 1회)", "2장 인화 + 종이액자 우편 발송"],
   },

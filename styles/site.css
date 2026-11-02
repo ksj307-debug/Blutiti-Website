@@ -173,6 +173,46 @@ a { color: inherit; }
 .sub-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-muted); margin: var(--space-10) 0 var(--space-2); }
 .sub-h:first-child { margin-top: 0; }
 .plist.small li { padding: 12px 0; }
+/* PRICE 설명형: 01 컨셉 표 → 02 플랜 카드 → 03 부가서비스 → 04 이벤트·기본 제공 */
+.pstep { border-top: 1px solid var(--ink); padding: var(--space-6) 0 var(--space-16); }
+.pstep:last-child { padding-bottom: 0; }
+.pstep-h { display: grid; grid-template-columns: auto 1fr; column-gap: var(--space-4); align-items: baseline; margin-bottom: var(--space-6); }
+.pstep-h .index { color: var(--titi-navy); }
+.pstep-h p { grid-column: 2; margin: var(--space-1) 0 0; }
+.pstep-more { margin-top: var(--space-6); }
+.ptable { width: 100%; border-collapse: collapse; border-top: 1px solid var(--line); }
+.ptable th, .ptable td { padding: var(--space-4) 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-weight: 400; }
+.ptable thead th { font-family: var(--font-mono); font-size: 11px; line-height: 16px; letter-spacing: .18em; color: var(--ink-muted); padding-block: var(--space-2); }
+.ptable thead th + th, .ptable td { text-align: right; width: 28%; }
+.ptable tbody th { display: grid; gap: 2px; }
+.ptable .name { font-weight: 600; }
+.ptable td { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ptable s.list, .plan s.list { color: var(--ink-muted); font-weight: 400; margin-right: 6px; }
+.ptable .ask { font-weight: 400; color: var(--ink-muted); }
+@media (max-width: 720px) {
+  /* 모바일: 표 대신 컨셉별 블록 (컨셉명 → 가성비 / 패키지 두 줄) */
+  .ptable thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .ptable, .ptable tbody, .ptable tr, .ptable th, .ptable td { display: block; width: auto; }
+  .ptable tr { padding: var(--space-4) 0; border-bottom: 1px solid var(--line); }
+  .ptable tbody th { padding: 0 0 var(--space-2); border: 0; }
+  .ptable td { display: flex; justify-content: flex-end; align-items: baseline; padding: 4px 0; border: 0; text-align: right; }
+  .ptable td::before { content: attr(data-label); margin-right: auto; padding-right: var(--space-4); font-weight: 400; color: var(--ink-muted); }
+}
+.plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); align-items: stretch; }
+@media (max-width: 720px) { .plans { grid-template-columns: 1fr; } }
+.plan { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-6); border: 1px solid var(--ink); border-radius: 0; background: var(--paper-100); }
+.plan-featured { border: 2px solid var(--titi-navy); padding: calc(var(--space-6) - 1px); }
+.plan p { margin: 0; }
+.plan-h { display: flex; align-items: center; gap: var(--space-2); }
+.plan-price { display: grid; gap: 2px; }
+.plan-price .amount { font-family: var(--font-display); font-size: 36px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.plan-price .amount s.list { font-size: 20px; }
+.plan .basic { flex: 1; }
+.plan > a { align-self: flex-start; }
+.addons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-10); align-items: start; }
+@media (max-width: 900px) { .addons { grid-template-columns: 1fr; } }
+.addon-after { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); text-transform: none; letter-spacing: 0; }
+.plist li > .badge { justify-self: end; align-self: center; }
 .basic { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
 .basic li { padding-left: 18px; position: relative; }
 .basic li::before { content: ""; position: absolute; left: 0; top: 12px; width: 8px; height: 1px; background: var(--ink); }
