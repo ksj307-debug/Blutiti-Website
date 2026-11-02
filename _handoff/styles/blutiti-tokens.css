@@ -1,0 +1,138 @@
+/* BLUTITI — design-system/tokens.json 을 CSS 로 옮긴 파일
+ * 앱 전역 CSS(globals.css 등) 맨 위에서 import 해서 사용
+ * 색·폰트·간격 값은 tokens.json 이 원본. 값을 바꿀 땐 tokens.json 과 이 파일을 같이 고칠 것
+ */
+
+@font-face {
+  font-family: "Pretendard Variable";
+  src: url("/fonts/PretendardVariable.woff2") format("woff2-variations");
+  font-weight: 45 920;
+  font-display: swap;
+}
+/* Cormorant Garamond · Gowun Batang · IBM Plex Mono 는 Google Fonts (next/font/google 또는 <link>) 로 로드 */
+
+:root {
+  /* color — Ivory(light) */
+  --paper-100: #f7f4ee;
+  --paper-200: #efebe3;
+  --mist: #e9edec;
+  --night: #141414;
+  --ink: #1c1b19;
+  --ink-muted: #5f5a52;
+  --on-night: #f7f4ee;
+  --on-night-muted: #b9b2a6;
+  --line: #d8d3ca;
+  --stone: #c9c3b8;
+  --titi-navy: #3c4479;
+  --titi-cobalt: #3a52d6;
+  --on-cobalt: #ffffff;
+  --titi-sky: #dfe4f7;
+  --focus-ring: var(--titi-cobalt);
+  --danger: #a3322a;
+
+  /* type families */
+  --font-display: "Cormorant Garamond", "Gowun Batang", Georgia, serif;
+  --font-serif-kr: "Gowun Batang", "Cormorant Garamond", serif;
+  --font-sans: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-10: 40px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* radius */
+  --radius-0: 0px;
+  --radius-sm: 2px;
+  --radius-pill: 999px;
+  --radius-round: 50%;
+
+  --hairline: 1px;
+}
+
+/* color — Night(dark) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper-100: #121212;
+    --paper-200: #1b1a18;
+    --mist: #1e2230;
+    --night: #1f1e1c;
+    --ink: #f7f4ee;
+    --ink-muted: #a39d93;
+    --on-night-muted: #a39d93;
+    --line: #34322e;
+    --stone: #4a4741;
+    --titi-navy: #aab3e6;
+    --titi-cobalt: #8f9ae8;
+    --on-cobalt: #121212;
+    --titi-sky: #262c4a;
+    --danger: #e8877e;
+  }
+}
+:root[data-theme="dark"] {
+  --paper-100: #121212;
+  --paper-200: #1b1a18;
+  --mist: #1e2230;
+  --night: #1f1e1c;
+  --ink: #f7f4ee;
+  --ink-muted: #a39d93;
+  --on-night-muted: #a39d93;
+  --line: #34322e;
+  --stone: #4a4741;
+  --titi-navy: #aab3e6;
+  --titi-cobalt: #8f9ae8;
+  --on-cobalt: #121212;
+  --titi-sky: #262c4a;
+  --danger: #e8877e;
+}
+
+body {
+  background: var(--paper-100);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 26px;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* text styles — tokens.json type.groups 와 1:1 (클래스명 = 스타일명) */
+.t-display-xl { font-family: var(--font-display); font-weight: 300; font-size: clamp(44px, 7vw, 72px); line-height: 0.95; letter-spacing: -0.01em; text-transform: uppercase; }
+.t-display-xl em, .t-display-md em { font-style: italic; text-transform: none; }
+.t-display-md { font-family: var(--font-display); font-weight: 300; font-size: clamp(34px, 5vw, 44px); line-height: 1.05; text-transform: uppercase; }
+.t-heading-kr-lg { font-family: var(--font-serif-kr); font-weight: 400; font-size: clamp(28px, 4.4vw, 40px); line-height: 1.3; letter-spacing: -0.02em; }
+.t-heading-kr { font-family: var(--font-serif-kr); font-weight: 400; font-size: 30px; line-height: 42px; }
+.t-title-kr { font-family: var(--font-serif-kr); font-weight: 400; font-size: 20px; line-height: 30px; }
+.t-body { font-family: var(--font-sans); font-weight: 400; font-size: 15px; line-height: 26px; letter-spacing: -0.01em; }
+.t-body-strong { font-family: var(--font-sans); font-weight: 600; font-size: 15px; line-height: 26px; letter-spacing: -0.01em; }
+.t-caption { font-family: var(--font-sans); font-weight: 400; font-size: 13px; line-height: 20px; }
+.t-button { font-family: var(--font-sans); font-weight: 500; font-size: 13px; line-height: 16px; letter-spacing: 0.08em; }
+.t-eyebrow { font-family: var(--font-mono); font-weight: 400; font-size: 11px; line-height: 16px; letter-spacing: 0.18em; text-transform: uppercase; }
+.t-index { font-family: var(--font-mono); font-weight: 400; font-size: 11px; line-height: 16px; letter-spacing: 0.06em; }
+
+/* buttons — 기본: 코발트 pill(예약 동작 전용, 한 화면 한 곳) / 보조: ink 1px 테두리 */
+.btn-primary,
+.btn-secondary {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  min-height: 44px; padding: 0 22px; border-radius: var(--radius-pill);
+  font-family: var(--font-sans); font-weight: 500; font-size: 13px; line-height: 16px; letter-spacing: 0.08em;
+  text-decoration: none; cursor: pointer; transition: background-color .2s, color .2s, border-color .2s;
+}
+.btn-primary { background: var(--titi-cobalt); border: 1px solid var(--titi-cobalt); color: var(--on-cobalt); }
+.btn-primary:hover { background: var(--titi-navy); border-color: var(--titi-navy); color: var(--paper-100); }
+.btn-secondary { background: transparent; border: 1px solid var(--ink); color: var(--ink); }
+.btn-secondary:hover { background: var(--ink); color: var(--paper-100); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}

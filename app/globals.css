@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@import "../styles/blutiti-tokens.css";
+@import "../styles/site.css";
+
+/* next/font 로 불러온 Google Fonts 를 토큰 폰트 변수에 연결 */
+:root {
+  --font-display: var(--font-cormorant), var(--font-gowun), Georgia, serif;
+  --font-serif-kr: var(--font-gowun), var(--font-cormorant), serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+/* shadcn 테마 변수 → BLUTITI 토큰 (다크 테마는 토큰이 자동 반전) */
+:root {
+  --background: var(--paper-100);
+  --foreground: var(--ink);
+  --card: var(--paper-100);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-100);
+  --popover-foreground: var(--ink);
+  --primary: var(--titi-cobalt);
+  --primary-foreground: var(--on-cobalt);
+  --secondary: var(--paper-200);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper-200);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--titi-sky);
+  --accent-foreground: var(--titi-navy);
+  --destructive: var(--danger);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--titi-cobalt);
+  --radius: 0px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
