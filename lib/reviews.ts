@@ -16,3 +16,16 @@ export const REVIEW_GROUPS: ReviewGroup[] = [
 ];
 
 export const REVIEW_TOTAL = REVIEW_GROUPS.reduce((sum, g) => sum + g.count, 0);
+
+/** 네이버 플레이스 방문자 리뷰 (장소 ID 2039948985) — 카드를 누르면 이 주소로 이동 */
+export const NAVER_REVIEW_URL = "https://m.place.naver.com/place/2039948985/review/visitor";
+
+/**
+ * REVIEW 마키에 보여줄 리뷰 문장
+ * - 네이버 방문자 리뷰 원문에서 고객 동의를 받은 핵심 문장만 짧게 (지어내지 않음)
+ * - concept 은 lib/concepts.ts id (세이지 포레스트 리뷰는 basic-color)
+ * - 비어 있으면 컨셉별 자리 표시 카드를 보여줌
+ */
+export type Review = { concept: ConceptId; text: string; date?: string };
+
+export const REVIEWS: Review[] = [];
