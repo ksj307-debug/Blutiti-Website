@@ -14,25 +14,22 @@ const mark = (text: string) => <span className="t-eyebrow text-[var(--on-night)]
  */
 const COPY: Record<
   ConceptId,
-  Pick<SqueezeSlide, "title" | "description" | "image" | "imageAlt" | "imagePosition" | "background">
+  Pick<SqueezeSlide, "description" | "image" | "imageAlt" | "imagePosition" | "background">
 > = {
   // 4개 컨셉 문구 = 레퍼런스(_handoff/reference/index.html) CONCEPTS 섹션 문구 그대로
   "basic-color": {
-    title: "베이직 컬러",
     description: "화려한 배경 없이 자연스러운 빛과 색으로 담는 미니멀 촬영",
     image: "/images/concepts/basic-color.webp",
     imageAlt: "베이직 컬러 - 숫자 풍선과 함께 바닥에 앉은 가족",
     imagePosition: "center 55%",
   },
   "classic-bw": {
-    title: "클래식 흑백",
     description: "색을 덜어내고 표정과 감정의 결을 선명하게",
     image: "/images/concepts/classic-bw.webp",
     imageAlt: "클래식 흑백 - 스툴에 앉은 두 아이와 뒤에 선 부부",
     imagePosition: "center 40%",
   },
   "100days": {
-    title: "100일상",
     description: "한복과 정성스럽게 준비한 떡으로 차리는 아기의 첫 잔치",
     image: "/images/concepts/100days.webp",
     imageAlt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기",
@@ -40,13 +37,11 @@ const COPY: Record<
   },
   // 사진 폴더에 증명·프로필 사진이 없어 임시로 --mist 배경 (사진이 생기면 image 로 교체)
   "id-profile": {
-    title: "증명·프로필",
     description: "증명·여권은 30분 촬영, 셀렉은 집에서. 당일 인화는 어려워요",
     background: "var(--mist)",
   },
   // 신규
   season: {
-    title: "시즌 컨셉 · 졸업 & 크리스마스",
     description:
       "지금 이 계절에만 남길 수 있는 장면이에요. 졸업 시즌엔 학사모와 꽃다발로 한 시절의 마무리를, 크리스마스 시즌엔 트리와 따뜻한 조명 아래 함께한 한 해를 담아드려요.",
     image: "/images/concepts/season.webp",
@@ -56,8 +51,10 @@ const COPY: Record<
 };
 
 // CONCEPTS 순서를 따르므로 시즌 컨셉이 항상 마지막
+// 제목 = lib/concepts.ts 컨셉명 (+ 시즌 테마). PRICE·BOOKING 과 같은 이름
 const slides: SqueezeSlide[] = CONCEPTS.map((c) => ({
   id: c.id,
+  title: c.themes ? `${c.name} · ${c.themes.join(" & ")}` : c.name,
   ...COPY[c.id],
   overlay: mark(c.label),
   action: "이걸로 예약하기",

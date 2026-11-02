@@ -26,6 +26,7 @@ import {
     type CSSProperties,
     type KeyboardEvent,
     type ReactNode,
+    type UIEvent,
     useCallback,
     useEffect,
     useId,
@@ -444,8 +445,19 @@ function DesktopCarousel({
 /* -------------------------------------------------------------------------- */
 
 function MobileList({ slides, radius = 0 }: { slides: SqueezeSlide[]; radius?: Size }) {
+    // 가운데 카드만 '이걸로 예약하기' 코발트, 옆에 걸친 카드는 보조 버튼 (한 화면 코발트 한 곳)
+    const [active, setActive] = useState(0);
+    const onScroll = (event: UIEvent<HTMLDivElement>) => {
+        const list = event.currentTarget;
+        const card = list.firstElementChild as HTMLElement | null;
+        if (!card) return;
+        const step = card.offsetWidth + 16; // gap-4
+        setActive(clamp(Math.round(list.scrollLeft / step), 0, slides.length - 1));
+    };
+
     return (
         <div
+            onScroll={onScroll}
             className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             style={
                 {
@@ -487,7 +499,7 @@ function MobileList({ slides, radius = 0 }: { slides: SqueezeSlide[]; radius?: S
                     )}
                     {slide.action && (
                         <div className="mt-4">
-                            <Action slide={slide} shown />
+                            <Action slide={slide} shown primary={i === active} />
                         </div>
                     )}
                 </article>
@@ -552,7 +564,7 @@ function Arrow({ back = false, label, onClick }: { back?: boolean; label: string
     );
 }
 
-function Action({ slide, shown }: { slide: SqueezeSlide; shown: boolean }) {
+function Action({ slide, shown, primary = true }: { slide: SqueezeSlide; shown: boolean; primary?: boolean }) {
     const inside = (
         <>
             {slide.action}
@@ -570,7 +582,8 @@ function Action({ slide, shown }: { slide: SqueezeSlide; shown: boolean }) {
     );
 
     const dress = cn(
-        "btn-primary group/sq-action shrink-0 outline-none",
+        primary ? "btn-primary" : "btn-secondary",
+        "group/sq-action shrink-0 outline-none",
         "focus-visible:ring-2 focus-visible:ring-[var(--sq-fill)]",
         "focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--paper-100)]",
     );

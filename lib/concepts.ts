@@ -106,6 +106,21 @@ export const LEGACY_CONCEPT_IDS: Record<string, ConceptId> = {
   "세이지 포레스트": "basic-color",
 };
 
+/** 예전 상품명(레퍼런스 '촬영 상품') → 현재 필수 선택. 저장된 예약 표기용 */
+export const LEGACY_PRODUCT_PLANS: Record<string, PlanId> = {
+  "패키지 셀프촬영": "package",
+  "가성비 셀프촬영": "value",
+};
+
+/** 저장된 예약의 컨셉·상품 → 화면 표기 '컨셉명 · 가성비/패키지'. 알 수 없으면 저장된 상품명 그대로 */
+export const bookingLabel = (concept: string | undefined, product: string) => {
+  const c = findConcept(concept);
+  const planId = LEGACY_PRODUCT_PLANS[product] ?? PLANS.find((p) => p.id === product || p.name === product)?.id;
+  const plan = PLANS.find((p) => p.id === planId);
+  if (c && plan) return `${c.name} · ${plan.name}`;
+  return c ? `${product} · ${c.name}` : product;
+};
+
 /** id·한글명·예전 값 → 현재 컨셉. 모르는 값은 undefined */
 export const findConcept = (key: string | null | undefined): Concept | undefined => {
   if (!key) return undefined;

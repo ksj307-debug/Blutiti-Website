@@ -6,7 +6,7 @@ import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { getSession } from "@/lib/auth";
 import { findBookings, type StoredBooking } from "@/lib/bookings";
-import { findConcept, formatKRW } from "@/lib/concepts";
+import { bookingLabel, formatKRW } from "@/lib/concepts";
 import { logout } from "../login/actions";
 import { DemoButtons } from "./demo-buttons";
 import { SessionTimer } from "./session-timer";
@@ -25,10 +25,8 @@ const STAGES: { title: string; note?: string }[] = [
 ];
 const DOW = ["일", "월", "화", "수", "목", "금", "토"];
 
-const productLabel = (b: StoredBooking) => {
-  const concept = findConcept(b.concept);
-  return concept ? `${b.product} · ${concept.name}` : b.product;
-};
+/** 저장 데이터는 그대로, 화면 표기만 새 형식 ('베이직 컬러 · 패키지') */
+const productLabel = (b: StoredBooking) => bookingLabel(b.concept, b.product);
 const dateLabel = (b: StoredBooking) => {
   const [y, m, d] = b.date.split("-").map(Number);
   const w = new Date(Date.UTC(y, m - 1, d)).getUTCDay();

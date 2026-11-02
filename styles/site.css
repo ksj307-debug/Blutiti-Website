@@ -11,6 +11,8 @@
 /* Tailwind preflight 가 지운 브라우저 기본값 중 레퍼런스가 기대하는 것만 되살림 (utilities 보다 낮은 base 레이어) */
 @layer base {
   p { margin-block: 1em; }
+  /* 디자인 시스템 굵기는 400·600 두 가지 (브라우저 기본 bold 700 대신) */
+  b, strong { font-weight: 600; }
 }
 
 html { scroll-behavior: smooth; }
@@ -236,8 +238,9 @@ a { color: inherit; }
 .date .d { font-family: var(--font-display); font-size: 26px; line-height: 1.1; }
 .date .m { font-size: 11px; color: var(--ink-muted); }
 .date.sun .dow { color: var(--danger); }
-.date[aria-pressed="true"] { border-color: var(--titi-cobalt); background: var(--titi-cobalt); color: var(--on-cobalt); }
-.date[aria-pressed="true"] .dow, .date[aria-pressed="true"] .m { color: var(--on-cobalt); }
+/* 선택된 날짜: 선택된 시간과 같은 연한 파랑 + 코발트 테두리 (코발트 면은 결제 버튼 한 곳만) */
+.date[aria-pressed="true"] { border-color: var(--titi-cobalt); background: var(--titi-sky); outline: 1px solid var(--titi-cobalt); outline-offset: -2px; }
+.date[aria-pressed="true"] .d { color: var(--titi-navy); }
 .slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-2); margin-top: var(--space-4); }
 @media (max-width: 560px) { .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .slot { display: grid; gap: 0; padding: 12px; border: 1px solid var(--line); background: var(--paper-100); cursor: pointer; font: inherit; color: inherit; text-align: left; }
@@ -291,8 +294,9 @@ a { color: inherit; }
 .track li:last-child::before { display: none; }
 .dot { width: 23px; height: 23px; border-radius: var(--radius-round); border: 1px solid var(--stone); background: var(--paper-100); display: grid; place-items: center; font-size: 11px; font-family: var(--font-mono); color: var(--ink-muted); }
 .track .done-s .dot { background: var(--titi-navy); border-color: var(--titi-navy); color: var(--paper-100); }
-.track .now .dot { background: var(--titi-cobalt); border-color: var(--titi-cobalt); color: var(--on-cobalt); }
-.track .now .t-kr { color: var(--titi-cobalt); }
+/* 현재 단계: 테두리만 네이비로 강조 (코발트는 '사진 셀렉하기' 버튼 한 곳) */
+.track .now .dot { background: var(--titi-sky); border-color: var(--titi-navy); color: var(--titi-navy); }
+.track .now .t-kr { color: var(--titi-navy); }
 .track p { margin: 2px 0 0; }
 .track .t-kr { font-size: 17px; line-height: 24px; }
 .panel { border: 1px solid var(--line); padding: var(--space-6); background: var(--paper-100); display: grid; gap: var(--space-4); }
@@ -337,7 +341,8 @@ a { color: inherit; }
 .rp-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: var(--space-6); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--space-10) 0 var(--space-6); }
 .chip { min-height: 36px; padding: 0 16px; border-radius: var(--radius-pill); border: 1px solid var(--line); background: none; color: var(--ink); font: 500 13px/16px var(--font-sans); cursor: pointer; }
-.chip[aria-pressed="true"] { background: var(--titi-cobalt); border-color: var(--titi-cobalt); color: var(--on-cobalt); }
+/* 선택된 필터 칩: 연한 파랑 + 네이비 (예약 동작이 아니라 코발트를 쓰지 않음) */
+.chip[aria-pressed="true"] { background: var(--titi-sky); border-color: var(--titi-navy); color: var(--titi-navy); }
 .rp-group { border-top: 1px solid var(--ink); padding: var(--space-6) 0 var(--space-16); }
 .rp-group-h { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-4); margin-bottom: var(--space-6); }
 .rp-group .rcards { grid-template-columns: repeat(3, minmax(0, 1fr)); }

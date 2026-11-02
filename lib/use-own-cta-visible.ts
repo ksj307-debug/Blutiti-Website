@@ -15,8 +15,8 @@ export function useOwnCtaVisible(topOffset = 0) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const zones = document.querySelectorAll(OWN_CTA);
     const showing = new Set<Element>();
+    const watched = new Set<Element>();
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
@@ -27,11 +27,22 @@ export function useOwnCtaVisible(topOffset = 0) {
       },
       { rootMargin: `-${topOffset}px 0px 0px 0px` },
     );
-    zones.forEach((z) => io.observe(z));
+    const watch = () => {
+      document.querySelectorAll(OWN_CTA).forEach((z) => {
+        if (watched.has(z)) return;
+        watched.add(z);
+        io.observe(z);
+      });
+    };
+    watch();
+    // 나중에 스트리밍되는 영역(예: 예약 조회)도 관찰
+    const mo = new MutationObserver(watch);
+    mo.observe(document.body, { childList: true, subtree: true });
     // 관찰 대상이 없으면 첫 콜백이 오지 않으므로 다음 프레임에 false 로
-    const frame = zones.length ? 0 : requestAnimationFrame(() => setVisible(false));
+    const frame = watched.size ? 0 : requestAnimationFrame(() => setVisible(showing.size > 0));
     return () => {
       io.disconnect();
+      mo.disconnect();
       cancelAnimationFrame(frame);
     };
   }, [topOffset]);

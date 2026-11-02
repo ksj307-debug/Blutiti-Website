@@ -13,7 +13,8 @@ export function DemoButtons() {
   const [msg, setMsg] = useState("");
   return (
     <>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+      {/* data-own-cta: '사진 셀렉하기'(코발트)가 보이는 동안 헤더 예약하기는 보조 버튼 */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }} data-own-cta>
         {ACTIONS.map((a) => (
           <button key={a.label} className={a.primary ? "btn btn-primary" : "btn"} type="button" onClick={() => setMsg(a.msg)}>
             {a.label}

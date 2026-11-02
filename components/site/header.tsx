@@ -86,7 +86,7 @@ export function Header() {
   };
 
   const current = isHome ? active : null;
-  const bookClass = isHome && ownCtaVisible ? "btn-secondary" : "btn-primary";
+  const bookClass = ownCtaVisible ? "btn-secondary" : "btn-primary";
 
   return (
     <header className="top" ref={headerRef}>

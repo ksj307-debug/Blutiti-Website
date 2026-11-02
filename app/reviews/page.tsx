@@ -30,7 +30,7 @@ export default function ReviewsPage() {
                 네이버 예약 방문자 리뷰를 컨셉별로 모았어요. 카드를 누르면 네이버에서 원문을 확인할 수 있어요.
               </p>
             </div>
-            <a className="btn btn-primary" href={NAVER_URL} target="_blank" rel="noopener">
+            <a className="btn" href={NAVER_URL} target="_blank" rel="noopener">
               네이버에서 전체 리뷰 보기 ↗
             </a>
           </div>
