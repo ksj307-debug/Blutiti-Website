@@ -29,6 +29,8 @@ a { color: inherit; }
 .h-kr { font-family: var(--font-serif-kr); font-weight: 400; font-size: 30px; line-height: 42px; margin: 0; text-wrap: balance; }
 .h-kr-lg { font-family: var(--font-serif-kr); font-weight: 400; font-size: clamp(28px, 4.4vw, 40px); line-height: 1.3; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
 .t-kr { font-family: var(--font-serif-kr); font-weight: 400; font-size: 20px; line-height: 30px; margin: 0; }
+/* 한글 제목이 단어 중간('추/억')에서 줄바꿈되지 않게 */
+.h-kr, .h-kr-lg, .t-kr { word-break: keep-all; }
 .muted { color: var(--ink-muted); }
 .cap { font-size: 13px; line-height: 20px; }
 .num { font-variant-numeric: tabular-nums; }
@@ -107,6 +109,20 @@ a { color: inherit; }
 .message { text-align: center; display: grid; justify-items: center; gap: var(--space-6); }
 .message img { width: 120px; height: 120px; border-radius: var(--radius-round); object-fit: cover; }
 .message p { max-width: 520px; margin: 0; }
+/* 촬영 대상 키워드: 데스크톱 한 줄 가로 나열(가운뎃점), 모바일 2x2 */
+.keywords { list-style: none; margin: 0 0 var(--space-6); padding: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 0 var(--space-4); color: var(--titi-navy); }
+.kw { display: grid; justify-items: center; gap: var(--space-2); }
+.kw .t-caption { color: var(--ink-muted); }
+/* 네 단어 + 가운뎃점 ≈ 21em + 간격 96px → 화면 폭에 맞춰 줄여 한 줄 유지 (최대 44px = display-md) */
+.keywords .t-display-md { font-size: clamp(24px, calc((100vw - 150px) / 22), 44px); }
+.kw-dot { line-height: 1.05; }
+@media (max-width: 720px) {
+  .keywords { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6) var(--space-4); width: 100%; }
+  .kw-dot { display: none; }
+  .kw .t-display-md { font-size: clamp(20px, 6vw, 34px); }
+}
+/* 조건 배지 (예: GUIDE 04 '보정/인화 서비스 선택 시') — PRICE .tag 와 같은 모양 */
+.badge { display: inline-block; padding: 0 8px; border-radius: var(--radius-pill); background: var(--titi-sky); color: var(--titi-navy); font-family: var(--font-sans); font-size: 11px; line-height: 20px; font-weight: 600; letter-spacing: 0; vertical-align: middle; white-space: nowrap; }
 
 /* steps (GUIDE) */
 .steps { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
