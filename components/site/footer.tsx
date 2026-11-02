@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/site/logo";
 import { MobileBar } from "@/components/site/mobile-bar";
-import { INSTAGRAM_URL, KAKAO_LABEL, PHONE } from "@/lib/nav";
+import { INSTAGRAM_URL, KAKAO_LABEL, KAKAO_URL, PHONE } from "@/lib/nav";
 
 export function Footer() {
   return (
@@ -20,7 +20,9 @@ export function Footer() {
           <div id="contact">
             <p className="eyebrow">CONTACT</p>
             <p>
-              {KAKAO_LABEL}
+              <a href={KAKAO_URL} target="_blank" rel="noopener">
+                {KAKAO_LABEL}
+              </a>
               <br />
               인스타그램{" "}
               <a href={INSTAGRAM_URL} target="_blank" rel="noopener">

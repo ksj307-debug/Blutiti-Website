@@ -10,5 +10,7 @@ export const MAIN_NAV = [
 export const BOOKING_HREF = "/#booking";
 export const LOGIN_HREF = "/login";
 export const KAKAO_LABEL = "카카오톡 채널 '블루티티'";
+/** 카카오톡 채널 '블루티티' (문의 버튼 공용) */
+export const KAKAO_URL = "https://pf.kakao.com/_VexnFn";
 export const INSTAGRAM_URL = "https://www.instagram.com/blutiti_studio/";
 export const PHONE = "0507-1401-3190";
