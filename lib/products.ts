@@ -3,7 +3,8 @@ import { PLANS, findVariant, type ConceptId, type PlanId, type PlanPrice } from 
 /**
  * 레퍼런스 '촬영 상품' 목록 (PRICE · BOOKING 임시 구조)
  * 금액은 lib/concepts.ts 에서 가져옴 → 가격 하드코딩 없음
- * 6·7단계에서 '컨셉 × 가성비/패키지' 구조로 바뀌면 이 파일은 정리 대상
+ * 미사용: 6·7단계에서 PRICE·BOOKING 이 '컨셉 × 가성비/패키지'(lib/concepts.ts) 구조로 바뀜.
+ * 보관용 components/sections/price-reference.tsx 만 참조
  */
 const price = (variantId: string, plan: PlanId): PlanPrice => {
   const found = findVariant(variantId);

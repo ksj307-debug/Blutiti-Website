@@ -1,15 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useSyncExternalStore } from "react";
-import { findConcept, formatKRW, priceLabel, type ConceptId } from "@/lib/concepts";
+import { useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import {
+  CONCEPTS,
+  PLANS,
+  findConcept,
+  formatKRW,
+  isPayable,
+  priceLabel,
+  type Concept,
+  type ConceptId,
+  type PlanId,
+} from "@/lib/concepts";
 import { EXTRA_PERSON_PRICE, PRE_ADD_ONS, REVISIT_OPTION } from "@/lib/options";
-import { PRODUCTS, PRODUCT_CONCEPTS } from "@/lib/products";
 
 /**
- * BOOKING (레퍼런스 미리보기 예약 흐름을 그대로 옮김. 실제 결제 없음)
- * 7단계에서 STEP 1 '컨셉 선택 × 가성비/패키지' 구조로 개편
+ * BOOKING (미리보기 예약 흐름. 실제 결제 없음)
+ * STEP 1 컨셉 선택(lib/concepts.ts 5개) → 세부 상품·시즌 테마 → 필수 선택(가성비/패키지)
+ * 금액이 '문의'인 조합은 결제 대신 카카오톡 문의
  */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * URL ?concept={id} 로 들어오면 해당 컨셉을 미리 선택 (CONCEPT '이걸로 예약하기')
+ * - 파라미터 없음: 베이직 컬러 / 모르는 id: 선택 없음 / 예전 세이지 포레스트: 베이직 컬러(통합)
+ */
+function initialConcept(): ConceptId | null {
+  const param = new URLSearchParams(window.location.search).get("concept");
+  if (param === null) return "basic-color";
+  return findConcept(param)?.id ?? null;
+}
+const firstVariant = (id: ConceptId | null) => (id ? (findConcept(id)?.variants[0].id ?? null) : null);
+/** 컨셉 선택지 보조 문구 */
+const conceptNote = (c: Concept) =>
+  c.themes?.join(" · ") ?? (c.variants.length > 1 ? c.variants.map((v) => v.name).join(" / ") : c.variants[0].note);
 const OPTIONS = [...PRE_ADD_ONS.filter((o) => o.id !== "person"), REVISIT_OPTION];
 const SLOTS: [number, number][] = [[10, 0], [11, 30], [13, 0], [14, 30], [16, 0], [17, 30], [19, 0], [20, 30]];
 const SESSION_MIN = 80;
@@ -51,7 +76,8 @@ const firstOpenSlot = (now: number, day: Day) => {
   return i < 0 ? null : i;
 };
 
-type Done = { no: string; name: string; product: string; when: string; total: number };
+/** 예약 완료 기록. phone 은 숫자만 */
+type Done = { no: string; name: string; phone: string; email: string; product: string; when: string; total: number };
 
 const noopSubscribe = () => () => {};
 
@@ -60,7 +86,8 @@ export function Booking() {
   const mounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
 
   return (
-    <section id="booking" className="band wrap" aria-labelledby="book-h">
+    // data-own-cta: 예약 섹션 안의 결제 버튼(코발트)이 보이는 동안 헤더·하단 바 예약하기는 보조 버튼
+    <section id="booking" data-own-cta className="band wrap" aria-labelledby="book-h">
       <div className="section-head">
         <p className="eyebrow">BOOKING</p>
         <h2 id="book-h" className="h-kr">
@@ -87,8 +114,11 @@ function BookingForm() {
     return [0, null] as const;
   }, [days, now]);
 
-  const [prod, setProd] = useState("pkg");
-  const [concept, setConcept] = useState<ConceptId>("basic-color");
+  // STEP 1: 컨셉 → (증명·프로필 세부 상품 / 시즌 테마) → 필수 선택(가성비/패키지)
+  const [conceptId, setConceptId] = useState<ConceptId | null>(initialConcept);
+  const [variantId, setVariantId] = useState<string | null>(() => firstVariant(initialConcept()));
+  const [theme, setTheme] = useState<string | null>(null);
+  const [plan, setPlan] = useState<PlanId>("package");
   const [date, setDate] = useState(initDate);
   const [slot, setSlot] = useState<number | null>(initSlot);
   const [adults, setAdults] = useState(2);
@@ -103,10 +133,27 @@ function BookingForm() {
   const [err, setErr] = useState("");
   const [done, setDone] = useState<Done | null>(null);
 
-  const product = PRODUCTS.find((p) => p.id === prod)!;
   const day = days[date];
-  const conceptName = findConcept(concept)?.name ?? "";
-  const productLabel = (product.shortName ?? product.name) + (product.withConcept ? ` · ${conceptName}` : "");
+  const concept = conceptId ? CONCEPTS.find((c) => c.id === conceptId) : undefined;
+  const variant = concept?.variants.find((v) => v.id === variantId);
+  const price = variant?.plans[plan];
+  const payable = !!price && isPayable(price);
+  const planName = PLANS.find((p) => p.id === plan)!.name;
+  const productLabel = !concept
+    ? "컨셉을 선택해 주세요"
+    : [
+        concept.variants.length > 1 ? (variant?.name ?? concept.name) : concept.name,
+        concept.themes && theme,
+        planName,
+      ]
+        .filter(Boolean)
+        .join(" · ");
+
+  const pickConcept = (id: ConceptId) => {
+    setConceptId(id);
+    setVariantId(firstVariant(id));
+    setTheme(null);
+  };
 
   const ext = (() => {
     if (slot === null) return { ok: false, why: "먼저 시간을 선택해 주세요." };
@@ -117,7 +164,7 @@ function BookingForm() {
   const selected = (id: string) => !!opts[id] && (id !== "ext" || ext.ok);
   const extra = Math.max(0, adults + Math.max(0, kids - 1) - 2);
   const total =
-    (product.price.amount ?? 0) +
+    (price?.amount ?? 0) +
     extra * EXTRA_PERSON_PRICE +
     OPTIONS.reduce((sum, o) => sum + (selected(o.id) ? o.price : 0), 0);
 
@@ -135,16 +182,22 @@ function BookingForm() {
 
   const pay = () => {
     let e = "";
+    // 휴대폰 번호는 숫자만 저장 (예약 조회 로그인 시 뒷 4자리 비교)
     const digits = phone.replace(/[^0-9]/g, "");
-    if (slot === null) e = "예약할 시간을 선택해 주세요.";
+    if (!concept || !variant) e = "촬영할 컨셉을 선택해 주세요.";
+    else if (concept.themes && !theme) e = "시즌 테마를 선택해 주세요.";
+    else if (slot === null) e = "예약할 시간을 선택해 주세요.";
     else if (!name.trim()) e = "예약자 이름을 입력해 주세요.";
     else if (digits.length < 10) e = "휴대폰 번호를 확인해 주세요. 예약 안내를 카카오톡으로 보내드려요.";
+    else if (!EMAIL_RE.test(email.trim())) e = "이메일 주소를 확인해 주세요. 예약 조회 로그인에 쓰여요.";
     else if (!agreePolicy || !agreePrivacy) e = "필수 동의 항목에 체크해 주세요.";
     setErr(e);
     if (e || slot === null) return;
     setDone({
       no: `BT-${pad(day.m + 1)}${pad(day.d)}-${pad(((slot * 7) % 60) + 3)}`,
       name: name.trim(),
+      phone: digits,
+      email: email.trim(),
       product: productLabel,
       when: whenLabel(false),
       total,
@@ -197,31 +250,62 @@ function BookingForm() {
         <div className="bstep">
           <div className="bstep-h">
             <span className="index">STEP 1</span>
-            <h3 className="t-kr">상품 선택</h3>
+            <h3 className="t-kr">컨셉 선택</h3>
           </div>
-          <div className="choices" role="group" aria-label="촬영 상품">
-            {PRODUCTS.map((p) => (
-              <button key={p.id} type="button" className="choice" aria-pressed={prod === p.id} onClick={() => setProd(p.id)}>
-                <b>{p.shortName ?? p.name}</b>
-                <span className="p">{priceLabel(p.price)}</span>
-                <small>{p.note}</small>
+          <div className="choices" role="group" aria-label="컨셉">
+            {CONCEPTS.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                className="choice"
+                aria-pressed={conceptId === c.id}
+                onClick={() => pickConcept(c.id)}
+              >
+                <b>{c.name}</b>
+                {conceptNote(c) && <small>{conceptNote(c)}</small>}
               </button>
             ))}
           </div>
-          {product.withConcept && (
-            <div style={{ marginTop: "var(--space-4)" }}>
-              <p className="cap muted" style={{ margin: "0 0 8px" }}>
-                컨셉
-              </p>
-              <div className="choices" role="group" aria-label="컨셉">
-                {PRODUCT_CONCEPTS.map((id) => (
-                  <button key={id} type="button" className="choice" aria-pressed={concept === id} onClick={() => setConcept(id)}>
-                    <b>{findConcept(id)?.name}</b>
-                  </button>
-                ))}
-              </div>
-            </div>
+
+          {/* 증명·프로필: 세부 상품 */}
+          {concept && concept.variants.length > 1 && (
+            <SubChoices label="세부 상품">
+              {concept.variants.map((v) => (
+                <button
+                  key={v.id}
+                  type="button"
+                  className="choice"
+                  aria-pressed={variantId === v.id}
+                  onClick={() => setVariantId(v.id)}
+                >
+                  <b>{v.name}</b>
+                  {v.note && <small>{v.note}</small>}
+                </button>
+              ))}
+            </SubChoices>
           )}
+
+          {/* 시즌 컨셉: 졸업 / 크리스마스 */}
+          {concept?.themes && (
+            <SubChoices label="시즌 테마">
+              {concept.themes.map((t) => (
+                <button key={t} type="button" className="choice" aria-pressed={theme === t} onClick={() => setTheme(t)}>
+                  <b>{t}</b>
+                </button>
+              ))}
+            </SubChoices>
+          )}
+
+          {/* 필수 선택: 모든 컨셉 공통. 금액은 고른 컨셉(세부 상품) 기준 */}
+          <SubChoices label="필수 선택">
+            {PLANS.map((p) => (
+              <button key={p.id} type="button" className="choice" aria-pressed={plan === p.id} onClick={() => setPlan(p.id)}>
+                <b>{p.name}</b>
+                <span className="p">{variant ? priceLabel(variant.plans[p.id]) : "컨셉을 먼저 골라주세요"}</span>
+                <small>{p.includes.join(" · ")}</small>
+              </button>
+            ))}
+          </SubChoices>
         </div>
 
         <div className="bstep">
@@ -266,7 +350,7 @@ function BookingForm() {
         <div className="bstep">
           <div className="bstep-h">
             <span className="index">STEP 3</span>
-            <h3 className="t-kr">인원과 추가 옵션</h3>
+            <h3 className="t-kr">추가 선택</h3>
           </div>
           <Counter label="어른·만 8세 이상" help="기준 인원 1~2명" value={adults} min={1} onChange={setAdults} noun="어른" />
           <Counter label="만 7세 이하" help="1명 무료, 2명부터 인원 추가" value={kids} min={0} onChange={setKids} noun="아이" />
@@ -306,7 +390,7 @@ function BookingForm() {
             <div className="fields">
               <div className="field">
                 <label htmlFor="b-name">이름</label>
-                <input id="b-name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
+                <input id="b-name" autoComplete="name" required value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="field">
                 <label htmlFor="b-phone">휴대폰 번호</label>
@@ -315,25 +399,26 @@ function BookingForm() {
                   inputMode="tel"
                   autoComplete="tel"
                   placeholder="010-0000-0000"
+                  required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
               <div className="field" style={{ gridColumn: "1/-1" }}>
-                <label htmlFor="b-email">
-                  이메일{" "}
-                  <span className="muted" style={{ fontWeight: 400 }}>
-                    (사진 링크 사본을 보내드려요)
-                  </span>
-                </label>
+                <label htmlFor="b-email">이메일</label>
                 <input
                   id="b-email"
                   type="email"
                   autoComplete="email"
                   placeholder="name@example.com"
+                  required
+                  aria-describedby="b-email-help"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                <span id="b-email-help" className="cap muted">
+                  예약 조회 로그인과 사진 링크 발송에 쓰여요.
+                </span>
               </div>
             </div>
             <div className="policy">
@@ -357,26 +442,57 @@ function BookingForm() {
           <SumRow k="상품" v={productLabel} />
           <SumRow k="일시" v={whenLabel(true)} />
           <SumRow k="인원" v={`어른 ${adults} · 아이 ${kids}`} />
-          <SumRow k="기본" v={priceLabel(product.price)} />
+          <SumRow k="기본" v={price ? priceLabel(price) : "-"} />
           {extra > 0 && <SumRow k={`인원 추가 ${extra}명`} v={formatKRW(extra * EXTRA_PERSON_PRICE)} />}
           {OPTIONS.filter((o) => selected(o.id)).map((o) => (
             <SumRow key={o.id} k={o.shortName ?? o.name} v={o.price ? formatKRW(o.price) : "무료"} />
           ))}
         </dl>
-        <div className="total">
-          <span className="cap muted">결제 금액</span>
-          <b className="num">{formatKRW(total)}</b>
-        </div>
-        <p className="err" role="alert">
-          {err}
-        </p>
-        <button className="btn btn-primary" type="button" style={{ width: "100%" }} onClick={pay}>
-          결제하고 예약 확정
-        </button>
-        <p className="cap muted" style={{ margin: "var(--space-4) 0 0" }}>
-          카드·간편결제로 선결제해요. 현장 결제는 없어요.
-        </p>
+        {price && !payable ? (
+          // 금액이 '문의'(시즌 컨셉, 증명·프로필 패키지 등)면 결제 대신 카카오톡 문의
+          <>
+            <div className="total">
+              <span className="cap muted">결제 금액</span>
+              <b className="ask-total">{priceLabel(price)}</b>
+            </div>
+            <p className="cap muted" style={{ margin: "0 0 var(--space-4)" }}>
+              이 구성은 금액을 따로 안내해 드려요. 카카오톡 채널 &apos;블루티티&apos;로 문의해 주세요.
+            </p>
+            <a className="btn btn-primary" href="#contact" style={{ width: "100%" }}>
+              카카오톡으로 문의하기
+            </a>
+          </>
+        ) : (
+          <>
+            <div className="total">
+              <span className="cap muted">결제 금액</span>
+              <b className="num">{formatKRW(total)}</b>
+            </div>
+            <p className="err" role="alert">
+              {err}
+            </p>
+            <button className="btn btn-primary" type="button" style={{ width: "100%" }} onClick={pay}>
+              결제하고 예약 확정
+            </button>
+            <p className="cap muted" style={{ margin: "var(--space-4) 0 0" }}>
+              카드·간편결제로 선결제해요. 현장 결제는 없어요.
+            </p>
+          </>
+        )}
       </aside>
+    </div>
+  );
+}
+
+function SubChoices({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div style={{ marginTop: "var(--space-4)" }}>
+      <p className="cap muted" style={{ margin: "0 0 8px" }}>
+        {label}
+      </p>
+      <div className="choices" role="group" aria-label={label}>
+        {children}
+      </div>
     </div>
   );
 }
