@@ -232,15 +232,6 @@ a { color: inherit; }
 .choice[aria-pressed="true"] { border-color: var(--titi-cobalt); background: var(--titi-sky); outline: 1px solid var(--titi-cobalt); outline-offset: -2px; }
 .choice .p { font-variant-numeric: tabular-nums; font-weight: 600; }
 .choice small { color: var(--ink-muted); font-size: 12px; line-height: 18px; }
-.dates { display: grid; grid-auto-flow: column; grid-auto-columns: 64px; gap: var(--space-2); overflow-x: auto; padding-bottom: var(--space-2); }
-.date { display: grid; justify-items: center; gap: 0; padding: 10px 0; border: 1px solid var(--line); background: var(--paper-100); cursor: pointer; font: inherit; color: inherit; }
-.date .dow { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; color: var(--ink-muted); }
-.date .d { font-family: var(--font-display); font-size: 26px; line-height: 1.1; }
-.date .m { font-size: 11px; color: var(--ink-muted); }
-.date.sun .dow { color: var(--danger); }
-/* 선택된 날짜: 선택된 시간과 같은 연한 파랑 + 코발트 테두리 (코발트 면은 결제 버튼 한 곳만) */
-.date[aria-pressed="true"] { border-color: var(--titi-cobalt); background: var(--titi-sky); outline: 1px solid var(--titi-cobalt); outline-offset: -2px; }
-.date[aria-pressed="true"] .d { color: var(--titi-navy); }
 .slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-2); margin-top: var(--space-4); }
 @media (max-width: 560px) { .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .slot { display: grid; gap: 0; padding: 12px; border: 1px solid var(--line); background: var(--paper-100); cursor: pointer; font: inherit; color: inherit; text-align: left; }
@@ -249,6 +240,36 @@ a { color: inherit; }
 .slot[aria-pressed="true"] { border-color: var(--titi-cobalt); background: var(--titi-sky); outline: 1px solid var(--titi-cobalt); outline-offset: -2px; }
 .slot:disabled { cursor: not-allowed; background: var(--paper-200); color: var(--ink-muted); text-decoration: line-through; }
 .slot:disabled span { text-decoration: none; }
+/* STEP 2 예약 달력: 왼쪽 달력 | 오른쪽 예약 가능 시간 (모바일은 위아래) */
+.appt { display: grid; grid-template-columns: auto minmax(0, 1fr); border: 1px solid var(--line); background: var(--paper-100); }
+.appt-times { border-left: 1px solid var(--line); padding: var(--space-4); display: grid; align-content: start; gap: var(--space-2); }
+.appt-times > p { margin: 0 0 var(--space-2); }
+.appt .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0; }
+@media (max-width: 640px) {
+  .appt { grid-template-columns: minmax(0, 1fr); }
+  .appt-times { border-left: 0; border-top: 1px solid var(--line); }
+}
+.cal { padding: var(--space-4); }
+.cal-months { position: relative; }
+.cal-caption { display: flex; justify-content: center; align-items: center; height: 36px; margin-bottom: var(--space-2); }
+.cal-caption-label { font-family: var(--font-serif-kr); font-size: 18px; line-height: 26px; color: var(--ink); }
+.cal-nav { position: absolute; inset: 0 0 auto; height: 36px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
+.cal-nav-btn { pointer-events: auto; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--ink); border-radius: var(--radius-round); background: transparent; color: var(--ink); cursor: pointer; }
+.cal-nav-btn:hover { background: var(--ink); color: var(--paper-100); }
+.cal-nav-btn:disabled { border-color: var(--line); color: var(--stone); background: transparent; cursor: not-allowed; }
+.cal-grid { border-collapse: collapse; margin: 0 auto; }
+.cal-weekday { width: 42px; padding-bottom: var(--space-2); font-family: var(--font-mono); font-size: 11px; font-weight: 400; letter-spacing: .1em; color: var(--ink-muted); }
+.cal-weekday:first-child { color: var(--danger); }
+.cal-day { padding: 2px; text-align: center; }
+.cal-day-btn { width: 38px; height: 38px; border: 1px solid transparent; background: none; color: var(--ink); font: 400 14px/1 var(--font-sans); font-variant-numeric: tabular-nums; cursor: pointer; }
+.cal-day-btn:hover { border-color: var(--ink); }
+.cal-today .cal-day-btn { text-decoration: underline; text-underline-offset: 4px; }
+.cal-selected .cal-day-btn { background: var(--titi-sky); border-color: var(--titi-cobalt); outline: 1px solid var(--titi-cobalt); outline-offset: -2px; color: var(--titi-navy); font-weight: 600; }
+.cal-outside .cal-day-btn { color: var(--stone); }
+.cal-disabled .cal-day-btn { color: var(--stone); text-decoration: line-through; cursor: not-allowed; }
+.cal-disabled .cal-day-btn:hover { border-color: transparent; }
+.cal-hidden { visibility: hidden; }
+@media (max-width: 380px) { .cal-weekday { width: 38px; } .cal-day-btn { width: 34px; height: 34px; } .cal { padding: var(--space-2); } }
 .legend { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-4); }
 .counter-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-4); padding: 12px 0; border-bottom: 1px solid var(--line); }
 .counter-row:first-child { border-top: 1px solid var(--line); }

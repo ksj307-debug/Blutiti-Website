@@ -14,6 +14,7 @@ import {
   type PlanId,
 } from "@/lib/concepts";
 import { KakaoChatButton } from "@/components/site/kakao";
+import { Calendar } from "@/components/ui/calendar";
 import { EXTRA_PERSON_PRICE, PRE_ADD_ONS, REVISIT_OPTION } from "@/lib/options";
 
 /**
@@ -72,6 +73,9 @@ function slotState(now: number, day: Day, i: number): SlotState {
   if (booked(day.key, i)) return "booked";
   return "open";
 }
+/** 달력(브라우저 현지 날짜) ↔ 예약일(KST) 연결: 같은 연·월·일로 맞춤 */
+const toDate = (d: Day) => new Date(d.y, d.m, d.d);
+const dateKey = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const firstOpenSlot = (now: number, day: Day) => {
   const i = SLOTS.findIndex((_, i) => slotState(now, day, i) === "open");
   return i < 0 ? null : i;
@@ -314,37 +318,45 @@ function BookingForm() {
             <span className="index">STEP 2</span>
             <h3 className="t-kr">날짜와 시간</h3>
           </div>
-          <div className="dates" role="group" aria-label="날짜">
-            {days.map((d, a) => (
-              <button
-                key={d.key}
-                type="button"
-                className={`date${d.w === 0 ? " sun" : ""}`}
-                aria-pressed={date === a}
-                aria-label={`${d.m + 1}월 ${d.d}일 ${DOW[d.w]}요일`}
-                onClick={() => pickDate(a)}
-              >
-                <span className="dow">{DOW[d.w]}</span>
-                <span className="d">{d.d}</span>
-                <span className="m">{d.m + 1}월</span>
-              </button>
-            ))}
-          </div>
-          <div className="slots" role="group" aria-label="시간">
-            {SLOTS.map(([h, m], i) => {
-              const ss = slotState(now, day, i);
-              const label = ss === "open" ? "예약 가능" : ss === "booked" ? "마감" : "예약 시간 지남";
-              return (
-                <button key={i} type="button" className="slot" aria-pressed={slot === i} disabled={ss !== "open"} onClick={() => setSlot(i)}>
-                  <b>{fmt(h, m)}</b>
-                  <span>{label}</span>
-                </button>
-              );
-            })}
+          {/* 달력(오늘부터 3주) + 고른 날의 예약 가능 시간 */}
+          <div className="appt">
+            <Calendar
+              mode="single"
+              required
+              selected={toDate(day)}
+              onSelect={(d) => {
+                const a = d ? days.findIndex((x) => x.key === dateKey(d)) : -1;
+                if (a >= 0) pickDate(a);
+              }}
+              defaultMonth={toDate(day)}
+              startMonth={toDate(days[0])}
+              endMonth={toDate(days[days.length - 1])}
+              disabled={(d) => {
+                const x = days.find((x) => x.key === dateKey(d));
+                return !x || firstOpenSlot(now, x) === null;
+              }}
+            />
+            <div className="appt-times">
+              <p className="t-kr" style={{ fontSize: 17, lineHeight: "26px" }}>
+                {day.m + 1}월 {day.d}일({DOW[day.w]}) 예약 가능 시간
+              </p>
+              <div className="slots" role="group" aria-label="시간">
+                {SLOTS.map(([h, m], i) => {
+                  const ss = slotState(now, day, i);
+                  const label = ss === "open" ? "예약 가능" : ss === "booked" ? "마감" : "예약 시간 지남";
+                  return (
+                    <button key={i} type="button" className="slot" aria-pressed={slot === i} disabled={ss !== "open"} onClick={() => setSlot(i)}>
+                      <b>{fmt(h, m)}</b>
+                      <span>{label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
           <div className="legend cap muted">
             <span>매일 10:00~21:50 · 1회 이용 1시간 20분</span>
-            <span>선이 그어진 시간은 마감이에요</span>
+            <span>선이 그어진 날짜·시간은 마감이에요</span>
           </div>
         </div>
 
