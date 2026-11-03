@@ -1,4 +1,16 @@
+import { Gallery as SharedGallery, GalleryGrid, GalleryImage } from "@/components/ui/shared-element-gallery";
 import { INSTAGRAM_URL } from "@/lib/nav";
+
+/** 인스타그램 글리프 (단색 1.5px 선, 브랜드 색 대신 currentColor) */
+function InstagramGlyph() {
+  return (
+    <svg className="ig-glyph" width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5.25" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="4.25" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" />
+    </svg>
+  );
+}
 
 /**
  * GALLERY. 샘플사진 폴더에서 고른 사진 (public/images/gallery, 가로 800px webp)
@@ -26,25 +38,33 @@ export function Gallery() {
           Real days, <em>real</em> us
         </h2>
       </div>
-      <div className="gallery">
-        {PHOTOS.map((p, i) => (
-          <figure key={p.src + i}>
-            <img src={p.src} alt={p.alt} loading="lazy" />
-            <figcaption className="index">
-              <span>{String(i + 1).padStart(2, "0")}</span>
-              <span>{p.caption}</span>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-      <div className="gallery-foot">
-        <p className="muted cap" style={{ margin: 0 }}>
-          SNS 활용에 동의해 주신 분들의 사진만 소개해요.
-        </p>
-        <a className="link" href={INSTAGRAM_URL} target="_blank" rel="noopener">
-          인스타그램에서 더 보기 @blutiti_studio
-        </a>
-      </div>
+      {/* 사진을 누르면 크게 보기 (shared-element-gallery), 원본 비율 그대로 메이슨리 배치 */}
+      <SharedGallery>
+        <GalleryGrid>
+          {PHOTOS.map((p, i) => (
+            <GalleryImage key={p.src + i} id={`gallery-${i}`} src={p.src} alt={p.alt}>
+              <figcaption className="index gallery-cap">
+                <span>{String(i + 1).padStart(2, "0")}</span>
+                <span>{p.caption}</span>
+              </figcaption>
+            </GalleryImage>
+          ))}
+        </GalleryGrid>
+      </SharedGallery>
+
+      {/* 인스타그램 더 보기: 갤러리 마지막에 크게 */}
+      <a className="ig-cta" href={INSTAGRAM_URL} target="_blank" rel="noopener">
+        <InstagramGlyph />
+        <span className="ig-cta-text">
+          <span className="eyebrow">INSTAGRAM</span>
+          <span className="t-title-kr">인스타그램에서 더 보기</span>
+          <span className="cap">@blutiti_studio</span>
+        </span>
+        <span className="ig-cta-arrow" aria-hidden="true">
+          ↗
+        </span>
+      </a>
+      <p className="muted cap gallery-note">SNS 활용에 동의해 주신 분들의 사진만 소개해요.</p>
     </section>
   );
 }
