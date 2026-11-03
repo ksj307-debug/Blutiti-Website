@@ -111,8 +111,8 @@ export function Price() {
             lead="컨셉을 고른 뒤 가성비와 패키지 중 하나를 선택하세요. 모든 컨셉에 똑같이 적용돼요."
           />
           {/* SaaS 요금제처럼 구성만 비교 (금액은 01 표). 패키지 = 가성비 구성 전부 + 추가 항목 */}
-          {/* data-own-cta: 패키지 카드 버튼(코발트)이 보이는 동안 헤더 예약하기는 보조 버튼 */}
-          <div className="plans" data-own-cta>
+          {/* 예약 버튼 없음: 따라다니는 헤더·하단 바 '예약하기'로 이동 */}
+          <div className="plans">
             {PLANS.map((p, i) => {
               const featured = !!p.badge;
               const prev = PLANS[i - 1];
@@ -138,9 +138,6 @@ export function Price() {
                       </li>
                     ))}
                   </ul>
-                  <a className={featured ? "btn-primary" : "btn-secondary"} href="#booking">
-                    이 구성으로 예약하기
-                  </a>
                 </article>
               );
             })}
