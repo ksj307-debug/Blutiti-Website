@@ -136,6 +136,31 @@ a { color: inherit; }
 @media (max-width: 860px) { .steps { grid-template-columns: 1fr 1fr; } .step:nth-child(2) { border-right: 0; } .step:nth-child(3) { padding-left: 0; } .step:nth-child(n+3) { border-top: 1px solid var(--line); } }
 @media (max-width: 480px) { .steps { grid-template-columns: 1fr; } .step, .step + .step { padding-left: 0; border-right: 0; } .step + .step { border-top: 1px solid var(--line); } }
 
+/* CONCEPT 카드 캐러셀 (concept-section.tsx) */
+.concept-track { padding: var(--space-4) var(--gutter-r) var(--space-4) max(var(--gutter-l), calc((100vw - 1180px) / 2 + var(--gutter-l))); }
+.ccard { position: relative; display: flex; flex-direction: column; justify-content: space-between; width: 280px; height: 460px; padding: var(--space-6); overflow: hidden; background: var(--night); color: var(--on-night); text-decoration: none; transition: transform .3s; }
+@media (min-width: 640px) { .ccard { width: 320px; height: 520px; padding: 28px; } }
+@media (min-width: 1024px) { .ccard { width: 370px; height: 600px; padding: 32px; } }
+.ccard:hover { transform: scale(1.02); }
+.ccard-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* 사진 위 글자 가독성: 위·아래 night 그라데이션 */
+.ccard::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to bottom, color-mix(in srgb, var(--night) 55%, transparent), transparent 35%, transparent 55%, color-mix(in srgb, var(--night) 70%, transparent)); }
+.ccard-top, .ccard-bottom { position: relative; z-index: 2; }
+.ccard-top { display: grid; gap: var(--space-2); }
+.ccard-title { font-family: var(--font-serif-kr); font-size: 26px; line-height: 36px; word-break: keep-all; }
+@media (min-width: 640px) { .ccard-title { font-size: 30px; line-height: 42px; } }
+.ccard-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); }
+.ccard-desc { font-size: 14px; line-height: 22px; word-break: keep-all; max-width: 26ch; }
+.ccard-go { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-round); background: var(--on-night); color: var(--night); transition: transform .3s; }
+.ccard:hover .ccard-go { transform: rotate(45deg); }
+.ccard-plain { background: var(--paper-200); color: var(--ink); border: 1px solid var(--line); }
+.ccard-plain::before { display: none; }
+.ccard-plain .ccard-go { background: var(--ink); color: var(--paper-100); }
+.concept-controls { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); margin-top: var(--space-6); }
+.concept-controls p { margin: 0; }
+.concept-arrows { display: flex; gap: var(--space-2); }
+@media (prefers-reduced-motion: reduce) { .ccard:hover, .ccard:hover .ccard-go { transform: none; } }
+
 /* concept */
 .concepts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-6); }
 .concept { display: grid; gap: var(--space-2); align-content: start; }
