@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo } from "react";
+import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { CONCEPTS, bookingHref, type ConceptId } from "@/lib/concepts";
 
@@ -9,7 +11,7 @@ import { CONCEPTS, bookingHref, type ConceptId } from "@/lib/concepts";
  * - 카드 radius 0, 그림자 없음, 사진 위 글자는 위·아래 night 그라데이션 위에 on-night
  * - 카테고리 = 컨셉 영문 라벨(eyebrow), 제목 = lib/concepts.ts 컨셉명(고운바탕), 아래 설명 + ↗
  * - 카드 전체가 '이걸로 예약하기' 링크 (/?concept={id}#booking). 여러 장이 보여 코발트는 쓰지 않음
- * - 화살표는 사이트 1px 원형 버튼, 움직임 줄이기 설정이면 확대 효과 없음
+ * - 화살표는 사이트 1px 원형 버튼, 움직임 줄이기 설정이면 확대 효과·자동 넘김 없음
  */
 const COPY: Record<ConceptId, { description: string; image?: string; imageAlt?: string; imagePosition?: string }> = {
   // 4개 컨셉 문구 = 레퍼런스(_handoff/reference/index.html) CONCEPTS 섹션 문구 그대로
@@ -40,7 +42,21 @@ const COPY: Record<ConceptId, { description: string; image?: string; imageAlt?: 
   },
 };
 
+/**
+ * 자동 넘김: 카드가 멈춘 뒤 0.5초마다 한 장씩 옆으로, 끝나면 처음으로 이어짐(loop)
+ * - 마우스를 올리면 멈추고, 내리면 다시 돌아감 / 키보드 포커스가 들어와도 멈춤
+ * - 끌거나 화살표를 눌러도 자동 넘김은 계속 (stopOnInteraction: false)
+ * - 움직임 줄이기 설정이면 자동 넘김 없음
+ */
+function useAutoplay() {
+  return useMemo(() => {
+    if (typeof window === "undefined" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return [];
+    return [Autoplay({ delay: 500, stopOnMouseEnter: true, stopOnInteraction: false, stopOnFocusIn: true })];
+  }, []);
+}
+
 export default function ConceptSection() {
+  const autoplay = useAutoplay();
   return (
     <section id="concept" className="band" aria-labelledby="concept-h">
       <div className="wrap">
@@ -55,7 +71,7 @@ export default function ConceptSection() {
         </div>
       </div>
 
-      <Carousel opts={{ align: "start", dragFree: true }} aria-label="컨셉">
+      <Carousel opts={{ align: "start", loop: true }} plugins={autoplay} aria-label="컨셉">
         {/* 첫 카드는 본문 여백(wrap)에 맞추고, 오른쪽은 화면 끝까지 흐르게 */}
         <CarouselContent className="-ml-6 concept-track">
           {CONCEPTS.map((c) => {
