@@ -1,13 +1,11 @@
-import { CONCEPTS, PLANS, findConcept, formatKRW, priceLabel, type PlanPrice } from "@/lib/concepts";
+import { CONCEPTS, PLANS, formatKRW, priceLabel, type PlanPrice } from "@/lib/concepts";
 import { BASIC_INCLUDES, FREE_BENEFITS, POST_ADD_ONS, PRE_ADD_ONS } from "@/lib/options";
 
 /**
  * PRICE · 요금 안내 — 예약 순서(컨셉 → 가성비/패키지 → 부가서비스)를 따라가는 설명형
  * 금액은 lib/concepts.ts(컨셉×플랜), lib/options.ts(부가서비스·혜택)에서만 가져옴
+ * 02 필수 선택 카드는 금액 없이 구성만 (금액은 01 컨셉 표)
  */
-
-/** 플랜 카드 금액 기준 컨셉 */
-const BASE_CONCEPT = findConcept("basic-color")!;
 
 /** 표 한 줄 = 세부 상품 (증명·프로필은 증명·여권 / 프로필 2줄) */
 const ROWS = CONCEPTS.flatMap((c) =>
@@ -32,6 +30,18 @@ function Amount({ price }: { price: PlanPrice }) {
     </>
   );
 }
+
+/** 요금제 카드 목록 아이콘 (1px 선) */
+const CheckIcon = () => (
+  <svg className="plan-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M3 8.5 6.5 12 13 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+const PlusIcon = () => (
+  <svg className="plan-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-label="추가">
+    <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+  </svg>
+);
 
 function StepHead({ no, title, lead }: { no: string; title: string; lead?: string }) {
   return (
@@ -97,14 +107,16 @@ export function Price() {
         <div className="pstep">
           <StepHead
             no="02"
-            title="필수 선택 · 가성비 / 패키지"
+            title="필수 선택"
             lead="컨셉을 고른 뒤 가성비와 패키지 중 하나를 선택하세요. 모든 컨셉에 똑같이 적용돼요."
           />
+          {/* SaaS 요금제처럼 구성만 비교 (금액은 01 표). 패키지 = 가성비 구성 전부 + 추가 항목 */}
           {/* data-own-cta: 패키지 카드 버튼(코발트)이 보이는 동안 헤더 예약하기는 보조 버튼 */}
           <div className="plans" data-own-cta>
-            {PLANS.map((p) => {
+            {PLANS.map((p, i) => {
               const featured = !!p.badge;
-              const price = BASE_CONCEPT.variants[0].plans[p.id];
+              const prev = PLANS[i - 1];
+              const extras = prev ? p.includes.filter((item) => !prev.includes.includes(item)) : p.includes;
               return (
                 <article key={p.id} className={`plan${featured ? " plan-featured" : ""}`}>
                   <div className="plan-h">
@@ -112,16 +124,18 @@ export function Price() {
                     {p.badge && <span className="badge">{p.badge}</span>}
                   </div>
                   <p className="muted">{p.summary}</p>
-                  <p className="plan-price">
-                    <span className="t-caption muted">{BASE_CONCEPT.name} 기준</span>
-                    <span className="amount">
-                      <Amount price={price} />
-                    </span>
-                    <span className="t-caption muted">컨셉별 금액은 위 표를 확인해 주세요</span>
-                  </p>
-                  <ul className="basic">
-                    {p.includes.map((item) => (
-                      <li key={item}>{item}</li>
+                  <ul className="plan-list">
+                    {prev && (
+                      <li className="plan-all">
+                        <CheckIcon />
+                        <span>{prev.name} 구성 모두 포함</span>
+                      </li>
+                    )}
+                    {extras.map((item) => (
+                      <li key={item}>
+                        {prev ? <PlusIcon /> : <CheckIcon />}
+                        <span>{item}</span>
+                      </li>
                     ))}
                   </ul>
                   <a className={featured ? "btn-primary" : "btn-secondary"} href="#booking">

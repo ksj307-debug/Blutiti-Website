@@ -248,6 +248,12 @@ a { color: inherit; }
 .plan-featured { border: 2px solid var(--titi-navy); padding: calc(var(--space-6) - 1px); }
 .plan p { margin: 0; }
 .plan-h { display: flex; align-items: center; gap: var(--space-2); }
+/* 요금제 구성 목록: ✓ 기본 구성 / + 추가 항목 */
+.plan-list { flex: 1; list-style: none; margin: 0; padding: var(--space-4) 0 0; border-top: 1px solid var(--line); display: grid; gap: var(--space-2); align-content: start; }
+.plan-list li { display: grid; grid-template-columns: 16px 1fr; gap: var(--space-2); align-items: start; }
+.plan-icon { margin-top: 5px; color: var(--titi-navy); }
+.plan-all { color: var(--ink-muted); padding-bottom: var(--space-2); border-bottom: 1px dashed var(--line); }
+.plan-all .plan-icon { color: var(--ink-muted); }
 .plan-price { display: grid; gap: 2px; }
 .plan-price .amount { font-family: var(--font-display); font-size: 36px; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .plan-price .amount s.list { font-size: 20px; }
