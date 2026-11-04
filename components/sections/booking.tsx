@@ -20,7 +20,7 @@ import { EXTRA_PERSON_PRICE, PRE_ADD_ONS, REVISIT_OPTION } from "@/lib/options";
 
 /**
  * BOOKING (미리보기 예약 흐름. 실제 결제 없음)
- * STEP 1 컨셉 선택(lib/concepts.ts 5개) → 세부 상품·시즌 테마 → 필수 선택(가성비/패키지)
+ * STEP 1 컨셉 선택(lib/concepts.ts, 시즌은 크리스마스·졸업 따로) → 세부 상품 → 필수 선택(가성비/패키지)
  * 금액이 '문의'인 조합은 결제 대신 카카오톡 문의
  */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,6 +28,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /**
  * URL ?concept={id} 로 들어오면 해당 컨셉을 미리 선택 (CONCEPTS '이걸로 예약하기')
  * - 파라미터 없음: 베이직 컬러 / 모르는 id: 선택 없음 / 예전 세이지 포레스트: 베이직 컬러(통합)
+ * - 예전 ?concept=season: 크리스마스·졸업 중 하나로 정할 수 없어 선택 없음
  */
 function initialConcept(): ConceptId | null {
   const param = new URLSearchParams(window.location.search).get("concept");
@@ -37,7 +38,7 @@ function initialConcept(): ConceptId | null {
 const firstVariant = (id: ConceptId | null) => (id ? (findConcept(id)?.variants[0].id ?? null) : null);
 /** 컨셉 선택지 보조 문구 */
 const conceptNote = (c: Concept) =>
-  c.themes?.join(" · ") ?? (c.variants.length > 1 ? c.variants.map((v) => v.name).join(" / ") : c.variants[0].note);
+  c.variants.length > 1 ? c.variants.map((v) => v.name).join(" / ") : c.variants[0].note;
 const OPTIONS = [...PRE_ADD_ONS.filter((o) => o.id !== "person"), REVISIT_OPTION];
 /** 예약 변경·취소 안내 */
 const POLICY = [
@@ -129,7 +130,6 @@ function BookingForm() {
   // STEP 1: 컨셉 → (증명·프로필 세부 상품 / 시즌 테마) → 필수 선택(가성비/패키지)
   const [conceptId, setConceptId] = useState<ConceptId | null>(initialConcept);
   const [variantId, setVariantId] = useState<string | null>(() => firstVariant(initialConcept()));
-  const [theme, setTheme] = useState<string | null>(null);
   const [plan, setPlan] = useState<PlanId>("package");
   const [date, setDate] = useState(initDate);
   const [slot, setSlot] = useState<number | null>(initSlot);
@@ -153,18 +153,11 @@ function BookingForm() {
   const planName = PLANS.find((p) => p.id === plan)!.name;
   const productLabel = !concept
     ? "컨셉을 선택해 주세요"
-    : [
-        concept.variants.length > 1 ? (variant?.name ?? concept.name) : concept.name,
-        concept.themes && theme,
-        planName,
-      ]
-        .filter(Boolean)
-        .join(" · ");
+    : [concept.variants.length > 1 ? (variant?.name ?? concept.bookingName) : concept.bookingName, planName].join(" · ");
 
   const pickConcept = (id: ConceptId) => {
     setConceptId(id);
     setVariantId(firstVariant(id));
-    setTheme(null);
   };
 
   const ext = (() => {
@@ -197,7 +190,6 @@ function BookingForm() {
     // 휴대폰 번호는 숫자만 저장 (예약 조회 로그인 시 뒷 4자리 비교)
     const digits = phone.replace(/[^0-9]/g, "");
     if (!concept || !variant) e = "촬영할 컨셉을 선택해 주세요.";
-    else if (concept.themes && !theme) e = "시즌 테마를 선택해 주세요.";
     else if (slot === null) e = "예약할 시간을 선택해 주세요.";
     else if (!name.trim()) e = "예약자 이름을 입력해 주세요.";
     else if (digits.length < 10) e = "휴대폰 번호를 확인해 주세요. 예약 안내를 카카오톡으로 보내드려요.";
@@ -273,7 +265,7 @@ function BookingForm() {
                 aria-pressed={conceptId === c.id}
                 onClick={() => pickConcept(c.id)}
               >
-                <b>{c.name}</b>
+                <b>{c.bookingName}</b>
                 {conceptNote(c) && <small>{conceptNote(c)}</small>}
               </button>
             ))}
@@ -292,17 +284,6 @@ function BookingForm() {
                 >
                   <b>{v.name}</b>
                   {v.note && <small>{v.note}</small>}
-                </button>
-              ))}
-            </SubChoices>
-          )}
-
-          {/* 시즌 컨셉: 졸업 / 크리스마스 */}
-          {concept?.themes && (
-            <SubChoices label="시즌 테마">
-              {concept.themes.map((t) => (
-                <button key={t} type="button" className="choice" aria-pressed={theme === t} onClick={() => setTheme(t)}>
-                  <b>{t}</b>
                 </button>
               ))}
             </SubChoices>

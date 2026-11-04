@@ -9,13 +9,15 @@
  * 금액 = 레퍼런스(_handoff/reference/index.html) '이용 요금' 값 + 확정 지시 (1~2인 기준)
  *  - 100일상: 가성비 79,000원 / 패키지 99,000원
  * amount: null → 결제 대신 카카오톡 문의. 화면 표기는 label, 없으면 '문의'
- *  - 시즌 컨셉: '컨셉 제공 시 안내'
+ *  - 시즌 컨셉(크리스마스·졸업): '컨셉 제공 시 안내'
  *  - 증명·프로필 패키지: 금액 미정이라 임시 '문의' (금액 받으면 숫자로 교체)
  *
  * 세이지 포레스트는 베이직 컬러에 통합 (별도 컨셉·가격 없음). 예전 데이터는 LEGACY_CONCEPT_IDS 로 연결
+ * 예전 'season'(시즌 컨셉 1개 + 졸업/크리스마스 하위 선택)은 크리스마스·졸업 2개로 나눔.
+ * 저장된 'season' 예약은 데이터를 바꾸지 않고 LEGACY_CONCEPT_NAMES 로 '시즌 컨셉' 표기
  */
 
-export type ConceptId = "basic-color" | "classic-bw" | "100days" | "id-profile" | "season";
+export type ConceptId = "basic-color" | "classic-bw" | "100days" | "id-profile" | "season-christmas" | "season-graduation";
 export type PlanId = "value" | "package";
 
 export const PLANS: { id: PlanId; name: string; summary: string; includes: string[]; badge?: string }[] = [
@@ -52,10 +54,10 @@ export type Concept = {
   id: ConceptId;
   /** 한글명 (화면 표기) */
   name: string;
+  /** 예약·요금 화면 표기 (예: '(시즌) 크리스마스'). 대부분 name 과 같음 */
+  bookingName: string;
   /** 영문 라벨 (캐러셀 오버레이) */
   label: string;
-  /** 세부 테마 (시즌 컨셉 전용) */
-  themes?: string[];
   variants: ConceptVariant[];
 };
 
@@ -66,38 +68,55 @@ export const CONCEPTS: Concept[] = [
   {
     id: "basic-color",
     name: "베이직 컬러",
+    bookingName: "베이직 컬러",
     label: "BASIC COLOR",
     variants: [{ id: "basic-color", name: "베이직 컬러", plans: { value: { amount: 59000 }, package: { amount: 89000, listAmount: 99000 } } }],
   },
   {
     id: "classic-bw",
     name: "클래식 흑백",
+    bookingName: "클래식 흑백",
     label: "CLASSIC B&W",
     variants: [{ id: "classic-bw", name: "클래식 흑백", plans: { value: { amount: 59000 }, package: { amount: 89000, listAmount: 99000 } } }],
   },
   {
     id: "100days",
     name: "100일상",
+    bookingName: "100일상",
     label: "100 DAYS",
     variants: [{ id: "100days", name: "100일상", note: "한복, 돌상 준비", plans: { value: { amount: 79000 }, package: { amount: 99000 } } }],
   },
   {
     id: "id-profile",
     name: "증명·프로필",
+    bookingName: "증명·프로필",
     label: "ID · PROFILE",
     variants: [
       { id: "id-photo", name: "증명·여권", note: "30분 촬영, 당일 인화 불가", plans: { value: { amount: 25000 }, package: INQUIRY } },
       { id: "profile", name: "프로필", note: "셀렉은 집에서", plans: { value: { amount: 55000 }, package: INQUIRY } },
     ],
   },
+  // 시즌 컨셉: 크리스마스 → 졸업 (기존 시즌 자리)
   {
-    id: "season",
-    name: "시즌 컨셉",
+    id: "season-christmas",
+    name: "크리스마스",
+    bookingName: "(시즌) 크리스마스",
     label: "SEASON",
-    themes: ["졸업", "크리스마스"],
-    variants: [{ id: "season", name: "시즌 컨셉", plans: { value: SEASON_PRICE, package: SEASON_PRICE } }],
+    variants: [{ id: "season-christmas", name: "크리스마스", plans: { value: SEASON_PRICE, package: SEASON_PRICE } }],
+  },
+  {
+    id: "season-graduation",
+    name: "졸업",
+    bookingName: "(시즌) 졸업",
+    label: "SEASON",
+    variants: [{ id: "season-graduation", name: "졸업", plans: { value: SEASON_PRICE, package: SEASON_PRICE } }],
   },
 ];
+
+/** 현재 컨셉에 연결하지 않는 예전 컨셉 id → 화면 표기 (저장된 예약용. 예약 화면 미리 선택은 하지 않음) */
+export const LEGACY_CONCEPT_NAMES: Record<string, string> = {
+  season: "시즌 컨셉",
+};
 
 /** 예전 컨셉 id·이름 → 현재 컨셉 id. 저장된 예약·예전 링크는 데이터를 바꾸지 않고 화면 표기만 새 이름 */
 export const LEGACY_CONCEPT_IDS: Record<string, ConceptId> = {
@@ -117,8 +136,9 @@ export const bookingLabel = (concept: string | undefined, product: string) => {
   const c = findConcept(concept);
   const planId = LEGACY_PRODUCT_PLANS[product] ?? PLANS.find((p) => p.id === product || p.name === product)?.id;
   const plan = PLANS.find((p) => p.id === planId);
-  if (c && plan) return `${c.name} · ${plan.name}`;
-  return c ? `${product} · ${c.name}` : product;
+  const name = c?.bookingName ?? (concept ? LEGACY_CONCEPT_NAMES[concept] : undefined);
+  if (name && plan) return `${name} · ${plan.name}`;
+  return name ? `${product} · ${name}` : product;
 };
 
 /** id·한글명·예전 값 → 현재 컨셉. 모르는 값은 undefined */

@@ -35,11 +35,16 @@ const COPY: Record<ConceptId, { description: string; image?: string; imageAlt?: 
   "id-profile": {
     description: "증명·여권은 30분 촬영, 셀렉은 집에서. 당일 인화는 어려워요",
   },
-  season: {
-    description:
-      "지금 이 계절에만 남길 수 있는 장면이에요. 졸업 시즌엔 학사모와 꽃다발로 한 시절의 마무리를, 크리스마스 시즌엔 트리와 따뜻한 조명 아래 함께한 한 해를 담아드려요.",
+  // 시즌 컨셉 문구를 크리스마스·졸업으로 나눔 (예전: 지금 이 계절에만 남길 수 있는 장면이에요. 졸업 시즌엔 …, 크리스마스 시즌엔 …)
+  "season-christmas": {
+    description: "지금 이 계절에만 남길 수 있는 장면이에요. 트리와 따뜻한 조명 아래 함께한 한 해를 담아드려요.",
     image: "/images/concepts/season.webp",
-    imageAlt: "시즌 컨셉 - 크리스마스 트리 앞 가족 사진",
+    imageAlt: "시즌 크리스마스 - 크리스마스 트리 앞 가족 사진",
+  },
+  "season-graduation": {
+    description: "지금 이 계절에만 남길 수 있는 장면이에요. 학사모와 꽃다발로 한 시절의 마무리를 담아드려요.",
+    image: "/images/hero/hero-08-graduation.webp",
+    imageAlt: "시즌 졸업 - 학사모를 쓰고 크게 웃는 아이",
   },
 };
 
@@ -66,7 +71,8 @@ export default function ConceptSection() {
         <div className="section-head">
           <p className="eyebrow">CONCEPTS</p>
           <h2 id="concept-h" className="display">
-            Five <em>ways</em> to be us
+            {/* 컨셉 6개 (시즌을 크리스마스·졸업으로 나눔. 예전: Five) */}
+            Six <em>ways</em> to be us
           </h2>
           <p className="muted" style={{ margin: 0 }}>
             <Sentences text="원하는 분위기를 골라보세요. 클래식 흑백은 반반 옵션으로 촬영 중간에 추가할 수도 있어요." />
@@ -79,7 +85,7 @@ export default function ConceptSection() {
         <CarouselContent className="-ml-6 concept-track">
           {CONCEPTS.map((c) => {
             const copy = COPY[c.id];
-            const title = c.themes ? `${c.name} · ${c.themes.join(" & ")}` : c.name;
+            const title = c.name;
             return (
               <CarouselItem key={c.id} className="basis-auto pl-6">
                 <a

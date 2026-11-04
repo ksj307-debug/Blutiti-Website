@@ -45,12 +45,17 @@ const COPY: Record<
     background: "var(--mist)",
   },
   // 신규
-  season: {
-    description:
-      "지금 이 계절에만 남길 수 있는 장면이에요. 졸업 시즌엔 학사모와 꽃다발로 한 시절의 마무리를, 크리스마스 시즌엔 트리와 따뜻한 조명 아래 함께한 한 해를 담아드려요.",
+  "season-christmas": {
+    description: "지금 이 계절에만 남길 수 있는 장면이에요. 트리와 따뜻한 조명 아래 함께한 한 해를 담아드려요.",
     image: "/images/concepts/season.webp",
-    imageAlt: "시즌 컨셉 - 크리스마스 트리 앞 가족 사진",
+    imageAlt: "시즌 크리스마스 - 크리스마스 트리 앞 가족 사진",
     imagePosition: "center 50%",
+  },
+  "season-graduation": {
+    description: "지금 이 계절에만 남길 수 있는 장면이에요. 학사모와 꽃다발로 한 시절의 마무리를 담아드려요.",
+    image: "/images/hero/hero-08-graduation.webp",
+    imageAlt: "시즌 졸업 - 학사모를 쓰고 크게 웃는 아이",
+    imagePosition: "center 35%",
   },
 };
 
@@ -58,7 +63,7 @@ const COPY: Record<
 // 제목 = lib/concepts.ts 컨셉명 (+ 시즌 테마). PRICE·BOOKING 과 같은 이름
 const slides: SqueezeSlide[] = CONCEPTS.map((c) => ({
   id: c.id,
-  title: c.themes ? `${c.name} · ${c.themes.join(" & ")}` : c.name,
+  title: c.name,
   ...COPY[c.id],
   overlay: mark(c.label),
   action: "이걸로 예약하기",

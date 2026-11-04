@@ -12,8 +12,8 @@ import { Sentences } from "@/components/site/sentences";
 const ROWS = CONCEPTS.flatMap((c) =>
   c.variants.map((v) => ({
     key: v.id,
-    name: c.variants.length > 1 ? v.name : c.name,
-    note: v.note ?? c.themes?.join(" · "),
+    name: c.variants.length > 1 ? v.name : c.bookingName,
+    note: v.note,
     plans: v.plans,
   })),
 );

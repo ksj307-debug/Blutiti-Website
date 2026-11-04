@@ -30,9 +30,13 @@ const COPY: Record<ConceptId, { en: string; desc: string; image?: string; alt?: 
     alt: "증명·프로필 촬영 예시",
   },
   // 문구 = _handoff/components/sections/concept-section.tsx 시즌 컨셉 문구
-  season: {
+  "season-christmas": {
     en: "Season",
-    desc: "지금 이 계절에만 남길 수 있는 장면이에요. 졸업 시즌엔 학사모와 꽃다발로 한 시절의 마무리를, 크리스마스 시즌엔 트리와 따뜻한 조명 아래 함께한 한 해를 담아드려요.",
+    desc: "지금 이 계절에만 남길 수 있는 장면이에요. 트리와 따뜻한 조명 아래 함께한 한 해를 담아드려요.",
+  },
+  "season-graduation": {
+    en: "Season",
+    desc: "지금 이 계절에만 남길 수 있는 장면이에요. 학사모와 꽃다발로 한 시절의 마무리를 담아드려요.",
   },
 };
 
@@ -58,7 +62,7 @@ export function Concept() {
               ) : (
                 <div className="ph">
                   <p className="muted cap" style={{ margin: 0 }}>
-                    {c.themes?.join(" · ")} 사진
+                    {c.name} 사진
                     <br />
                     준비 중
                   </p>
