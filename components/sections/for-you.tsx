@@ -3,22 +3,26 @@ import { Sentences } from "@/components/site/sentences";
 /**
  * FOR YOU · 이런 분들이 많이 찾아주세요
  * 사진: 3:4, 1x 800px / 2x 1600px webp(품질 85) + srcset
- * - 가족 사진: 구글 드라이브 가족사진 폴더 '김한빛29516.jpg' → /images/for-you/family-photo(@2x).webp
- * - 나머지 3장은 아직 레퍼런스 사진 (사진 폴더를 받으면 같은 방식으로 교체)
+ * 원본 = 구글 드라이브 폴더별 1장 → /images/for-you/*.webp (@2x)
+ * - 아이가 있는 가족: '유주지안6_noletter.jpg' / 만삭 촬영: '이보미31498.jpg'
+ * - 가족 사진: '김한빛29516.jpg' / 셀프웨딩 촬영: 'blutiti_상품사진템플렛_클래식흑백2.jpg' (템플릿 테두리 잘라냄)
+ * 예전 레퍼런스 사진(b1.jpg, letter.jpg, frame.jpg)은 public/images/reference 에 그대로 둠
  */
 const STORIES: { eyebrow: string; title: string; desc: string; image?: string; image2x?: string; alt?: string }[] = [
   {
     eyebrow: "FAMILY",
-    image: "/images/reference/b1.jpg",
-    alt: "베이직 컬러에서 생일 모자를 쓴 아이",
+    image: "/images/for-you/kids-family.webp",
+    image2x: "/images/for-you/kids-family@2x.webp",
+    alt: "풍선을 안고 활짝 웃는 두 아이",
     title: "아이가 있는 가족",
     desc: "부끄러움 많은 아이도 OK! 아이 기분에 맞춰 천천히 찍어 주세요. 만 7세 이하 1명은 무료로 추가할 수 있어요.",
     // 예전: 아이 있는 가족 / 세팅은 끝났어요. 아이 기분에 맞춰 천천히 찍어요. 만 7세 이하 1명은 무료예요.
   },
   {
     eyebrow: "MATERNITY",
-    image: "/images/reference/letter.jpg",
-    alt: "만삭 부부의 흑백 사진에 하트 드로잉을 넣은 예시",
+    image: "/images/for-you/maternity.webp",
+    image2x: "/images/for-you/maternity@2x.webp",
+    alt: "딸의 손을 잡고 선 만삭 부부",
     title: "만삭 촬영",
     desc: "놓치면 아쉬운 만삭 사진, 꼭 남겨 주세요. 작가 없이 우리끼리만 있어서 편하고 자유롭게 찍을 수 있어요.",
     // 예전: 산모 가족 / 편한 날 오셔서 찍고, 사진은 집에서 골라요. 레터링·드로잉도 넣어드려요.
@@ -37,8 +41,9 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; i
   },
   {
     eyebrow: "SELF WEDDING",
-    image: "/images/reference/frame.jpg",
-    alt: "원목 액자에 담긴 웨딩 흑백 사진",
+    image: "/images/for-you/self-wedding.webp",
+    image2x: "/images/for-you/self-wedding@2x.webp",
+    alt: "흑백 사진 - 베일을 함께 쓰고 웃는 신랑 신부",
     title: "셀프웨딩 촬영",
     desc: "자유로운 우리만의 모습을 남길 수 있어요. 웨딩드레스, 구두, 부케, 남자 정장까지 모두 준비되어 있어요. 평범한 게 싫은 신랑 신부라면 모여라!",
     // 예전: 결혼 준비 커플 / 꾸미지 않은 우리를 담아요. 원목 액자에 넣어 보내드릴 수도 있어요.

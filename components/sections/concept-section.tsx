@@ -17,8 +17,10 @@ const COPY: Record<
   // 4개 컨셉 문구 = 레퍼런스(_handoff/reference/index.html) CONCEPTS 섹션 문구 그대로
   "basic-color": {
     description: "화려한 배경 없이 자연스러운 빛과 색으로 담는 미니멀 촬영",
-    image: "/images/concepts/basic-color.webp",
-    imageAlt: "베이직 컬러 - 숫자 풍선과 함께 바닥에 앉은 가족",
+    // 구글 드라이브 베이직 컬러 폴더 '박나현07642.jpg' (예전 사진 basic-color.webp 는 그대로 둠)
+    image: "/images/concepts/basic-color-v2.webp",
+    image2x: "/images/concepts/basic-color-v2@2x.webp",
+    imageAlt: "베이직 컬러 - 하트 풍선 아래에서 케이크를 들고 웃는 아이",
   },
   "classic-bw": {
     description: "색을 덜어내고 표정과 감정의 결을 선명하게",
