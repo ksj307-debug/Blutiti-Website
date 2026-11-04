@@ -110,33 +110,43 @@ a { color: inherit; }
 @media (max-width: 860px) { .hero-copy { grid-template-columns: 1fr; } }
 
 /* message */
-.message { text-align: center; display: grid; justify-items: center; gap: var(--space-6); }
+/* 키워드 줄만 남아서 일반 섹션(96·64px)보다 위아래 여백을 줄임 */
+.message { text-align: center; display: grid; justify-items: center; gap: var(--space-6); padding-block: var(--space-16); }
+@media (max-width: 720px) { .message { padding-block: var(--space-10); } }
 .message img { width: 120px; height: 120px; border-radius: var(--radius-round); object-fit: cover; }
 .message p { max-width: 520px; margin: 0; }
-/* 촬영 대상 키워드: 데스크톱 한 줄 가로 나열(가운뎃점), 모바일 2x2 */
-.keywords { list-style: none; margin: 0 0 var(--space-6); padding: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 0 var(--space-4); color: var(--titi-navy); }
-.kw { display: grid; justify-items: center; gap: var(--space-2); }
-.kw .t-caption { color: var(--ink-muted); }
-/* 네 단어 + 가운뎃점 ≈ 21em + 간격 96px → 화면 폭에 맞춰 줄여 한 줄 유지 (최대 44px = display-md) */
-.keywords .t-display-md { font-size: clamp(24px, calc((100vw - 150px) / 22), 44px); }
-.kw-dot { line-height: 1.05; }
+/* 촬영 종류 키워드 (고운바탕 t-heading-kr, navy): 데스크톱 한 줄 가로 나열(가운뎃점), 모바일 2열 x 3줄 */
+.keywords { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 0 var(--space-4); color: var(--titi-navy); }
+.kw { word-break: keep-all; white-space: nowrap; }
 @media (max-width: 720px) {
-  .keywords { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6) var(--space-4); width: 100%; }
+  .keywords { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); width: 100%; }
   .kw-dot { display: none; }
-  .kw .t-display-md { font-size: clamp(20px, 6vw, 34px); }
 }
 /* 조건 배지 (예: GUIDE 04 '보정/인화 서비스 선택 시') — PRICE .tag 와 같은 모양 */
 .badge { display: inline-block; padding: 0 8px; border-radius: var(--radius-pill); background: var(--titi-sky); color: var(--titi-navy); font-family: var(--font-sans); font-size: 11px; line-height: 20px; font-weight: 600; letter-spacing: 0; vertical-align: middle; white-space: nowrap; }
 
-/* steps (GUIDE) */
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+/* steps (GUIDE 5단계): 데스크톱(1180px 이상) 5열 / 태블릿 3열 + 2열 / 모바일(720px 이하) 1열 */
+.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); }
 .step { padding: var(--space-6) var(--space-6) var(--space-6) 0; display: grid; gap: var(--space-2); align-content: start; border-right: 1px solid var(--line); }
 .step + .step { padding-left: var(--space-6); }
 .step:last-child { border-right: 0; }
 .step .big { font-family: var(--font-display); font-weight: 300; font-size: 56px; line-height: 1; color: var(--titi-navy); }
 .step p { margin: 0; }
-@media (max-width: 860px) { .steps { grid-template-columns: 1fr 1fr; } .step:nth-child(2) { border-right: 0; } .step:nth-child(3) { padding-left: 0; } .step:nth-child(n+3) { border-top: 1px solid var(--line); } }
-@media (max-width: 480px) { .steps { grid-template-columns: 1fr; } .step, .step + .step { padding-left: 0; border-right: 0; } .step + .step { border-top: 1px solid var(--line); } }
+.step .t-kr { word-break: keep-all; }
+.step-badge { justify-self: start; white-space: normal; }
+@media (max-width: 1179px) {
+  /* 6칸 그리드: 위 3개는 2칸씩, 아래 2개는 3칸씩 */
+  .steps { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .step { grid-column: span 2; }
+  .step:nth-child(n+4) { grid-column: span 3; border-top: 1px solid var(--line); }
+  .step:nth-child(3) { border-right: 0; }
+  .step:nth-child(4) { padding-left: 0; }
+}
+@media (max-width: 720px) {
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .step, .step:nth-child(n+4) { grid-column: auto; padding-left: 0; border-right: 0; }
+  .step + .step { padding-left: 0; border-top: 1px solid var(--line); }
+}
 
 /* 예전 섹션 id 로 들어온 링크용 빈 앵커: 섹션 맨 위에 둬서 새 id 와 같은 위치로 이동 */
 .legacy-anchor-host { position: relative; }

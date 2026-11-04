@@ -28,15 +28,9 @@ const HERO_IMAGES: HeroImage[] = [
 export default function HeroSection() {
   return (
     <AnimatedMarqueeHero
-      tagline="BLUTITI SELFIE STUDIO · 안산"
-      title={
-        <>
-          우리의 오늘을,
-          <br />
-          가장 우리답게
-        </>
-      }
-      description="가족, 만삭, 반려견, 웨딩 전 커플까지. 눈치 보지 않고 우리끼리 편하게 찍는 셀프 사진관, 블루티티예요."
+      // 태그라인 없음 (예전: 'BLUTITI SELFIE STUDIO · 안산')
+      title="우리끼리 자유롭게 찍는 화보같은 셀프촬영"
+      description="아이생일, 가족사진, 만삭, 셀프웨딩, 백일상까지 우리끼리 단독룸에서 자유롭게 찍는 셀프사진관, 블루티티입니다. 전문 장비, 조명, 배경, 소품은 모두 세팅되어 있습니다. 몸만 오셔서 자유롭게 즐기며 특별한 날을 기록해 보세요. 사진 셀렉은 집에 가서 천천히 하시고, 퀄리티는 화보처럼 보정해 드립니다."
       ctaText="예약하기"
       ctaHref="#booking"
       secondaryText="컨셉 보기"

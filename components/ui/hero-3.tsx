@@ -29,8 +29,8 @@ export type HeroImage = {
 };
 
 export interface AnimatedMarqueeHeroProps {
-  /** 상단 라벨 (eyebrow) */
-  tagline: string;
+  /** 상단 라벨 (eyebrow, 선택). 없으면 자리 여백도 없음 */
+  tagline?: string;
   /** 영문 대문자 헤드라인 (선택). 이탤릭 연결어는 <em> 으로 */
   display?: React.ReactNode;
   /** 한글 제목 */
@@ -80,14 +80,17 @@ export function AnimatedMarqueeHero({
       data-hero
       className={cn(
         "relative w-full min-h-[100svh] overflow-hidden bg-[var(--paper-100)] text-[var(--ink)]",
-        "flex flex-col items-center justify-center px-4 pt-16 pb-[42svh] text-center md:pt-20 md:pb-[44vh]",
+        // 아래 여백 = 마키 높이 + 여유. 사진을 1.2배로 키우며 같은 비율로 늘림 (42svh·44vh → ×1.2)
+        "flex flex-col items-center justify-center px-4 pt-16 pb-[50.4svh] text-center md:pt-20 md:pb-[52.8vh]",
         className,
       )}
     >
       <div className="relative z-10 flex flex-col items-center">
-        <motion.p initial="hidden" animate="show" variants={FADE_UP} custom={0} className="t-eyebrow mb-6 text-[var(--ink-muted)]">
-          {tagline}
-        </motion.p>
+        {tagline && (
+          <motion.p initial="hidden" animate="show" variants={FADE_UP} custom={0} className="t-eyebrow mb-6 text-[var(--ink-muted)]">
+            {tagline}
+          </motion.p>
+        )}
 
         {display && (
           <motion.p initial="hidden" animate="show" variants={FADE_UP} custom={0.1} className="t-display-xl mb-4">
@@ -104,7 +107,7 @@ export function AnimatedMarqueeHero({
           animate="show"
           variants={FADE_UP}
           custom={0.45}
-          className="t-body mt-5 max-w-xl break-keep text-[var(--ink-muted)]"
+          className="t-body mt-5 max-w-[640px] break-keep text-[var(--ink-muted)]"
         >
           <Sentences text={description} />
         </motion.p>
@@ -127,8 +130,8 @@ export function AnimatedMarqueeHero({
         </motion.div>
       </div>
 
-      {/* 하단 이미지 마키 */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[38svh] md:h-[40vh] [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_88%,transparent)]">
+      {/* 하단 이미지 마키 (사진 높이 192·256px → 1.2배 230·307px, 영역 38svh·40vh → 45.6svh·48vh) */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[45.6svh] md:h-[48vh] [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_88%,transparent)]">
         <motion.div
           className="flex h-full w-max items-center"
           animate={reduceMotion ? undefined : { x: ["-50%", "0%"] }}
@@ -137,7 +140,7 @@ export function AnimatedMarqueeHero({
           {loop.map((img, index) => {
             const isCopy = index >= images.length;
             return (
-              <figure key={index} aria-hidden={isCopy || undefined} className="m-0 h-48 flex-shrink-0 pr-4 md:h-64 md:pr-6">
+              <figure key={index} aria-hidden={isCopy || undefined} className="m-0 h-[230px] flex-shrink-0 pr-4 md:h-[307px] md:pr-6">
                 <img
                   src={img.src}
                   alt={isCopy ? "" : img.alt}
