@@ -24,8 +24,10 @@ const COPY: Record<
   },
   "classic-bw": {
     description: "색을 덜어내고 표정과 감정의 결을 선명하게",
-    image: "/images/concepts/classic-bw.webp",
-    imageAlt: "클래식 흑백 - 스툴에 앉은 두 아이와 뒤에 선 부부",
+    // 구글 드라이브 '정기정_클래식01465.jpg' (예전 사진 classic-bw.webp 는 그대로 둠)
+    image: "/images/concepts/classic-bw-v2.webp",
+    image2x: "/images/concepts/classic-bw-v2@2x.webp",
+    imageAlt: "클래식 흑백 - 아기를 안고 꽃다발을 든 부부",
   },
   "100days": {
     // 예전: 한복과 정성스럽게 준비한 떡으로 차리는 아기의 첫 잔치
