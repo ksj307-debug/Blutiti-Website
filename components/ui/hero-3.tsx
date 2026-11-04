@@ -80,8 +80,8 @@ export function AnimatedMarqueeHero({
       data-hero
       className={cn(
         "relative w-full min-h-[100svh] overflow-hidden bg-[var(--paper-100)] text-[var(--ink)]",
-        // 아래 여백 = 마키 높이 + 여유. 사진을 1.2배로 키우며 같은 비율로 늘림 (42svh·44vh → ×1.2)
-        "flex flex-col items-center justify-center px-4 pt-16 pb-[50.4svh] text-center md:pt-20 md:pb-[52.8vh]",
+        // 아래 여백 = 마키 높이 + 여유. 사진을 키우며 같은 비율로 늘림 (42svh·44vh → ×1.2 → ×1.3)
+        "flex flex-col items-center justify-center px-4 pt-16 pb-[65.52svh] text-center md:pt-20 md:pb-[68.64vh]",
         className,
       )}
     >
@@ -130,8 +130,8 @@ export function AnimatedMarqueeHero({
         </motion.div>
       </div>
 
-      {/* 하단 이미지 마키 (사진 높이 192·256px → 1.2배 230·307px, 영역 38svh·40vh → 45.6svh·48vh) */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[45.6svh] md:h-[48vh] [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_88%,transparent)]">
+      {/* 하단 이미지 마키 (사진 높이 192·256px → 1.2배 230·307px → 1.3배 299·399px, 영역 38svh·40vh → 45.6svh·48vh → 59.28svh·62.4vh) */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[59.28svh] md:h-[62.4vh] [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_88%,transparent)]">
         <motion.div
           className="flex h-full w-max items-center"
           animate={reduceMotion ? undefined : { x: ["-50%", "0%"] }}
@@ -140,7 +140,7 @@ export function AnimatedMarqueeHero({
           {loop.map((img, index) => {
             const isCopy = index >= images.length;
             return (
-              <figure key={index} aria-hidden={isCopy || undefined} className="m-0 h-[230px] flex-shrink-0 pr-4 md:h-[307px] md:pr-6">
+              <figure key={index} aria-hidden={isCopy || undefined} className="m-0 h-[299px] flex-shrink-0 pr-4 md:h-[399px] md:pr-6">
                 <img
                   src={img.src}
                   alt={isCopy ? "" : img.alt}
