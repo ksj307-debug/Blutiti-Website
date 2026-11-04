@@ -34,6 +34,8 @@ a { color: inherit; }
 /* 한글 제목이 단어 중간('추/억')에서 줄바꿈되지 않게 */
 .h-kr, .h-kr-lg, .t-kr { word-break: keep-all; }
 .muted { color: var(--ink-muted); }
+/* 본문 문장 (components/site/sentences.tsx): 긴 문장은 단어 단위로 줄넘김 */
+.sent { word-break: keep-all; }
 .cap { font-size: 13px; line-height: 20px; }
 .num { font-variant-numeric: tabular-nums; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: 44px; padding: 0 22px; border-radius: var(--radius-pill); font: 500 13px/16px var(--font-sans); letter-spacing: .08em; text-decoration: none; cursor: pointer; border: 1px solid var(--ink); background: transparent; color: var(--ink); transition: background .2s, color .2s; }
@@ -136,7 +138,11 @@ a { color: inherit; }
 @media (max-width: 860px) { .steps { grid-template-columns: 1fr 1fr; } .step:nth-child(2) { border-right: 0; } .step:nth-child(3) { padding-left: 0; } .step:nth-child(n+3) { border-top: 1px solid var(--line); } }
 @media (max-width: 480px) { .steps { grid-template-columns: 1fr; } .step, .step + .step { padding-left: 0; border-right: 0; } .step + .step { border-top: 1px solid var(--line); } }
 
-/* CONCEPT 카드 캐러셀 (concept-section.tsx) */
+/* 예전 섹션 id 로 들어온 링크용 빈 앵커: 섹션 맨 위에 둬서 새 id 와 같은 위치로 이동 */
+.legacy-anchor-host { position: relative; }
+.legacy-anchor { position: absolute; top: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
+
+/* CONCEPTS 카드 캐러셀 (concept-section.tsx) */
 .concept-track { padding: var(--space-4) var(--gutter-r) var(--space-4) max(var(--gutter-l), calc((100vw - 1180px) / 2 + var(--gutter-l))); }
 .ccard { position: relative; display: flex; flex-direction: column; justify-content: space-between; width: 280px; height: 460px; padding: var(--space-6); overflow: hidden; background: var(--night); color: var(--on-night); text-decoration: none; transition: transform .3s; }
 @media (min-width: 640px) { .ccard { width: 320px; height: 520px; padding: 28px; } }
@@ -472,3 +478,13 @@ footer { background: var(--night); color: var(--on-night); padding-block: var(--
 @media (max-width: 860px) {
   .bar { display: grid; grid-template-columns: 1fr 1.4fr; gap: var(--space-2); position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--paper-100); border-top: 1px solid var(--line); padding: 10px var(--gutter-r) calc(10px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); }
 }
+
+/* 맨 위로 (to-top.tsx)
+ * z-index 15: 헤더·모바일 메뉴(20), 하단 바(30), 사진 팝업(50)보다 아래
+ * 모바일은 하단 바(10 + 버튼 44 + 10 + 헤어라인 1 = 65px) 위로 올림
+ */
+.to-top { position: fixed; right: var(--gutter-r); bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px)); z-index: 15; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%; border: 1px solid var(--ink); background: var(--paper-100); color: var(--ink); cursor: pointer; opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s, background .2s, color .2s; }
+.to-top[data-show] { opacity: 1; visibility: visible; }
+.to-top:hover { background: var(--ink); color: var(--paper-100); }
+@media (max-width: 860px) { .to-top { bottom: calc(65px + var(--space-4) + env(safe-area-inset-bottom, 0px)); } }
+@media (prefers-reduced-motion: reduce) { .to-top { transition: none; } }

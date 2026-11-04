@@ -1,6 +1,6 @@
 /** 메인 메뉴: 메뉴명 = 섹션 영문 제목(eyebrow), id = 섹션 id */
 export const MAIN_NAV = [
-  { label: "CONCEPT", sub: "컨셉·갤러리", id: "concept" },
+  { label: "CONCEPTS", sub: "컨셉·갤러리", id: "concepts" },
   { label: "PRICE", sub: "요금 안내", id: "price" },
   { label: "REVIEW", sub: "고객 리뷰", id: "review" },
   { label: "GUIDE", sub: "이용 방법", id: "guide" },

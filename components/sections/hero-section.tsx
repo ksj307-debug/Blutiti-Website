@@ -40,7 +40,7 @@ export default function HeroSection() {
       ctaText="예약하기"
       ctaHref="#booking"
       secondaryText="컨셉 보기"
-      secondaryHref="#concept"
+      secondaryHref="#concepts"
       images={HERO_IMAGES}
     />
   );

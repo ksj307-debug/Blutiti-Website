@@ -1,5 +1,6 @@
 import { CONCEPTS, PLANS, formatKRW, priceLabel, type PlanPrice } from "@/lib/concepts";
 import { BASIC_INCLUDES, FREE_BENEFITS, POST_ADD_ONS, PRE_ADD_ONS } from "@/lib/options";
+import { Sentences } from "@/components/site/sentences";
 
 /**
  * PRICE · 요금 안내 — 예약 순서(컨셉 → 가성비/패키지 → 부가서비스)를 따라가는 설명형
@@ -48,7 +49,11 @@ function StepHead({ no, title, lead }: { no: string; title: string; lead?: strin
     <div className="pstep-h">
       <span className="index">{no}</span>
       <h3 className="t-title-kr">{title}</h3>
-      {lead && <p className="muted">{lead}</p>}
+      {lead && (
+        <p className="muted">
+          <Sentences text={lead} />
+        </p>
+      )}
     </div>
   );
 }
@@ -63,7 +68,7 @@ export function Price() {
             요금 안내
           </h2>
           <p className="muted cap" style={{ margin: 0 }}>
-            1~2인 기준 요금이에요. 만 7세 이하 1명은 무료로 함께해요.
+            <Sentences text="1~2인 기준 요금이에요. 만 7세 이하 1명은 무료로 함께해요." />
           </p>
         </div>
 
@@ -98,7 +103,7 @@ export function Price() {
               ))}
             </tbody>
           </table>
-          <a className="btn-secondary pstep-more" href="#concept">
+          <a className="btn-secondary pstep-more" href="#concepts">
             컨셉 자세히 보기
           </a>
         </div>
@@ -123,7 +128,9 @@ export function Price() {
                     <h4 className="t-title-kr">{p.name}</h4>
                     {p.badge && <span className="badge">{p.badge}</span>}
                   </div>
-                  <p className="muted">{p.summary}</p>
+                  <p className="muted">
+                    <Sentences text={p.summary} />
+                  </p>
                   <ul className="plan-list">
                     {prev && (
                       <li className="plan-all">

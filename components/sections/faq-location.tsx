@@ -1,4 +1,5 @@
 import { CopyButton } from "@/components/site/copy-button";
+import { Sentences } from "@/components/site/sentences";
 import { NAVER_URL } from "@/lib/reviews";
 import { PHONE } from "@/lib/nav";
 
@@ -41,7 +42,9 @@ export function FaqLocation() {
               <span className="index">{String(i + 1).padStart(2, "0")}</span>
               <span className="t-kr">{item.q}</span>
             </summary>
-            <p className="ans">{item.a}</p>
+            <p className="ans">
+              <Sentences text={item.a} />
+            </p>
           </details>
         ))}
       </div>

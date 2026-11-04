@@ -38,9 +38,9 @@ const COPY: Record<ConceptId, { en: string; desc: string; image?: string; alt?: 
 
 export function Concept() {
   return (
-    <section id="concept" className="band wrap" aria-labelledby="concept-h">
+    <section id="concepts" className="band wrap" aria-labelledby="concept-h">
       <div className="section-head">
-        <p className="eyebrow">CONCEPT</p>
+        <p className="eyebrow">CONCEPTS</p>
         <h2 id="concept-h" className="display">
           Five <em>ways</em> to be us
         </h2>

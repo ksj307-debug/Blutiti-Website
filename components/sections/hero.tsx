@@ -34,7 +34,7 @@ export function Hero() {
             <Link className="btn btn-primary" href={BOOKING_HREF}>
               예약하기
             </Link>
-            <Link className="btn" href="/#concept">
+            <Link className="btn" href="/#concepts">
               컨셉 보기
             </Link>
           </div>

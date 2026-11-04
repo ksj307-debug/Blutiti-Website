@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
+import { Sentences } from "@/components/site/sentences";
+import { ToTop } from "@/components/site/to-top";
 
 export const metadata: Metadata = { title: "Our Story · 블루티티 셀프스튜디오" };
 
@@ -22,7 +24,7 @@ export default function OurStoryPage() {
                 모든 가족에게 사진 한 장의 추억을
               </p>
               <p className="muted" style={{ maxWidth: 440 }}>
-                블루티티는 매년 미혼모 가족과 함께 가족사진을 찍고 있어요. 함께한 시간의 기록은 곧 이곳에 남길게요.
+                <Sentences text="블루티티는 매년 미혼모 가족과 함께 가족사진을 찍고 있어요. 함께한 시간의 기록은 곧 이곳에 남길게요." />
               </p>
               <p>
                 <Link className="link" href="/">
@@ -35,6 +37,7 @@ export default function OurStoryPage() {
         </section>
       </main>
       <Footer />
+      <ToTop />
     </>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/site/logo";
 import { MobileBar } from "@/components/site/mobile-bar";
+import { Sentences } from "@/components/site/sentences";
 import { INSTAGRAM_URL, KAKAO_LABEL, KAKAO_URL, PHONE } from "@/lib/nav";
 
 export function Footer() {
@@ -10,7 +11,9 @@ export function Footer() {
         <div className="wrap foot">
           <div style={{ display: "grid", gap: "var(--space-4)", alignContent: "start" }}>
             <Logo shape="horizontal" tone="ivory" className="logo-foot" />
-            <p>세팅은 끝났어요. 버튼만 누르고 웃어주세요.</p>
+            <p>
+              <Sentences text="세팅은 끝났어요. 버튼만 누르고 웃어주세요." />
+            </p>
             <p>
               <Link className="link" href="/our-story">
                 Our Story

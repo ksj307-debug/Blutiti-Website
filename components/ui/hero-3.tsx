@@ -19,6 +19,7 @@
 import * as React from "react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { Sentences } from "@/components/site/sentences";
 
 export type HeroImage = {
   /** public/ 기준 경로. 예: "/images/hero/family-01.webp" */
@@ -105,7 +106,7 @@ export function AnimatedMarqueeHero({
           custom={0.45}
           className="t-body mt-5 max-w-xl break-keep text-[var(--ink-muted)]"
         >
-          {description}
+          <Sentences text={description} />
         </motion.p>
 
         <motion.div

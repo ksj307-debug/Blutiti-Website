@@ -1,5 +1,6 @@
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
+import { ToTop } from "@/components/site/to-top";
 import HeroSection from "@/components/sections/hero-section";
 import { Message } from "@/components/sections/message";
 import { Guide } from "@/components/sections/guide";
@@ -30,6 +31,7 @@ export default function Home() {
         <FaqLocation />
       </main>
       <Footer />
+      <ToTop />
     </>
   );
 }

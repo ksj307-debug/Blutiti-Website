@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { Marquee } from "@/components/ui/3d-testimonials";
 import { ReviewCard } from "@/components/site/review-card";
+import { Sentences } from "@/components/site/sentences";
 import { NAVER_REVIEW_URL, REVIEW_GROUPS, REVIEW_TOTAL, REVIEWS } from "@/lib/reviews";
 
 /**
@@ -27,8 +28,9 @@ export function Review() {
               Kind <em>words</em> from families
             </h2>
             <p className="muted cap" style={{ margin: 0 }}>
-              네이버 예약 방문자 리뷰 {REVIEW_TOTAL}개, {basic.name} 평점 {basic.score}이에요. 카드를 누르면
-              네이버에서 원문을 볼 수 있어요.
+              <Sentences
+                text={`네이버 예약 방문자 리뷰 ${REVIEW_TOTAL}개, ${basic.name} 평점 ${basic.score}이에요. 카드를 누르면 네이버에서 원문을 볼 수 있어요.`}
+              />
             </p>
           </div>
           <div className="rev-actions">

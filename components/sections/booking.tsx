@@ -14,6 +14,7 @@ import {
   type PlanId,
 } from "@/lib/concepts";
 import { KakaoChatButton } from "@/components/site/kakao";
+import { Sentences } from "@/components/site/sentences";
 import { Calendar } from "@/components/ui/calendar";
 import { EXTRA_PERSON_PRICE, PRE_ADD_ONS, REVISIT_OPTION } from "@/lib/options";
 
@@ -25,7 +26,7 @@ import { EXTRA_PERSON_PRICE, PRE_ADD_ONS, REVISIT_OPTION } from "@/lib/options";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
- * URL ?concept={id} 로 들어오면 해당 컨셉을 미리 선택 (CONCEPT '이걸로 예약하기')
+ * URL ?concept={id} 로 들어오면 해당 컨셉을 미리 선택 (CONCEPTS '이걸로 예약하기')
  * - 파라미터 없음: 베이직 컬러 / 모르는 id: 선택 없음 / 예전 세이지 포레스트: 베이직 컬러(통합)
  */
 function initialConcept(): ConceptId | null {
@@ -38,6 +39,12 @@ const firstVariant = (id: ConceptId | null) => (id ? (findConcept(id)?.variants[
 const conceptNote = (c: Concept) =>
   c.themes?.join(" · ") ?? (c.variants.length > 1 ? c.variants.map((v) => v.name).join(" / ") : c.variants[0].note);
 const OPTIONS = [...PRE_ADD_ONS.filter((o) => o.id !== "person"), REVISIT_OPTION];
+/** 예약 변경·취소 안내 */
+const POLICY = [
+  "변경·취소는 촬영일 3일 전까지 가능해요.",
+  "2일 이내 예약은 변경·취소가 어려워요. 부득이한 경우 일정 변경만 1회 가능해요.",
+  "늦게 도착하셔도 퇴실은 정시 기준이에요.",
+];
 const SLOTS: [number, number][] = [[10, 0], [11, 30], [13, 0], [14, 30], [16, 0], [17, 30], [19, 0], [20, 30]];
 const SESSION_MIN = 80;
 const EXT_MIN = 30;
@@ -99,7 +106,7 @@ export function Booking() {
           예약하기
         </h2>
         <p className="muted cap" style={{ margin: 0 }}>
-          예약은 촬영 시작 6시간 전까지 가능하고, 결제를 마치면 바로 확정돼요.{" "}
+          <Sentences text="예약은 촬영 시작 6시간 전까지 가능하고, 결제를 마치면 바로 확정돼요." />{" "}
           <span className="demo-note">미리보기 화면이라 실제 결제는 되지 않아요</span>
         </p>
       </div>
@@ -234,7 +241,7 @@ function BookingForm() {
             <dd className="num">{formatKRW(done.total)}</dd>
           </dl>
           <p className="muted">
-            예약 확정 안내와 촬영 전날 리마인드를 카카오톡으로 보내드려요. 진행 상황은 예약 조회에서 확인하세요.
+            <Sentences text="예약 확정 안내와 촬영 전날 리마인드를 카카오톡으로 보내드려요. 진행 상황은 예약 조회에서 확인하세요." />
           </p>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <Link className="btn btn-primary" href="/login">
@@ -368,9 +375,13 @@ function BookingForm() {
           <Counter label="어른·만 8세 이상" help="기준 인원 1~2명" value={adults} min={1} onChange={setAdults} noun="어른" />
           <Counter label="만 7세 이하" help="1명 무료, 2명부터 인원 추가" value={kids} min={0} onChange={setKids} noun="아이" />
           <p className="cap muted" style={{ margin: "10px 0 var(--space-6)" }}>
-            {extra
-              ? `인원 추가 ${extra}명이 함께 결제돼요 (+${formatKRW(extra * EXTRA_PERSON_PRICE)}).`
-              : "추가 요금 없이 촬영할 수 있는 인원이에요."}
+            <Sentences
+              text={
+                extra
+                  ? `인원 추가 ${extra}명이 함께 결제돼요 (+${formatKRW(extra * EXTRA_PERSON_PRICE)}).`
+                  : "추가 요금 없이 촬영할 수 있는 인원이에요."
+              }
+            />
           </p>
           <div>
             {OPTIONS.map((o) => {
@@ -385,7 +396,9 @@ function BookingForm() {
                   />
                   <span>
                     <b>{o.name}</b>
-                    <small>{off ? ext.why : (o.bookingDesc ?? o.desc)}</small>
+                    <small>
+                      <Sentences text={(off ? ext.why : (o.bookingDesc ?? o.desc)) ?? ""} />
+                    </small>
                   </span>
                   <span className="p">{o.price ? `+${formatKRW(o.price)}` : "무료"}</span>
                 </label>
@@ -437,9 +450,11 @@ function BookingForm() {
             <div className="policy">
               <b>예약 변경·취소 안내</b>
               <ul>
-                <li>변경·취소는 촬영일 3일 전까지 가능해요.</li>
-                <li>2일 이내 예약은 변경·취소가 어려워요. 부득이한 경우 일정 변경만 1회 가능해요.</li>
-                <li>늦게 도착하셔도 퇴실은 정시 기준이에요.</li>
+                {POLICY.map((t) => (
+                  <li key={t}>
+                    <Sentences text={t} />
+                  </li>
+                ))}
               </ul>
             </div>
             <Agree checked={agreePolicy} onChange={setAgreePolicy} label="변경·취소 안내를 확인했어요 (필수)" />
@@ -469,7 +484,7 @@ function BookingForm() {
               <b className="ask-total">{priceLabel(price)}</b>
             </div>
             <p className="cap muted" style={{ margin: "0 0 var(--space-4)" }}>
-              이 구성은 금액을 따로 안내해 드려요. 카카오톡 채널 &apos;블루티티&apos;로 문의해 주세요.
+              <Sentences text="이 구성은 금액을 따로 안내해 드려요. 카카오톡 채널 '블루티티'로 문의해 주세요." />
             </p>
             <KakaoChatButton className="btn btn-primary" style={{ width: "100%" }}>
               카카오톡으로 문의하기
@@ -482,13 +497,13 @@ function BookingForm() {
               <b className="num">{formatKRW(total)}</b>
             </div>
             <p className="err" role="alert">
-              {err}
+              <Sentences text={err} />
             </p>
             <button className="btn btn-primary" type="button" style={{ width: "100%" }} onClick={pay}>
               결제하고 예약 확정
             </button>
             <p className="cap muted" style={{ margin: "var(--space-4) 0 0" }}>
-              카드·간편결제로 선결제해요. 현장 결제는 없어요.
+              <Sentences text="카드·간편결제로 선결제해요. 현장 결제는 없어요." />
             </p>
           </>
         )}

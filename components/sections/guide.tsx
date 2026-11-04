@@ -1,3 +1,5 @@
+import { Sentences } from "@/components/site/sentences";
+
 /** GUIDE · 이용 방법 (기존 HOW IT WORKS) */
 const STEPS: { title: string; desc: string; badge?: string }[] = [
   {
@@ -38,7 +40,9 @@ export function Guide() {
                 </>
               )}
             </p>
-            <p className="muted cap">{s.desc}</p>
+            <p className="muted cap">
+              <Sentences text={s.desc} />
+            </p>
           </div>
         ))}
       </div>

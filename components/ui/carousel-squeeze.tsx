@@ -162,7 +162,7 @@ function DesktopCarousel({
     controls = true,
     accent = "var(--titi-cobalt)",
     accentForeground = "var(--on-cobalt)",
-    label = "CONCEPT",
+    label = "CONCEPTS",
     prevLabel = "이전 컨셉",
     nextLabel = "다음 컨셉",
     panelClassName,

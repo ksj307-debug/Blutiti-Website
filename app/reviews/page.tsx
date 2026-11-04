@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
+import { Sentences } from "@/components/site/sentences";
 import { ReviewGroups } from "./review-groups";
 import { NAVER_URL } from "@/lib/reviews";
 
@@ -27,7 +28,7 @@ export default function ReviewsPage() {
                 다녀간 가족들이 남긴 이야기
               </p>
               <p className="muted cap" style={{ margin: 0 }}>
-                네이버 예약 방문자 리뷰를 컨셉별로 모았어요. 카드를 누르면 네이버에서 원문을 확인할 수 있어요.
+                <Sentences text="네이버 예약 방문자 리뷰를 컨셉별로 모았어요. 카드를 누르면 네이버에서 원문을 확인할 수 있어요." />
               </p>
             </div>
             <a className="btn" href={NAVER_URL} target="_blank" rel="noopener">

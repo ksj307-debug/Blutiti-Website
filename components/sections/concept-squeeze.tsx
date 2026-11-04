@@ -68,10 +68,10 @@ const slides: SqueezeSlide[] = CONCEPTS.map((c) => ({
 export default function ConceptSection() {
   return (
     // data-own-cta: 이 섹션의 '이걸로 예약하기'(코발트)가 보이는 동안 헤더 예약하기는 보조 버튼
-    <section id="concept" data-own-cta className="scroll-mt-24 bg-[var(--paper-100)] px-4 py-16 md:py-24">
+    <section id="concepts" data-own-cta className="scroll-mt-24 bg-[var(--paper-100)] px-4 py-16 md:py-24">
       <div className="mx-auto max-w-[1180px]">
         <header className="mb-10 grid max-w-[640px] gap-2">
-          <p className="t-eyebrow m-0 text-[var(--ink-muted)]">CONCEPT</p>
+          <p className="t-eyebrow m-0 text-[var(--ink-muted)]">CONCEPTS</p>
           <h2 className="t-display-md m-0">
             Five <em>ways</em> to be us
           </h2>
@@ -82,7 +82,7 @@ export default function ConceptSection() {
 
         <SqueezeCarousel
           slides={slides}
-          label="CONCEPT"
+          label="CONCEPTS"
           height="clamp(240px, 34cqi, 420px)"
           gap={24}
           slatGap={8}

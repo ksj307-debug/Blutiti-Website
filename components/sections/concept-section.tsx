@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Sentences } from "@/components/site/sentences";
 import { CONCEPTS, bookingHref, type ConceptId } from "@/lib/concepts";
 
 /**
@@ -51,27 +52,29 @@ const COPY: Record<ConceptId, { description: string; image?: string; imageAlt?: 
 function useAutoplay() {
   return useMemo(() => {
     if (typeof window === "undefined" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return [];
-    return [Autoplay({ delay: 500, stopOnMouseEnter: true, stopOnInteraction: false, stopOnFocusIn: true })];
+    return [Autoplay({ delay: 1500, stopOnMouseEnter: true, stopOnInteraction: false, stopOnFocusIn: true })];
   }, []);
 }
 
 export default function ConceptSection() {
   const autoplay = useAutoplay();
   return (
-    <section id="concept" className="band" aria-labelledby="concept-h">
+    <section id="concepts" className="band legacy-anchor-host" aria-labelledby="concept-h">
+      {/* 예전 주소 /#concept 로 들어와도 이 섹션으로 이동 */}
+      <span id="concept" className="legacy-anchor" aria-hidden="true" />
       <div className="wrap">
         <div className="section-head">
-          <p className="eyebrow">CONCEPT</p>
+          <p className="eyebrow">CONCEPTS</p>
           <h2 id="concept-h" className="display">
             Five <em>ways</em> to be us
           </h2>
           <p className="muted" style={{ margin: 0 }}>
-            원하는 분위기를 골라보세요. 클래식 흑백은 반반 옵션으로 촬영 중간에 추가할 수도 있어요.
+            <Sentences text="원하는 분위기를 골라보세요. 클래식 흑백은 반반 옵션으로 촬영 중간에 추가할 수도 있어요." />
           </p>
         </div>
       </div>
 
-      <Carousel opts={{ align: "start", loop: true }} plugins={autoplay} aria-label="컨셉">
+      <Carousel opts={{ align: "start", loop: true }} plugins={autoplay} aria-label="CONCEPTS">
         {/* 첫 카드는 본문 여백(wrap)에 맞추고, 오른쪽은 화면 끝까지 흐르게 */}
         <CarouselContent className="-ml-6 concept-track">
           {CONCEPTS.map((c) => {
@@ -98,7 +101,9 @@ export default function ConceptSection() {
                     <span className="ccard-title">{title}</span>
                   </span>
                   <span className="ccard-bottom">
-                    <span className="ccard-desc">{copy.description}</span>
+                    <span className="ccard-desc">
+                      <Sentences text={copy.description} />
+                    </span>
                     <span className="ccard-go" aria-hidden="true">
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path d="M5 11 11 5M6 5h5v5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />

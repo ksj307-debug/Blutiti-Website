@@ -1,3 +1,5 @@
+import { Sentences } from "@/components/site/sentences";
+
 /** FOR YOU · 이런 분들이 많이 찾아주세요 */
 const STORIES = [
   {
@@ -54,7 +56,9 @@ export function ForYou() {
                 </div>
               )}
               <h3 className="t-kr">{s.title}</h3>
-              <p className="muted cap">{s.desc}</p>
+              <p className="muted cap">
+                <Sentences text={s.desc} />
+              </p>
             </article>
           ))}
         </div>

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
+import { ToTop } from "@/components/site/to-top";
 import { getSession } from "@/lib/auth";
 import { findBookings, type StoredBooking } from "@/lib/bookings";
 import { bookingLabel, formatKRW } from "@/lib/concepts";
@@ -69,6 +70,7 @@ export default function MyBookingPage({ searchParams }: PageProps<"/my-booking">
         </section>
       </main>
       <Footer />
+      <ToTop />
     </>
   );
 }
