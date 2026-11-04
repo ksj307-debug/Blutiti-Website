@@ -2,9 +2,11 @@ import { Sentences } from "@/components/site/sentences";
 
 /**
  * FOR YOU · 이런 분들이 많이 찾아주세요
- * 사진: 아직 임시 (레퍼런스 사진 / 빈 면). 새 사진 폴더를 받으면 3:4, 가로 1600px 이하 webp + 2배 srcset 으로 교체
+ * 사진: 3:4, 1x 800px / 2x 1600px webp(품질 85) + srcset
+ * - 가족 사진: 구글 드라이브 가족사진 폴더 '김한빛29516.jpg' → /images/for-you/family-photo(@2x).webp
+ * - 나머지 3장은 아직 레퍼런스 사진 (사진 폴더를 받으면 같은 방식으로 교체)
  */
-const STORIES: { eyebrow: string; title: string; desc: string; image?: string; alt?: string }[] = [
+const STORIES: { eyebrow: string; title: string; desc: string; image?: string; image2x?: string; alt?: string }[] = [
   {
     eyebrow: "FAMILY",
     image: "/images/reference/b1.jpg",
@@ -23,6 +25,9 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; a
   },
   {
     eyebrow: "FAMILY PHOTO",
+    image: "/images/for-you/family-photo.webp",
+    image2x: "/images/for-you/family-photo@2x.webp",
+    alt: "흰 배경 앞에서 두 아이를 안고 활짝 웃는 부부",
     title: "가족 사진",
     desc: "결혼기념일, 아이 생일처럼 우리 가족의 특별한 날마다 기념사진을 남겨 보세요! 우리 가족끼리 자유롭게 찍는 시간도 즐거운 추억이 될 거예요.",
     // 예전 WITH DOG 카드 (화면에서만 뺌. FAQ '반려견과 함께 가도 되나요?' 는 유지)
@@ -54,7 +59,16 @@ export function ForYou() {
           {STORIES.map((s) => (
             <article className="story" key={s.eyebrow}>
               <p className="eyebrow">{s.eyebrow}</p>
-              {s.image ? <img src={s.image} alt={s.alt} /> : <div className="ph" aria-hidden="true" />}
+              {s.image ? (
+                <img
+                  src={s.image}
+                  srcSet={s.image2x ? `${s.image} 1x, ${s.image2x} 2x` : undefined}
+                  alt={s.alt}
+                  loading="lazy"
+                />
+              ) : (
+                <div className="ph" aria-hidden="true" />
+              )}
               <h3 className="t-kr">{s.title}</h3>
               <p className="muted cap">
                 <Sentences text={s.desc} />

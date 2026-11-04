@@ -10,7 +10,10 @@ import { CONCEPTS, bookingHref, type ConceptId } from "@/lib/concepts";
  * - 사진이 없는 컨셉은 --mist 면 (사진이 생기면 image 로 교체)
  * 이전 버전(embla 세로 카드 + 자동 넘김)은 git 기록에 있음
  */
-const COPY: Record<ConceptId, { description: string; image?: string; imageAlt?: string; imagePosition?: string }> = {
+const COPY: Record<
+  ConceptId,
+  { description: string; image?: string; image2x?: string; imageAlt?: string; imagePosition?: string }
+> = {
   // 4개 컨셉 문구 = 레퍼런스(_handoff/reference/index.html) CONCEPTS 섹션 문구 그대로
   "basic-color": {
     description: "화려한 배경 없이 자연스러운 빛과 색으로 담는 미니멀 촬영",
@@ -27,9 +30,12 @@ const COPY: Record<ConceptId, { description: string; image?: string; imageAlt?: 
     image: "/images/concepts/100days.webp",
     imageAlt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기",
   },
-  // 증명사진 폴더(_photos/drive/id-photo)가 아직 없어 --mist 면. 사진을 받으면 /images/concepts/id-profile.webp
+  // 구글 드라이브 증명·프로필 폴더 '이가림_419.jpg' → 4:5, 1x 800px / 2x 1600px webp(품질 85)
   "id-profile": {
     description: "증명·여권은 30분 촬영, 셀렉은 집에서. 당일 인화는 어려워요",
+    image: "/images/concepts/id-profile.webp",
+    image2x: "/images/concepts/id-profile@2x.webp",
+    imageAlt: "증명·프로필 - 흰 셔츠를 입고 정면을 바라보는 증명사진",
   },
   "season-christmas": {
     description: "매년 새롭게 변경되는 크리스마스 컨셉으로 가족 또는 연인과 함께 특별한 크리스마스 추억을 남겨보세요.",
@@ -72,6 +78,7 @@ export default function ConceptSection() {
                   {copy.image && (
                     <img
                       src={copy.image}
+                      srcSet={copy.image2x ? `${copy.image} 1x, ${copy.image2x} 2x` : undefined}
                       alt={copy.imageAlt ?? ""}
                       loading="lazy"
                       style={{ objectPosition: copy.imagePosition ?? "center" }}
