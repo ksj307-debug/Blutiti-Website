@@ -55,11 +55,20 @@ export function splitSentences(text: string): string[] {
   return out;
 }
 
-/** <p> 등 본문 요소 안에 넣어 사용: <p className="muted"><Sentences text={...} /></p> */
+/**
+ * <p> 등 본문 요소 안에 넣어 사용: <p className="muted"><Sentences text={...} /></p>
+ * 문자열에 줄바꿈(\n)이 있으면 마침표 기준 대신 그 줄 단위로 나눔 (마침표 없는 줄이 있을 때)
+ */
 export function Sentences({ text }: { text: string }) {
+  const lines = text.includes("\n")
+    ? text
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean)
+    : splitSentences(text);
   return (
     <>
-      {splitSentences(text).map((s, i) => (
+      {lines.map((s, i) => (
         <Fragment key={i}>
           {i > 0 && <br />}
           <span className="sent">{s}</span>

@@ -28,13 +28,16 @@ const COPY: Record<
     imageAlt: "클래식 흑백 - 스툴에 앉은 두 아이와 뒤에 선 부부",
   },
   "100days": {
-    description: "한복과 정성스럽게 준비한 떡으로 차리는 아기의 첫 잔치",
+    // 예전: 한복과 정성스럽게 준비한 떡으로 차리는 아기의 첫 잔치
+    description: "프리미엄 한복과 백일상이 준비되어 있어요. 몸만 오셔서 아기의 첫 잔치를 남겨 보세요.",
     image: "/images/concepts/100days.webp",
     imageAlt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기",
   },
   // 구글 드라이브 증명·프로필 폴더 '이가림_419.jpg' → 4:5, 1x 800px / 2x 1600px webp(품질 85)
   "id-profile": {
-    description: "증명·여권은 30분 촬영, 셀렉은 집에서. 당일 인화는 어려워요",
+    // 첫 줄에 마침표가 없어 줄 단위(\n)로 지정. 예전: 증명·여권은 30분 촬영, 셀렉은 집에서. 당일 인화는 어려워요
+    description:
+      "증명 · 여권 · 프로필\n30분간 셀프로 촬영한 뒤, 셀렉한 파일명을 보내 주세요.\n원하는 부분을 보정해 6장 인화해 드립니다. (*당일 인화 불가)",
     image: "/images/concepts/id-profile.webp",
     image2x: "/images/concepts/id-profile@2x.webp",
     imageAlt: "증명·프로필 - 흰 셔츠를 입고 정면을 바라보는 증명사진",
