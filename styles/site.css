@@ -152,7 +152,35 @@ a { color: inherit; }
 .legacy-anchor-host { position: relative; }
 .legacy-anchor { position: absolute; top: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
 
-/* CONCEPTS 카드 캐러셀 (concept-section.tsx) */
+/* CONCEPTS 같은 크기 카드 캐러셀 (ui/concept-carousel.tsx)
+ * 카드 폭 = (트랙 폭 - 보이는 장수 x 간격) / (보이는 장수 + 0.1) → 오른쪽에 다음 카드 10% 정도
+ * 데스크톱(1024px 이상) 4장 / 태블릿(640~1023px) 2장 / 모바일 1장
+ */
+.cc { --cc-gap: var(--space-6); --cc-n: 4; }
+@media (max-width: 1023px) { .cc { --cc-n: 2; } }
+@media (max-width: 639px) { .cc { --cc-gap: var(--space-4); --cc-n: 1; } }
+.cc-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); margin-bottom: var(--space-10); }
+.cc-arrows { display: flex; gap: var(--space-2); flex-shrink: 0; }
+.cc-arrow { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border-radius: 50%; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: background .2s, color .2s; }
+.cc-arrow:hover:not(:disabled) { background: var(--ink); color: var(--paper-100); }
+.cc-arrow:disabled { border-color: var(--line); color: var(--stone); cursor: not-allowed; }
+.cc-track { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--cc-gap); overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
+.cc-track::-webkit-scrollbar { display: none; }
+.cc-track:focus-visible { outline: 1px solid var(--ink); outline-offset: 4px; }
+.cc-item { flex: 0 0 calc((100% - var(--cc-n) * var(--cc-gap)) / (var(--cc-n) + 0.1)); scroll-snap-align: start; min-width: 0; }
+.cc-card { display: grid; gap: var(--space-2); align-content: start; height: 100%; grid-template-rows: auto auto 1fr auto; }
+.cc-card h3, .cc-card p { margin: 0; }
+.cc-card h3 { margin-top: var(--space-2); }
+.cc-card .t-body { word-break: keep-all; }
+.cc-photo { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--mist); }
+.cc-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* 사진 위 라벨: 아래쪽 night 그라데이션 위에 on-night 글자 */
+.cc-photo::after { content: ""; position: absolute; inset: auto 0 0; height: 35%; background: linear-gradient(to top, color-mix(in srgb, var(--night) 55%, transparent), transparent); pointer-events: none; }
+.cc-label { position: absolute; left: var(--space-4); bottom: var(--space-4); z-index: 1; color: var(--on-night); }
+.cc-book { justify-self: start; margin-top: var(--space-2); }
+@media (prefers-reduced-motion: reduce) { .cc-track { scroll-behavior: auto; } }
+
+/* 미사용: CONCEPTS 세로 카드 캐러셀 (예전 concept-section.tsx) */
 .concept-track { padding: var(--space-4) var(--gutter-r) var(--space-4) max(var(--gutter-l), calc((100vw - 1180px) / 2 + var(--gutter-l))); }
 .ccard { position: relative; display: flex; flex-direction: column; justify-content: space-between; width: 280px; height: 460px; padding: var(--space-6); overflow: hidden; background: var(--night); color: var(--on-night); text-decoration: none; transition: transform .3s; }
 @media (min-width: 640px) { .ccard { width: 320px; height: 520px; padding: 28px; } }
