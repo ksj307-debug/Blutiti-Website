@@ -73,7 +73,7 @@ export function Gallery({ children }: { children: React.ReactNode }) {
 
 /** 반응형 메이슨리 격자 (모바일 2열 · 데스크톱 3열) */
 export function GalleryGrid({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn("columns-2 gap-4 md:columns-3 md:gap-6", className)}>{children}</div>;
+  return <div className={cn("grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-5", className)}>{children}</div>;
 }
 
 /** 썸네일 한 장. children 은 사진 아래 캡션 */
@@ -99,7 +99,7 @@ export function GalleryImage({
   if (!context) throw new Error("GalleryImage must be used within a Gallery");
 
   return (
-    <figure className={cn("m-0 mb-4 break-inside-avoid md:mb-6", className)}>
+    <figure className={cn("m-0", className)}>
       <motion.button
         type="button"
         whileHover="hover"
@@ -116,7 +116,7 @@ export function GalleryImage({
           sizes={sizes}
           alt={alt ?? ""}
           loading="lazy"
-          className="block h-auto w-full object-cover"
+          className="block aspect-square h-auto w-full object-cover"
           variants={{ hover: { scale: 0.98 }, tap: { scale: 0.95 } }}
           transition={spring}
         />

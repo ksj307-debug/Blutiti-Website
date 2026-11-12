@@ -5,7 +5,7 @@ import { SIZES, srcSet } from "@/lib/img";
 /** 인스타그램 글리프 (단색 1.5px 선, 브랜드 색 대신 currentColor) */
 function InstagramGlyph() {
   return (
-    <svg className="ig-glyph" width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg className="ig-glyph" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5.25" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="12" cy="12" r="4.25" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" />
@@ -14,20 +14,25 @@ function InstagramGlyph() {
 }
 
 /**
- * GALLERY. 샘플사진 폴더에서 고른 사진 (public/images/gallery, 가로 800px webp)
- * - 세이지 포레스트 폴더 사진은 베이직 컬러로 표기 (컨셉 통합)
- * - 레터링 & 드로잉, 원목 액자는 예시 사진이 폴더에 없어 레퍼런스 사진 유지 (사진이 생기면 교체)
+ * GALLERY 10장 (public/images/gallery, 가로 800px 이하 webp, 정사각형으로 잘라 보여줌)
+ * - 08~10 은 구글 드라이브 폴더 사진 중 FOR YOU 와 다른 사진
+ *   만삭 '지보미48376.jpg' / 셀프웨딩 'blutiti_상품사진템플렛_클래식흑백4.jpg' / 아이 '이슬기.jpg' (템플릿 테두리 잘라냄)
+ * - 시즌 컨셉: 샘플사진 'So This Is Christmas' 폴더 '지안_크리스마스5.jpg' (히어로·CONCEPTS 와 다른 사진)
+ * - 원목 액자는 레퍼런스 사진(292px)뿐이라 작은 그대로 webp 변환 (큰 사진이 생기면 교체)
+ * 화면에서 뺀 예전 사진(파일은 그대로): gallery-06-basic-family, gallery-08-basic-baby, reference/letter.jpg(레터링 & 드로잉)
  */
-const PHOTOS = [
-  { src: "/images/gallery/gallery-01-four-cut.webp", alt: "베이직 컬러 4컷 프레임 - 풍선과 함께한 아이", caption: "4컷 프레임" },
-  { src: "/images/gallery/gallery-02-basic-couple.webp", alt: "베이직 컬러 - 하트 풍선을 든 커플", caption: "베이직 컬러" },
-  { src: "/images/gallery/gallery-03-bw-couple.webp", alt: "클래식 흑백 - 꽃다발 앞에서 입맞추는 커플", caption: "클래식 흑백" },
-  { src: "/images/gallery/gallery-04-nine-cut.webp", alt: "크리스마스 9컷 프레임 포스터", caption: "9컷 프레임" },
-  { src: "/images/gallery/gallery-05-100days.webp", alt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기", caption: "100일상" },
-  { src: "/images/gallery/gallery-06-basic-family.webp", alt: "베이직 컬러 - 아빠 목말을 탄 아이와 가족", caption: "베이직 컬러" },
-  { src: "/images/reference/letter.jpg", alt: "만삭 커플 레터링", caption: "레터링 & 드로잉" },
-  { src: "/images/gallery/gallery-08-basic-baby.webp", alt: "베이직 컬러 - 아기에게 입맞추는 부부", caption: "베이직 컬러" },
-  { src: "/images/reference/frame.jpg", alt: "원목 액자 인화", caption: "원목 액자" },
+type Photo = { src: string; alt: string; caption: string; width: number };
+const PHOTOS: Photo[] = [
+  { src: "/images/gallery/gallery-02-basic-couple.webp", alt: "베이직 컬러 - 하트 풍선을 든 커플", caption: "베이직 컬러", width: 800 },
+  { src: "/images/gallery/gallery-03-bw-couple.webp", alt: "클래식 흑백 - 꽃다발 앞에서 입맞추는 커플", caption: "클래식 흑백", width: 800 },
+  { src: "/images/gallery/gallery-season.webp", alt: "시즌 컨셉 크리스마스 - 트리 옆에 모인 가족", caption: "시즌 컨셉", width: 756 },
+  { src: "/images/gallery/gallery-01-four-cut.webp", alt: "베이직 컬러 4컷 프레임 - 풍선과 함께한 아이", caption: "4컷 프레임", width: 800 },
+  { src: "/images/gallery/gallery-04-nine-cut.webp", alt: "크리스마스 9컷 프레임 포스터", caption: "9컷 프레임", width: 800 },
+  { src: "/images/gallery/gallery-05-100days.webp", alt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기", caption: "100일상", width: 800 },
+  { src: "/images/gallery/gallery-frame.webp", alt: "원목 액자에 담긴 웨딩 흑백 사진", caption: "원목 액자", width: 292 },
+  { src: "/images/gallery/gallery-maternity.webp", alt: "만삭 - 아이와 함께 선 만삭 부부", caption: "만삭", width: 800 },
+  { src: "/images/gallery/gallery-self-wedding.webp", alt: "셀프웨딩 - 스툴에 앉은 신부와 옆에 선 신랑", caption: "셀프웨딩", width: 800 },
+  { src: "/images/gallery/gallery-kids-family.webp", alt: "아이가 있는 가족 - 생일 케이크를 들고 웃는 아이", caption: "아이가 있는 가족", width: 800 },
 ];
 
 export function Gallery() {
@@ -39,16 +44,16 @@ export function Gallery() {
           Real days, <em>real</em> us
         </h2>
       </div>
-      {/* 사진을 누르면 크게 보기 (shared-element-gallery), 원본 비율 그대로 메이슨리 배치 */}
+      {/* 사진을 누르면 크게 보기 (shared-element-gallery). 모바일 2열 · 태블릿 3열 · 데스크톱 5열, 정사각형 */}
       <SharedGallery>
         <GalleryGrid>
           {PHOTOS.map((p, i) => (
             <GalleryImage
-              key={p.src + i}
+              key={p.src}
               id={`gallery-${i}`}
               src={p.src}
-              // 레퍼런스 jpg(사본 없음)는 srcset 없이 원본
-              srcSet={p.src.endsWith(".webp") ? srcSet(p.src, [360, 480, 560], 800) : undefined}
+              // 작은 사본이 있는 사진만 srcset (원목 액자 292px 는 원본만)
+              srcSet={p.width > 360 ? srcSet(p.src, [360, 480, 560], p.width) : undefined}
               sizes={SIZES.gallery}
               alt={p.alt}
             >
@@ -61,19 +66,15 @@ export function Gallery() {
         </GalleryGrid>
       </SharedGallery>
 
-      {/* 인스타그램 더 보기: 갤러리 마지막에 크게 */}
-      <a className="ig-cta" href={INSTAGRAM_URL} target="_blank" rel="noopener">
-        <InstagramGlyph />
-        <span className="ig-cta-text">
-          <span className="eyebrow">INSTAGRAM</span>
-          <span className="t-title-kr">인스타그램에서 더 보기</span>
-          <span className="cap">@blutiti_studio</span>
-        </span>
-        <span className="ig-cta-arrow" aria-hidden="true">
-          ↗
-        </span>
-      </a>
-      <p className="muted cap gallery-note">SNS 활용에 동의해 주신 분들의 사진만 소개해요.</p>
+      {/* 인스타그램 유도: 안내 문장 → 버튼(모바일 가로 전체) → SNS 동의 캡션 */}
+      <div className="ig-more">
+        <p className="t-body">더 많은 촬영 사진은 인스타그램에서 볼 수 있어요.</p>
+        <a className="btn-secondary ig-more-btn" href={INSTAGRAM_URL} target="_blank" rel="noopener">
+          <InstagramGlyph />
+          인스타그램에서 더 보기 @blutiti_studio
+        </a>
+        <p className="t-caption muted">SNS 활용에 동의해 주신 분들의 사진만 소개해요.</p>
+      </div>
     </section>
   );
 }

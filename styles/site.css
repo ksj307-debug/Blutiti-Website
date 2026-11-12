@@ -164,14 +164,24 @@ a { color: inherit; }
  * 카드 폭 = (트랙 폭 - 보이는 장수 x 간격) / (보이는 장수 + 0.1) → 오른쪽에 다음 카드 10% 정도
  * 데스크톱(1024px 이상) 4장 / 태블릿(640~1023px) 2장 / 모바일 1장
  */
-.cc { --cc-gap: var(--space-6); --cc-n: 4; }
-@media (max-width: 1023px) { .cc { --cc-n: 2; } }
-@media (max-width: 639px) { .cc { --cc-gap: var(--space-4); --cc-n: 1; } }
-.cc-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); margin-bottom: var(--space-10); }
-.cc-arrows { display: flex; gap: var(--space-2); flex-shrink: 0; }
-.cc-arrow { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border-radius: 50%; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: background .2s, color .2s; }
-.cc-arrow:hover:not(:disabled) { background: var(--ink); color: var(--paper-100); }
-.cc-arrow:disabled { border-color: var(--line); color: var(--stone); cursor: not-allowed; }
+.cc { --cc-gap: var(--space-6); --cc-n: var(--cc-n-d, 4); }
+@media (max-width: 1023px) { .cc { --cc-n: var(--cc-n-t, 2); } }
+@media (max-width: 639px) { .cc { --cc-gap: var(--space-4); --cc-n: var(--cc-n-m, 1); } }
+.cc-head { margin-bottom: var(--space-10); }
+/* 화살표: 트랙 왼쪽·오른쪽 끝에 반쯤 걸침, 세로는 사진 가운데(--cc-arrow-y, JS 측정) */
+.cc-stage { position: relative; }
+.cc-arrow { --cc-arrow-size: 44px; position: absolute; top: var(--cc-arrow-y, 40%); z-index: 2; display: grid; place-items: center; width: var(--cc-arrow-size); height: var(--cc-arrow-size); padding: 0; border-radius: 50%; border: 1px solid var(--ink); background: var(--paper-100); color: var(--ink); cursor: pointer; transform: translateY(-50%); transition: background .2s, color .2s; }
+.cc-arrow-prev { left: calc(var(--cc-arrow-size) / -2); }
+.cc-arrow-next { right: calc(var(--cc-arrow-size) / -2); }
+.cc-arrow[hidden] { display: none; }
+.cc-arrow:hover { background: var(--ink); color: var(--paper-100); }
+/* 모바일: 보이는 크기 36px, 누르는 영역 44px. 화면 밖으로 잘리지 않게 바깥으로 14px 만 */
+@media (max-width: 639px) {
+  .cc-arrow { --cc-arrow-size: 36px; }
+  .cc-arrow-prev { left: -14px; }
+  .cc-arrow-next { right: -14px; }
+  .cc-arrow::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; }
+}
 .cc-track { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--cc-gap); overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
 .cc-track::-webkit-scrollbar { display: none; }
 .cc-track:focus-visible { outline: 1px solid var(--ink); outline-offset: 4px; }
@@ -256,6 +266,11 @@ a { color: inherit; }
   .ig-glyph { width: 36px; height: 36px; }
 }
 .gallery-note { margin: var(--space-4) 0 0; }
+/* 갤러리 아래 인스타그램 유도: 가운데 정렬, 모바일은 버튼 가로 전체 */
+.ig-more { display: grid; justify-items: center; gap: var(--space-4); margin-top: var(--space-10); text-align: center; }
+.ig-more p { margin: 0; }
+.ig-more-btn { gap: var(--space-2); }
+@media (max-width: 639px) { .ig-more-btn { width: 100%; } }
 
 /* price */
 .price-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--space-16); align-items: start; }
@@ -277,26 +292,26 @@ a { color: inherit; }
 .pstep-h .index { color: var(--titi-navy); }
 .pstep-h p { grid-column: 2; margin: var(--space-1) 0 0; }
 .pstep-more { margin-top: var(--space-6); }
-.ptable { width: 100%; border-collapse: collapse; border-top: 1px solid var(--line); }
-.ptable th, .ptable td { padding: var(--space-4) 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-weight: 400; }
-.ptable thead th { font-family: var(--font-mono); font-size: 11px; line-height: 16px; letter-spacing: .18em; color: var(--ink-muted); padding-block: var(--space-2); }
-.ptable thead th + th, .ptable td { text-align: right; width: 28%; }
-.ptable tbody th { display: grid; gap: 2px; }
-.ptable .name { font-weight: 600; }
-.ptable td { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.ptable s.list, .plan s.list { color: var(--ink-muted); font-weight: 400; margin-right: 6px; }
+/* PRICE 01 가격표: 모바일에서도 표 그대로 (행 = 컨셉, 열 = 가성비 | 패키지), 가로 스크롤 없음 */
+.ptable { width: 100%; border-collapse: collapse; border-top: 1px solid var(--line); table-layout: fixed; }
+.ptable th, .ptable td { padding: 14px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; font-weight: 400; }
+.ptable thead th { font-family: var(--font-sans); font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0; color: var(--ink); padding-block: 10px; }
+.ptable .col-price { width: 30%; text-align: right; }
+.ptable thead .badge { margin-left: 6px; }
+.ptable tbody th { padding-right: var(--space-4); word-break: keep-all; }
+.ptable .name { display: block; font-weight: 600; }
+.ptable .note { display: block; margin-top: 2px; }
+.ptable td { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* 정가 취소선은 할인가 위에 작게 쌓아 폭을 줄임 */
+.ptable .amt { display: grid; justify-items: end; }
+.ptable s.list { color: var(--ink-muted); font-weight: 400; font-size: 13px; line-height: 18px; }
+.plan s.list { color: var(--ink-muted); font-weight: 400; margin-right: 6px; }
 .ptable .ask { font-weight: 400; color: var(--ink-muted); }
-@media (max-width: 720px) {
-  /* 모바일: 표 대신 컨셉별 블록 (컨셉명 → 가성비 / 패키지 두 줄) */
-  .ptable thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  .ptable, .ptable tbody, .ptable tr, .ptable th, .ptable td { display: block; width: auto; }
-  .ptable tr { padding: var(--space-4) 0; border-bottom: 1px solid var(--line); }
-  .ptable tbody th { padding: 0 0 var(--space-2); border: 0; }
-  .ptable td { display: flex; justify-content: flex-end; align-items: baseline; padding: 4px 0; border: 0; text-align: right; }
-  .ptable td::before { content: attr(data-label); margin-right: auto; padding-right: var(--space-4); font-weight: 400; color: var(--ink-muted); }
-}
+.ptable .na { font-weight: 400; color: var(--stone); }
+@media (min-width: 721px) { .ptable th, .ptable td { padding-block: var(--space-4); } .ptable .col-price { width: 24%; } }
 .plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); align-items: stretch; }
-@media (max-width: 720px) { .plans { grid-template-columns: 1fr; } }
+/* 모바일: 위아래로 쌓고 패키지 카드를 먼저 */
+@media (max-width: 720px) { .plans { grid-template-columns: 1fr; } .plan-featured { order: -1; } }
 .plan { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-6); border: 1px solid var(--ink); border-radius: 0; background: var(--paper-100); }
 .plan-featured { border: 2px solid var(--titi-navy); padding: calc(var(--space-6) - 1px); }
 .plan p { margin: 0; }
@@ -307,6 +322,12 @@ a { color: inherit; }
 .plan-icon { margin-top: 5px; color: var(--titi-navy); }
 .plan-all { color: var(--ink-muted); padding-bottom: var(--space-2); border-bottom: 1px dashed var(--line); }
 .plan-all .plan-icon { color: var(--ink-muted); }
+/* 가성비 카드 기본 제공 목록: 모바일은 처음 3줄 + '기본 제공 전체 보기' (components/site/more-list.tsx) */
+.more-btn { display: none; }
+@media (max-width: 720px) {
+  .more-list[data-collapsed] .more-hidden { display: none; }
+  .more-btn { display: inline-flex; align-items: center; align-self: flex-start; min-height: 44px; padding: 0; border: 0; background: none; color: var(--titi-navy); font: 600 15px/24px var(--font-sans); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+}
 .plan-price { display: grid; gap: 2px; }
 .plan-price .amount { font-family: var(--font-display); font-size: 36px; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .plan-price .amount s.list { font-size: 20px; }
@@ -327,6 +348,11 @@ a { color: inherit; }
 .bstep { border-top: 1px solid var(--ink); padding: var(--space-6) 0 var(--space-10); }
 .bstep-h { display: flex; align-items: baseline; gap: var(--space-4); margin-bottom: var(--space-4); }
 .bstep-h .index { color: var(--titi-navy); }
+/* STEP 1 '컨셉 보기': 제목 오른쪽 작은 보조 버튼, 누르는 영역 44px */
+.bstep-more { position: relative; margin-left: auto; align-self: center; min-height: 32px; padding: 0 14px; }
+.bstep-more::after { content: ""; position: absolute; inset: -6px 0; }
+.choice:disabled { cursor: not-allowed; color: var(--ink-muted); background: var(--paper-200); border-color: var(--line); }
+.choice:disabled:hover { border-color: var(--line); }
 .choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-2); }
 .choice { position: relative; display: grid; gap: 2px; padding: 14px 16px; border: 1px solid var(--line); background: var(--paper-100); cursor: pointer; text-align: left; font: inherit; color: inherit; border-radius: 0; }
 .choice:hover { border-color: var(--ink); }
@@ -548,7 +574,7 @@ footer { background: var(--night); color: var(--on-night); padding-block: var(--
  * ============================================================ */
 
 /* 라벨·캡션: 11~12px → 13px */
-.eyebrow, .index, .t-eyebrow, .t-index, .sub-h, .ph-tag, .ptable thead th, .cal-weekday { font-size: 13px; line-height: 20px; }
+.eyebrow, .index, .t-eyebrow, .t-index, .sub-h, .ph-tag, .cal-weekday { font-size: 13px; line-height: 20px; }
 .badge, .plist .tag, .demo-note { font-size: 13px; line-height: 22px; }
 .choice small, .slot span, .rcard .stars, .rcard .meta { font-size: 13px; line-height: 20px; }
 
@@ -558,7 +584,6 @@ footer { background: var(--night); color: var(--on-night); padding-block: var(--
 .foot p { font-size: 15px; line-height: 24px; }
 
 /* 터치 영역 44px: 크기를 키움 */
-.cc-arrow { width: 44px; height: 44px; }
 .cal-caption, .cal-nav { height: 44px; }
 .cal-nav-btn { width: 44px; height: 44px; }
 .cal-weekday { width: 44px; }

@@ -7,10 +7,13 @@
  *  - 가성비: 원본 무제한(웹사이즈)
  *  - 패키지: 원본 무제한 + 2컷 보정(수정 1회) + 2장 인화 + 종이액자 우편 발송
  * 금액 = 레퍼런스(_handoff/reference/index.html) '이용 요금' 값 + 확정 지시 (1~2인 기준)
+ *  - 베이직 컬러·클래식 흑백·시즌(크리스마스·졸업): 가성비 59,000원 / 패키지 89,000원 (정가 99,000원)
  *  - 100일상: 가성비 79,000원 / 패키지 99,000원
- * amount: null → 결제 대신 카카오톡 문의. 화면 표기는 label, 없으면 '문의'
- *  - 시즌 컨셉(크리스마스·졸업): '컨셉 제공 시 안내'
- *  - 증명·프로필 패키지: 금액 미정이라 임시 '문의' (금액 받으면 숫자로 교체)
+ *  - 증명·여권: 가성비 판매 안 함 / 패키지 25,000원, 프로필: 가성비 판매 안 함 / 패키지 55,000원
+ * 판매 안 함(available: false) → 화면 '–', 선택 불가
+ * 문의(amount: null) → 화면 label 또는 '문의', 결제 대신 카카오톡 문의 (지금은 해당 상품 없음)
+ * 2026-11 요금 변경 전 값(예전 예약 표기용 기록): 시즌 '컨셉 제공 시 안내', 증명·여권 25,000/문의, 프로필 55,000/문의
+ *  저장된 예약은 결제 금액(paid)을 그대로 보여주므로 새 가격은 새 예약부터 적용
  *
  * 세이지 포레스트는 베이직 컬러에 통합 (별도 컨셉·가격 없음). 예전 데이터는 LEGACY_CONCEPT_IDS 로 연결
  * 예전 'season'(시즌 컨셉 1개 + 졸업/크리스마스 하위 선택)은 크리스마스·졸업 2개로 나눔.
@@ -38,6 +41,8 @@ export type PlanPrice = {
   listAmount?: number;
   /** amount 가 null 일 때 화면 표기. 없으면 '문의' */
   label?: string;
+  /** false = 이 필수 선택은 판매하지 않음 (화면 '–', 선택 불가). 없으면 판매 */
+  available?: false;
 };
 
 /** 세부 상품. 대부분 컨셉은 1개, 증명·프로필은 2개 */
@@ -61,8 +66,10 @@ export type Concept = {
   variants: ConceptVariant[];
 };
 
-const INQUIRY: PlanPrice = { amount: null };
-const SEASON_PRICE: PlanPrice = { amount: null, label: "컨셉 제공 시 안내" };
+/** 판매하지 않는 필수 선택 */
+const NOT_SOLD: PlanPrice = { amount: null, available: false };
+/** 베이직 컬러·클래식 흑백·시즌 공통 */
+const STANDARD = { value: { amount: 59000 }, package: { amount: 89000, listAmount: 99000 } } satisfies Record<PlanId, PlanPrice>;
 
 export const CONCEPTS: Concept[] = [
   {
@@ -70,14 +77,14 @@ export const CONCEPTS: Concept[] = [
     name: "베이직 컬러",
     bookingName: "베이직 컬러",
     label: "BASIC COLOR",
-    variants: [{ id: "basic-color", name: "베이직 컬러", plans: { value: { amount: 59000 }, package: { amount: 89000, listAmount: 99000 } } }],
+    variants: [{ id: "basic-color", name: "베이직 컬러", plans: STANDARD }],
   },
   {
     id: "classic-bw",
     name: "클래식 흑백",
     bookingName: "클래식 흑백",
     label: "CLASSIC B&W",
-    variants: [{ id: "classic-bw", name: "클래식 흑백", plans: { value: { amount: 59000 }, package: { amount: 89000, listAmount: 99000 } } }],
+    variants: [{ id: "classic-bw", name: "클래식 흑백", plans: STANDARD }],
   },
   {
     id: "100days",
@@ -92,8 +99,8 @@ export const CONCEPTS: Concept[] = [
     bookingName: "증명·프로필",
     label: "ID · PROFILE",
     variants: [
-      { id: "id-photo", name: "증명·여권", note: "30분 촬영, 당일 인화 불가", plans: { value: { amount: 25000 }, package: INQUIRY } },
-      { id: "profile", name: "프로필", note: "셀렉은 집에서", plans: { value: { amount: 55000 }, package: INQUIRY } },
+      { id: "id-photo", name: "증명·여권", note: "30분 촬영, 당일 인화 불가", plans: { value: NOT_SOLD, package: { amount: 25000 } } },
+      { id: "profile", name: "프로필", note: "셀렉은 집에서", plans: { value: NOT_SOLD, package: { amount: 55000 } } },
     ],
   },
   // 시즌 컨셉: 크리스마스 → 졸업 (기존 시즌 자리)
@@ -102,14 +109,14 @@ export const CONCEPTS: Concept[] = [
     name: "크리스마스",
     bookingName: "(시즌) 크리스마스",
     label: "SEASON",
-    variants: [{ id: "season-christmas", name: "크리스마스", plans: { value: SEASON_PRICE, package: SEASON_PRICE } }],
+    variants: [{ id: "season-christmas", name: "크리스마스", plans: STANDARD }],
   },
   {
     id: "season-graduation",
     name: "졸업",
     bookingName: "(시즌) 졸업",
     label: "SEASON",
-    variants: [{ id: "season-graduation", name: "졸업", plans: { value: SEASON_PRICE, package: SEASON_PRICE } }],
+    variants: [{ id: "season-graduation", name: "졸업", plans: STANDARD }],
   },
 ];
 
@@ -165,7 +172,10 @@ export const formatKRW = (value: number) => `${value.toLocaleString("ko-KR")}원
 
 /** 가격 표기: 금액 없음(null)은 label 또는 '문의' */
 export const priceLabel = (price: PlanPrice) =>
-  price.amount === null ? (price.label ?? "문의") : formatKRW(price.amount);
+  !isAvailable(price) ? "–" : price.amount === null ? (price.label ?? "문의") : formatKRW(price.amount);
 
-/** 결제 가능 여부: 금액이 '문의'면 결제 대신 카카오톡 문의로 안내 */
-export const isPayable = (price: PlanPrice) => price.amount !== null;
+/** 판매 여부: available: false 면 선택 불가 ('–') */
+export const isAvailable = (price: PlanPrice) => price.available !== false;
+
+/** 결제 가능 여부: 판매하고 금액이 있을 때만. '문의'면 결제 대신 카카오톡 문의로 안내 */
+export const isPayable = (price: PlanPrice) => isAvailable(price) && price.amount !== null;

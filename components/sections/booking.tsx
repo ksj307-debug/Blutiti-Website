@@ -6,10 +6,11 @@ import {
   CONCEPTS,
   PLANS,
   findConcept,
+  findVariant,
   formatKRW,
+  isAvailable,
   isPayable,
   priceLabel,
-  type Concept,
   type ConceptId,
   type PlanId,
 } from "@/lib/concepts";
@@ -36,9 +37,15 @@ function initialConcept(): ConceptId | null {
   return findConcept(param)?.id ?? null;
 }
 const firstVariant = (id: ConceptId | null) => (id ? (findConcept(id)?.variants[0].id ?? null) : null);
-/** 컨셉 선택지 보조 문구 */
-const conceptNote = (c: Concept) =>
-  c.variants.length > 1 ? c.variants.map((v) => v.name).join(" / ") : c.variants[0].note;
+/**
+ * 세부 상품에서 고를 수 없는 필수 선택이면 판매하는 쪽으로 (증명·여권·프로필은 가성비 판매 안 함 → 패키지)
+ * 컨셉 선택지 아래 보조 문구(100일상 '한복, 돌상 준비' 등)는 화면에서 뺌. 데이터 note 는 그대로
+ */
+const fitPlan = (variantId: string | null, plan: PlanId): PlanId => {
+  const v = variantId ? findVariant(variantId)?.variant : undefined;
+  if (!v || isAvailable(v.plans[plan])) return plan;
+  return PLANS.find((p) => isAvailable(v.plans[p.id]))?.id ?? plan;
+};
 const OPTIONS = [...PRE_ADD_ONS.filter((o) => o.id !== "person"), REVISIT_OPTION];
 /** 예약 변경·취소 안내 */
 const POLICY = [
@@ -157,8 +164,14 @@ function BookingForm() {
     : [concept.variants.length > 1 ? (variant?.name ?? concept.bookingName) : concept.bookingName, planName].join(" · ");
 
   const pickConcept = (id: ConceptId) => {
+    const v = firstVariant(id);
     setConceptId(id);
-    setVariantId(firstVariant(id));
+    setVariantId(v);
+    setPlan((p) => fitPlan(v, p));
+  };
+  const pickVariant = (id: string) => {
+    setVariantId(id);
+    setPlan((p) => fitPlan(id, p));
   };
 
   const ext = (() => {
@@ -263,6 +276,9 @@ function BookingForm() {
           <div className="bstep-h">
             <span className="index">STEP 1</span>
             <h3 className="t-kr">컨셉 선택</h3>
+            <a className="btn-secondary bstep-more" href="#concepts">
+              컨셉 보기
+            </a>
           </div>
           <div className="choices" role="group" aria-label="컨셉">
             {CONCEPTS.map((c) => (
@@ -274,7 +290,6 @@ function BookingForm() {
                 onClick={() => pickConcept(c.id)}
               >
                 <b>{c.bookingName}</b>
-                {conceptNote(c) && <small>{conceptNote(c)}</small>}
               </button>
             ))}
           </div>
@@ -288,7 +303,7 @@ function BookingForm() {
                   type="button"
                   className="choice"
                   aria-pressed={variantId === v.id}
-                  onClick={() => setVariantId(v.id)}
+                  onClick={() => pickVariant(v.id)}
                 >
                   <b>{v.name}</b>
                   {v.note && <small>{v.note}</small>}
@@ -299,13 +314,27 @@ function BookingForm() {
 
           {/* 필수 선택: 모든 컨셉 공통. 금액은 고른 컨셉(세부 상품) 기준 */}
           <SubChoices label="필수 선택">
-            {PLANS.map((p) => (
-              <button key={p.id} type="button" className="choice" aria-pressed={plan === p.id} onClick={() => setPlan(p.id)}>
-                <b>{p.name}</b>
-                <span className="p">{variant ? priceLabel(variant.plans[p.id]) : "컨셉을 먼저 골라주세요"}</span>
-                <small>{p.includes.join(" · ")}</small>
-              </button>
-            ))}
+            {PLANS.map((p) => {
+              // 판매하지 않는 조합(증명·여권·프로필의 가성비)은 '–' 로 비활성
+              const sold = !variant || isAvailable(variant.plans[p.id]);
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  className="choice"
+                  aria-pressed={plan === p.id}
+                  disabled={!sold}
+                  onClick={() => setPlan(p.id)}
+                >
+                  <b>{p.name}</b>
+                  <span className="p">
+                    {variant ? priceLabel(variant.plans[p.id]) : "컨셉을 먼저 골라주세요"}
+                    {!sold && <span className="sr">판매하지 않음</span>}
+                  </span>
+                  <small>{p.includes.join(" · ")}</small>
+                </button>
+              );
+            })}
           </SubChoices>
         </div>
 

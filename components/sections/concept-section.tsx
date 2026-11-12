@@ -85,7 +85,7 @@ export default function ConceptSection() {
             const copy = COPY[c.id];
             return (
               <article className="cc-card" key={c.id}>
-                <div className="cc-photo">
+                <div className="cc-photo" data-cc-photo>
                   {copy.image && (
                     <img
                       src={copy.image}

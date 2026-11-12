@@ -21,8 +21,8 @@ export const SIZES = {
   hero: "(min-width: 768px) 319px, 239px",
   /** CONCEPTS 카드: 모바일 1장·태블릿 2장·데스크톱 4장 + 다음 카드 10% */
   concept: "(max-width: 639px) calc((100vw - 48px) / 1.1), (max-width: 1023px) calc((100vw - 80px) / 2.1), 270px",
-  /** FOR YOU 카드: 모바일·태블릿 가로 스크롤, 데스크톱 4열 */
-  forYou: "(max-width: 980px) 220px, 270px",
+  /** FOR YOU 카드: 모바일 1장·태블릿 2장·데스크톱 3장 + 다음 카드 10% (CONCEPTS 와 같은 캐러셀) */
+  forYou: "(max-width: 639px) calc((100vw - 48px) / 1.1), (max-width: 1023px) calc((100vw - 80px) / 2.1), 350px",
   /** GALLERY 메이슨리: 모바일 2열, 데스크톱 3열 */
-  gallery: "(max-width: 600px) calc((100vw - 48px) / 2), (max-width: 1023px) calc((100vw - 80px) / 3), 360px",
+  gallery: "(max-width: 767px) calc((100vw - 48px) / 2), (max-width: 1023px) calc((100vw - 80px) / 3), 210px",
 } as const;

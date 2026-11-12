@@ -1,4 +1,5 @@
 import { Sentences } from "@/components/site/sentences";
+import { ConceptCarousel } from "@/components/ui/concept-carousel";
 import { SIZES, srcSet } from "@/lib/img";
 
 /**
@@ -13,7 +14,7 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; s
   {
     eyebrow: "FAMILY",
     image: "/images/for-you/kids-family.webp",
-    srcSet: srcSet("/images/for-you/kids-family.webp", [440, 560], 800, [["/images/for-you/kids-family@2x.webp", 1600]]),
+    srcSet: srcSet("/images/for-you/kids-family.webp", [440, 560, 640, 700], 800, [["/images/for-you/kids-family@2x.webp", 1600]]),
     alt: "풍선을 안고 활짝 웃는 두 아이",
     title: "아이가 있는 가족",
     desc: "부끄러움 많은 아이도 OK! 아이 기분에 맞춰 천천히 찍어 주세요. 만 7세 이하 1명은 무료로 추가할 수 있어요.",
@@ -22,7 +23,7 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; s
   {
     eyebrow: "MATERNITY",
     image: "/images/for-you/maternity.webp",
-    srcSet: srcSet("/images/for-you/maternity.webp", [440, 560], 800, [["/images/for-you/maternity@2x.webp", 1600]]),
+    srcSet: srcSet("/images/for-you/maternity.webp", [440, 560, 640, 700], 800, [["/images/for-you/maternity@2x.webp", 1600]]),
     alt: "딸의 손을 잡고 선 만삭 부부",
     title: "만삭 촬영",
     desc: "놓치면 아쉬운 만삭 사진, 꼭 남겨 주세요. 작가 없이 우리끼리만 있어서 편하고 자유롭게 찍을 수 있어요.",
@@ -31,7 +32,7 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; s
   {
     eyebrow: "FAMILY PHOTO",
     image: "/images/for-you/family-photo.webp",
-    srcSet: srcSet("/images/for-you/family-photo.webp", [440, 560], 800, [["/images/for-you/family-photo@2x.webp", 1600]]),
+    srcSet: srcSet("/images/for-you/family-photo.webp", [440, 560, 640, 700], 800, [["/images/for-you/family-photo@2x.webp", 1600]]),
     alt: "흰 배경 앞에서 두 아이를 안고 활짝 웃는 부부",
     title: "가족 사진",
     desc: "결혼기념일, 아이 생일처럼 우리 가족의 특별한 날마다 기념사진을 남겨 보세요! 우리 가족끼리 자유롭게 찍는 시간도 즐거운 추억이 될 거예요.",
@@ -43,7 +44,7 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; s
   {
     eyebrow: "SELF WEDDING",
     image: "/images/for-you/self-wedding.webp",
-    srcSet: srcSet("/images/for-you/self-wedding.webp", [440, 560], 800, [["/images/for-you/self-wedding@2x.webp", 1600]]),
+    srcSet: srcSet("/images/for-you/self-wedding.webp", [440, 560, 640, 700], 800, [["/images/for-you/self-wedding@2x.webp", 1600]]),
     alt: "흑백 사진 - 베일을 함께 쓰고 웃는 신랑 신부",
     title: "셀프웨딩 촬영",
     desc: "자유로운 우리만의 모습을 남길 수 있어요. 웨딩드레스, 구두, 부케, 남자 정장까지 모두 준비되어 있어요. 평범한 게 싫은 신랑 신부라면 모여라!",
@@ -55,13 +56,19 @@ export function ForYou() {
   return (
     <section className="alt band" aria-labelledby="who-h">
       <div className="wrap">
-        <div className="section-head">
-          <p className="eyebrow">FOR YOU</p>
-          <h2 id="who-h" className="h-kr">
-            이런 분들이 많이 찾아주세요
-          </h2>
-        </div>
-        <div className="stories">
+        {/* CONCEPTS 와 같은 캐러셀 (모바일 1장·태블릿 2장·데스크톱 3장 + 다음 카드 일부) */}
+        <ConceptCarousel
+          label="FOR YOU"
+          perView={{ mobile: 1, tablet: 2, desktop: 3 }}
+          head={
+            <div className="section-head" style={{ marginBottom: 0 }}>
+              <p className="eyebrow">FOR YOU</p>
+              <h2 id="who-h" className="h-kr">
+                이런 분들이 많이 찾아주세요
+              </h2>
+            </div>
+          }
+        >
           {STORIES.map((s) => (
             <article className="story" key={s.eyebrow}>
               <p className="eyebrow">{s.eyebrow}</p>
@@ -72,9 +79,10 @@ export function ForYou() {
                   sizes={s.srcSet ? SIZES.forYou : undefined}
                   alt={s.alt}
                   loading="lazy"
+                  data-cc-photo
                 />
               ) : (
-                <div className="ph" aria-hidden="true" />
+                <div className="ph" aria-hidden="true" data-cc-photo />
               )}
               <h3 className="t-kr">{s.title}</h3>
               <p className="muted cap">
@@ -82,7 +90,7 @@ export function ForYou() {
               </p>
             </article>
           ))}
-        </div>
+        </ConceptCarousel>
       </div>
     </section>
   );
