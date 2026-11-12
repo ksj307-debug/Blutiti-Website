@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { CSSProperties } from "react";
 import { Marquee } from "@/components/ui/3d-testimonials";
 import { ReviewCard } from "@/components/site/review-card";
@@ -34,9 +33,7 @@ export function Review() {
             </p>
           </div>
           <div className="rev-actions">
-            <Link className="btn" href="/reviews">
-              리뷰 더 보기
-            </Link>
+            {/* '리뷰 더 보기'(/reviews) 버튼은 뺌. 전체 리뷰 페이지(app/reviews)는 그대로 둠 */}
             <a className="btn" href={NAVER_REVIEW_URL} target="_blank" rel="noopener">
               네이버에서 전체 리뷰 보기 ↗
             </a>

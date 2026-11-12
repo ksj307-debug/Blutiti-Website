@@ -520,6 +520,10 @@ footer { background: var(--night); color: var(--on-night); padding-block: var(--
 @media (max-width: 760px) { .foot { grid-template-columns: 1fr; } }
 @media (min-width: 861px) { footer { padding-block: var(--space-16); } }
 
+/* LOCATION 지도 버튼 2개: 화면 폭과 상관없이 한 줄에 반씩 */
+.map-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); }
+.map-links .btn-secondary { padding: 0 var(--space-2); text-align: center; word-break: keep-all; }
+
 /* mobile bar */
 .bar { display: none; }
 @media (max-width: 860px) {

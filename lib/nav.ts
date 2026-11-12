@@ -18,3 +18,5 @@ export const KAKAO_URL = `https://pf.kakao.com/${KAKAO_CHANNEL_ID}`;
 export const KAKAO_CHAT_URL = `${KAKAO_URL}/chat`;
 export const INSTAGRAM_URL = "https://www.instagram.com/blutiti_studio/";
 export const PHONE = "0507-1401-3190";
+/** 카카오맵 장소 페이지 (LOCATION '카카오맵에서 보기') */
+export const KAKAO_MAP_URL = "https://place.map.kakao.com/2101855012";

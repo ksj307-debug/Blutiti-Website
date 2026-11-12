@@ -89,8 +89,8 @@ const firstOpenSlot = (now: number, day: Day) => {
   return i < 0 ? null : i;
 };
 
-/** 예약 완료 기록. phone 은 숫자만 */
-type Done = { no: string; name: string; phone: string; email: string; product: string; when: string; total: number };
+/** 예약 완료 기록. phone 은 숫자만, carNo 는 선택 (비면 없음) */
+type Done = { no: string; name: string; phone: string; email: string; carNo?: string; product: string; when: string; total: number };
 
 const noopSubscribe = () => () => {};
 
@@ -139,6 +139,7 @@ function BookingForm() {
   const [name, setName] = useState("김블루");
   const [phone, setPhone] = useState("010-1234-5678");
   const [email, setEmail] = useState("");
+  const [carNo, setCarNo] = useState("");
   const [agreePolicy, setAgreePolicy] = useState(false);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [agreeSns, setAgreeSns] = useState(false);
@@ -202,6 +203,7 @@ function BookingForm() {
       name: name.trim(),
       phone: digits,
       email: email.trim(),
+      carNo: carNo.trim() || undefined,
       product: productLabel,
       when: whenLabel(false),
       total,
@@ -229,6 +231,12 @@ function BookingForm() {
             <dd>{done.product}</dd>
             <dt>일시</dt>
             <dd className="num">{done.when}</dd>
+            {done.carNo && (
+              <>
+                <dt>차량번호</dt>
+                <dd>{done.carNo}</dd>
+              </>
+            )}
             <dt>결제 금액</dt>
             <dd className="num">{formatKRW(done.total)}</dd>
           </dl>
@@ -354,7 +362,9 @@ function BookingForm() {
             <h3 className="t-kr">추가 선택</h3>
           </div>
           <Counter label="어른·만 8세 이상" help="기준 인원 1~2명" value={adults} min={1} onChange={setAdults} noun="어른" />
-          <Counter label="만 7세 이하" help="1명 무료, 2명부터 인원 추가" value={kids} min={0} onChange={setKids} noun="아이" />
+          <Counter label="만 7세 이하" help="1명 무료, 2명부터 인원 추가"
+            note="나이 확인을 위해 증빙 서류를 요청드릴 수 있어요."
+            value={kids} min={0} onChange={setKids} noun="아이" />
           <p className="cap muted" style={{ margin: "10px 0 var(--space-6)" }}>
             <Sentences
               text={
@@ -411,6 +421,24 @@ function BookingForm() {
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
+              {/* 차량번호 (선택): 지하 주차장 사전 등록용. 형식 검사 없음, 앞뒤 공백만 정리해서 저장 */}
+              <div className="field" style={{ gridColumn: "1/-1" }}>
+                <label htmlFor="b-car">차량번호 (선택)</label>
+                <input
+                  id="b-car"
+                  autoComplete="off"
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  placeholder="예) 12가 3456"
+                  aria-describedby="b-car-help"
+                  value={carNo}
+                  onChange={(e) => setCarNo(e.target.value)}
+                />
+                <span id="b-car-help" className="cap muted">
+                  <Sentences text="지하 주차장 무료 이용을 위해 사전 등록이 필요해요. 차량으로 오시면 입력해 주세요." />
+                </span>
+              </div>
               <div className="field" style={{ gridColumn: "1/-1" }}>
                 <label htmlFor="b-email">이메일</label>
                 <input
@@ -451,6 +479,7 @@ function BookingForm() {
           <SumRow k="상품" v={productLabel} />
           <SumRow k="일시" v={whenLabel(true)} />
           <SumRow k="인원" v={`어른 ${adults} · 아이 ${kids}`} />
+          {carNo.trim() && <SumRow k="차량번호" v={carNo.trim()} />}
           <SumRow k="기본" v={price ? priceLabel(price) : "-"} />
           {extra > 0 && <SumRow k={`인원 추가 ${extra}명`} v={formatKRW(extra * EXTRA_PERSON_PRICE)} />}
           {OPTIONS.filter((o) => selected(o.id)).map((o) => (
@@ -515,13 +544,23 @@ function SumRow({ k, v }: { k: string; v: string }) {
   );
 }
 
-function Counter(props: { label: string; help: string; value: number; min: number; noun: string; onChange: (n: number) => void }) {
-  const { label, help, value, min, noun, onChange } = props;
+function Counter(props: {
+  label: string;
+  help: string;
+  /** help 아래 추가 안내 (같은 캡션 스타일) */
+  note?: string;
+  value: number;
+  min: number;
+  noun: string;
+  onChange: (n: number) => void;
+}) {
+  const { label, help, note, value, min, noun, onChange } = props;
   return (
     <div className="counter-row">
       <div>
         <b>{label}</b>
         <div className="cap muted">{help}</div>
+        {note && <div className="cap muted">{note}</div>}
       </div>
       <div className="counter">
         <button type="button" aria-label={`${noun} 줄이기`} disabled={value <= min} onClick={() => onChange(value - 1)}>

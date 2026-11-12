@@ -22,7 +22,8 @@ const STEPS: { title: string; desc: string; badge?: string }[] = [
   },
   {
     title: "원하는 대로 보정해드려요",
-    desc: "요청하신 부분을 그대로 반영해 보정해요. 보정본 확인 후 최종 컨펌 메일을 회신해 주세요. (수정 1회까지 가능)",
+    // 예외: '(수정 1회까지 가능)'은 앞 문장에 붙이지 않고 다음 줄로 → 줄 단위(\n)로 지정
+    desc: "요청하신 부분을 그대로 반영해 보정해요.\n보정본 확인 후 최종 컨펌 메일을 회신해 주세요.\n(수정 1회까지 가능)",
     badge: RETOUCH_BADGE,
   },
 ];
@@ -31,7 +32,8 @@ export function Guide() {
   return (
     <section id="guide" className="wrap" aria-labelledby="guide-h">
       <div className="section-head">
-        <p className="eyebrow">GUIDE</p>
+        {/* 메뉴 이름은 lib/nav.ts 'GUIDE' 그대로 */}
+        <p className="eyebrow">GUIDE (예약 안내)</p>
         <h2 id="guide-h" className="h-kr">
           버튼만 누르면 끝나는 촬영
         </h2>

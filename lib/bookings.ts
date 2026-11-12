@@ -24,6 +24,8 @@ export type StoredBooking = {
   paid: number;
   stage: BookingStage;
   trackingNo?: string;
+  /** 차량번호 (선택, 지하 주차장 사전 등록용). 입력값 앞뒤 공백만 정리, 형식 검사 없음 */
+  carNo?: string;
 };
 
 /** 미리보기 로그인 기본값 (login 폼 기본 입력값으로 사용) */
@@ -43,6 +45,8 @@ const BOOKINGS: StoredBooking[] = [
     kids: 1,
     paid: 89000,
     stage: 4,
+    // 예시 값 (입력칸 placeholder 와 같음)
+    carNo: "12가 3456",
   },
   {
     id: "BT-0823-03",

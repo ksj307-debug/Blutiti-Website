@@ -140,6 +140,12 @@ function BookingDetail({ booking: b, backToList }: { booking: StoredBooking; bac
           <dd>
             어른 {b.adults}명{b.kids ? `, 만 7세 이하 ${b.kids}명` : ""}
           </dd>
+          {b.carNo && (
+            <>
+              <dt>차량번호</dt>
+              <dd>{b.carNo}</dd>
+            </>
+          )}
         </dl>
         <ol className="track">
           {STAGES.map((s, i) => {

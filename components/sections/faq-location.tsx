@@ -1,7 +1,7 @@
 import { CopyButton } from "@/components/site/copy-button";
 import { Sentences } from "@/components/site/sentences";
 import { NAVER_URL } from "@/lib/reviews";
-import { PHONE } from "@/lib/nav";
+import { KAKAO_MAP_URL, PHONE } from "@/lib/nav";
 
 /** FAQ · 자주 묻는 질문 (기존 GUIDE 이용 안내) + LOCATION · 오시는 길 (기존 VISIT) */
 const FAQ = [
@@ -24,7 +24,10 @@ const FAQ = [
     // GUIDE 04 와 같은 방식 (구글폼에 파일명 적기)
     a: "받은 원본 중 보정·인화할 사진을 집에서 천천히 골라주세요. 선택한 사진의 파일명을 전달된 구글폼에 적어주시면 돼요. 보정·인화본은 종이액자와 함께 우편으로 보내드려요.",
   },
-  { q: "주차할 수 있나요?", a: "지하 주차장을 무료로 이용하실 수 있고, 엘리베이터로 스튜디오까지 바로 연결돼요." },
+  {
+    q: "주차할 수 있나요?",
+    a: "지하 주차장을 무료로 이용하실 수 있고, 엘리베이터로 스튜디오까지 바로 연결돼요. 방문 전 차량번호 등록이 필요하니, 예약할 때 함께 입력해 주세요.",
+  },
 ];
 
 const ADDRESS = "경기 안산시 단원구 화랑로 130 2동 2층 207호";
@@ -86,7 +89,8 @@ export function FaqLocation() {
           <dt>지하철</dt>
           <dd>4호선·수인분당선·서해선 초지역 2번 출구</dd>
           <dt>주차</dt>
-          <dd>지하 주차장 무료, 엘리베이터 연결</dd>
+          {/* 예전: 지하 주차장 무료, 엘리베이터 연결 */}
+          <dd>지하 주차장 무료 (사전 차량번호 등록 필수)</dd>
           <dt>영업</dt>
           <dd className="num">매일 10:00~21:50</dd>
           <dt>전화</dt>
@@ -97,12 +101,13 @@ export function FaqLocation() {
             </span>
           </dd>
         </dl>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          <a className="btn" href={NAVER_URL} target="_blank" rel="noopener">
+        {/* 지도 버튼 2개: 모바일에서도 한 줄에 반씩. 예전 '네이버 예약' 버튼(네이버 지도와 같은 링크)은 뺌 */}
+        <div className="map-links">
+          <a className="btn-secondary" href={NAVER_URL} target="_blank" rel="noopener">
             네이버 지도에서 보기
           </a>
-          <a className="btn" href={NAVER_URL} target="_blank" rel="noopener">
-            네이버 예약
+          <a className="btn-secondary" href={KAKAO_MAP_URL} target="_blank" rel="noopener">
+            카카오맵에서 보기
           </a>
         </div>
       </div>
