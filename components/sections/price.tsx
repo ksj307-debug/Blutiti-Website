@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { CONCEPTS, PLANS, formatKRW, isAvailable, priceLabel, type PlanPrice } from "@/lib/concepts";
 import { BASIC_INCLUDES, FREE_BENEFITS, POST_ADD_ONS, PRE_ADD_ONS } from "@/lib/options";
 import { Sentences } from "@/components/site/sentences";
@@ -159,10 +160,10 @@ export function Price() {
                       visible={3}
                       moreLabel="기본 제공 전체 보기"
                       items={[...p.includes, ...BASIC_INCLUDES].map((item) => (
-                        <>
+                        <Fragment key={item}>
                           <CheckIcon />
                           <span>{item}</span>
-                        </>
+                        </Fragment>
                       ))}
                     />
                   )}
