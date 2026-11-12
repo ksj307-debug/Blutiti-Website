@@ -1,5 +1,6 @@
 import { Gallery as SharedGallery, GalleryGrid, GalleryImage } from "@/components/ui/shared-element-gallery";
 import { INSTAGRAM_URL } from "@/lib/nav";
+import { SIZES, srcSet } from "@/lib/img";
 
 /** 인스타그램 글리프 (단색 1.5px 선, 브랜드 색 대신 currentColor) */
 function InstagramGlyph() {
@@ -42,7 +43,15 @@ export function Gallery() {
       <SharedGallery>
         <GalleryGrid>
           {PHOTOS.map((p, i) => (
-            <GalleryImage key={p.src + i} id={`gallery-${i}`} src={p.src} alt={p.alt}>
+            <GalleryImage
+              key={p.src + i}
+              id={`gallery-${i}`}
+              src={p.src}
+              // 레퍼런스 jpg(사본 없음)는 srcset 없이 원본
+              srcSet={p.src.endsWith(".webp") ? srcSet(p.src, [360, 480, 560], 800) : undefined}
+              sizes={SIZES.gallery}
+              alt={p.alt}
+            >
               <figcaption className="index gallery-cap">
                 <span>{String(i + 1).padStart(2, "0")}</span>
                 <span>{p.caption}</span>

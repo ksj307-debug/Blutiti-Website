@@ -26,6 +26,10 @@ export type HeroImage = {
   src: string;
   /** 사진 설명 (한국어). 예: "가족 컨셉 - 아이를 안고 웃는 부부" */
   alt: string;
+  /** 반응형 srcset (선택, lib/img.ts srcSet) */
+  srcSet?: string;
+  /** srcSet 과 함께 쓰는 화면별 표시 폭 */
+  sizes?: string;
 };
 
 export interface AnimatedMarqueeHeroProps {
@@ -143,6 +147,8 @@ export function AnimatedMarqueeHero({
               <figure key={index} aria-hidden={isCopy || undefined} className="m-0 h-[299px] flex-shrink-0 pr-4 md:h-[399px] md:pr-6">
                 <img
                   src={img.src}
+                  srcSet={img.srcSet}
+                  sizes={img.sizes}
                   alt={isCopy ? "" : img.alt}
                   loading={index < 6 ? "eager" : "lazy"}
                   decoding="async"

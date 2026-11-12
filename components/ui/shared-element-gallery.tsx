@@ -79,12 +79,17 @@ export function GalleryGrid({ children, className }: { children: React.ReactNode
 /** 썸네일 한 장. children 은 사진 아래 캡션 */
 export function GalleryImage({
   src,
+  srcSet,
+  sizes,
   alt,
   id,
   className,
   children,
 }: {
   src: string;
+  /** 썸네일 반응형 srcset (크게 보기는 src 원본) */
+  srcSet?: string;
+  sizes?: string;
   alt?: string;
   id: string;
   className?: string;
@@ -107,6 +112,8 @@ export function GalleryImage({
         <motion.img
           layoutId={`image-${id}`}
           src={src}
+          srcSet={srcSet}
+          sizes={sizes}
           alt={alt ?? ""}
           loading="lazy"
           className="block h-auto w-full object-cover"

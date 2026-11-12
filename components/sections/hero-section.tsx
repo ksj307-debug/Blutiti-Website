@@ -1,4 +1,5 @@
 import { AnimatedMarqueeHero, type HeroImage } from "@/components/ui/hero-3";
+import { SIZES, srcSet } from "@/lib/img";
 
 /**
  * 히어로 마키 사진 16장 (샘플사진 폴더에서 선별, public/images/hero/ · 가로 900px webp)
@@ -35,7 +36,8 @@ export default function HeroSection() {
       ctaHref="#booking"
       secondaryText="컨셉 보기"
       secondaryHref="#concepts"
-      images={HERO_IMAGES}
+      // 모바일 우선: 화면 표시 크기의 2배까지만 (480·640·900px 중 선택)
+      images={HERO_IMAGES.map((img) => ({ ...img, srcSet: srcSet(img.src, [480, 640], 900), sizes: SIZES.hero }))}
     />
   );
 }

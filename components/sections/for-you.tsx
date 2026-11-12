@@ -1,4 +1,5 @@
 import { Sentences } from "@/components/site/sentences";
+import { SIZES, srcSet } from "@/lib/img";
 
 /**
  * FOR YOU · 이런 분들이 많이 찾아주세요
@@ -8,11 +9,11 @@ import { Sentences } from "@/components/site/sentences";
  * - 가족 사진: '김한빛29516.jpg' / 셀프웨딩 촬영: 'blutiti_상품사진템플렛_클래식흑백2.jpg' (템플릿 테두리 잘라냄)
  * 예전 레퍼런스 사진(b1.jpg, letter.jpg, frame.jpg)은 public/images/reference 에 그대로 둠
  */
-const STORIES: { eyebrow: string; title: string; desc: string; image?: string; image2x?: string; alt?: string }[] = [
+const STORIES: { eyebrow: string; title: string; desc: string; image?: string; srcSet?: string; alt?: string }[] = [
   {
     eyebrow: "FAMILY",
     image: "/images/for-you/kids-family.webp",
-    image2x: "/images/for-you/kids-family@2x.webp",
+    srcSet: srcSet("/images/for-you/kids-family.webp", [440, 560], 800, [["/images/for-you/kids-family@2x.webp", 1600]]),
     alt: "풍선을 안고 활짝 웃는 두 아이",
     title: "아이가 있는 가족",
     desc: "부끄러움 많은 아이도 OK! 아이 기분에 맞춰 천천히 찍어 주세요. 만 7세 이하 1명은 무료로 추가할 수 있어요.",
@@ -21,7 +22,7 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; i
   {
     eyebrow: "MATERNITY",
     image: "/images/for-you/maternity.webp",
-    image2x: "/images/for-you/maternity@2x.webp",
+    srcSet: srcSet("/images/for-you/maternity.webp", [440, 560], 800, [["/images/for-you/maternity@2x.webp", 1600]]),
     alt: "딸의 손을 잡고 선 만삭 부부",
     title: "만삭 촬영",
     desc: "놓치면 아쉬운 만삭 사진, 꼭 남겨 주세요. 작가 없이 우리끼리만 있어서 편하고 자유롭게 찍을 수 있어요.",
@@ -30,7 +31,7 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; i
   {
     eyebrow: "FAMILY PHOTO",
     image: "/images/for-you/family-photo.webp",
-    image2x: "/images/for-you/family-photo@2x.webp",
+    srcSet: srcSet("/images/for-you/family-photo.webp", [440, 560], 800, [["/images/for-you/family-photo@2x.webp", 1600]]),
     alt: "흰 배경 앞에서 두 아이를 안고 활짝 웃는 부부",
     title: "가족 사진",
     desc: "결혼기념일, 아이 생일처럼 우리 가족의 특별한 날마다 기념사진을 남겨 보세요! 우리 가족끼리 자유롭게 찍는 시간도 즐거운 추억이 될 거예요.",
@@ -42,7 +43,7 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; i
   {
     eyebrow: "SELF WEDDING",
     image: "/images/for-you/self-wedding.webp",
-    image2x: "/images/for-you/self-wedding@2x.webp",
+    srcSet: srcSet("/images/for-you/self-wedding.webp", [440, 560], 800, [["/images/for-you/self-wedding@2x.webp", 1600]]),
     alt: "흑백 사진 - 베일을 함께 쓰고 웃는 신랑 신부",
     title: "셀프웨딩 촬영",
     desc: "자유로운 우리만의 모습을 남길 수 있어요. 웨딩드레스, 구두, 부케, 남자 정장까지 모두 준비되어 있어요. 평범한 게 싫은 신랑 신부라면 모여라!",
@@ -67,7 +68,8 @@ export function ForYou() {
               {s.image ? (
                 <img
                   src={s.image}
-                  srcSet={s.image2x ? `${s.image} 1x, ${s.image2x} 2x` : undefined}
+                  srcSet={s.srcSet}
+                  sizes={s.srcSet ? SIZES.forYou : undefined}
                   alt={s.alt}
                   loading="lazy"
                 />
