@@ -18,7 +18,7 @@ export type AddOn = {
   shortName?: string;
 };
 
-/** 촬영 전 추가 */
+/** 촬영 전 추가. 순서: 인원 추가 → 시간 추가 → 반반 옵션 → 촬영 도움 서비스 (예전 이름: 반반 옵션 (클래식 흑백 추가)) */
 export const PRE_ADD_ONS: AddOn[] = [
   { id: "person", name: "인원 추가 (1인)", price: EXTRA_PERSON_PRICE },
   {
@@ -29,19 +29,19 @@ export const PRE_ADD_ONS: AddOn[] = [
     bookingDesc: "다음 시간이 비어 있을 때만 선택할 수 있어요.",
   },
   {
+    id: "half",
+    name: "반반 옵션 (클래식 흑백 + 베이직 컬러)",
+    shortName: "반반 옵션",
+    price: 29000,
+    desc: "촬영 중간에 컨셉 전환, 총 촬영 시간은 그대로",
+    bookingDesc: "촬영 중간에 컨셉을 바꿔요. 총 촬영 시간은 그대로예요.",
+  },
+  {
     id: "help",
     name: "촬영 도움 서비스",
     price: 29000,
     desc: "첫 20분 동안 직원이 포즈·소품·촬영 방법을 알려드려요",
     bookingDesc: "첫 20분 동안 직원이 포즈·소품·촬영 방법을 알려드려요.",
-  },
-  {
-    id: "half",
-    name: "반반 옵션 (클래식 흑백 추가)",
-    shortName: "반반 옵션",
-    price: 29000,
-    desc: "촬영 중간에 컨셉 전환, 총 촬영 시간은 그대로",
-    bookingDesc: "촬영 중간에 컨셉을 바꿔요. 총 촬영 시간은 그대로예요.",
   },
 ];
 
@@ -58,13 +58,22 @@ export const POST_ADD_ONS: { name: string; price: string }[] = [
 ];
 
 /** 무료 혜택 (이벤트) */
-export const FREE_BENEFITS: { name: string; benefit: string }[] = [
-  { name: "SNS 활용 동의", benefit: "고화질 원본 무료" },
-  { name: "네이버 리뷰·블로그 작성", benefit: "보정 1컷 무료" },
-  { name: "재방문 고객", benefit: "4컷 프레임 파일 무료" },
+export type FreeBenefit = {
+  id: "sns" | "review" | "revisit";
+  /** PRICE '지금 제공되는 이벤트' 표기 */
+  name: string;
+  /** BOOKING '이벤트 참여' 체크박스 문구 */
+  bookingLabel: string;
+  /** 혜택 (PRICE·BOOKING 공용) */
+  benefit: string;
+};
+export const FREE_BENEFITS: FreeBenefit[] = [
+  { id: "sns", name: "SNS 활용 동의", bookingLabel: "SNS 활용에 동의해요", benefit: "고화질 원본 무료" },
+  { id: "review", name: "네이버 리뷰·블로그 작성", bookingLabel: "네이버 리뷰·블로그를 작성할게요", benefit: "보정 1컷 무료" },
+  { id: "revisit", name: "재방문 고객", bookingLabel: "재방문 고객이에요", benefit: "4컷 프레임 파일 무료" },
 ];
 
-/** BOOKING 전용: 재방문 이벤트 (무료) */
+/** 미사용: 예전 BOOKING 추가 선택의 재방문 이벤트 행. 지금은 STEP 5 '이벤트 참여'(FREE_BENEFITS revisit)로 옮김 */
 export const REVISIT_OPTION: AddOn = {
   id: "revisit",
   name: "재방문 이벤트 · 4컷 프레임 파일",

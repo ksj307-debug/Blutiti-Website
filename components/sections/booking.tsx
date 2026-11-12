@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import {
   CONCEPTS,
   PLANS,
@@ -17,11 +17,14 @@ import {
 import { KakaoChatButton } from "@/components/site/kakao";
 import { Sentences } from "@/components/site/sentences";
 import { Calendar } from "@/components/ui/calendar";
-import { EXTRA_PERSON_PRICE, PRE_ADD_ONS, REVISIT_OPTION } from "@/lib/options";
+import { AddressSearch, type Address } from "@/components/site/address-search";
+import { PICK_PLAN_EVENT } from "@/components/site/plan-book-link";
+import { EXTRA_PERSON_PRICE, FREE_BENEFITS, PRE_ADD_ONS, type FreeBenefit } from "@/lib/options";
 
 /**
  * BOOKING (미리보기 예약 흐름. 실제 결제 없음)
  * STEP 1 컨셉 선택(lib/concepts.ts, 시즌은 크리스마스·졸업 따로) → 세부 상품 → 필수 선택(가성비/패키지)
+ * STEP 2 날짜와 시간 → STEP 3 인원 선택 → STEP 4 추가 선택 → STEP 5 예약자 정보 + 이벤트 참여 + 동의
  * 금액이 '문의'인 조합은 결제 대신 카카오톡 문의
  */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,7 +49,13 @@ const fitPlan = (variantId: string | null, plan: PlanId): PlanId => {
   if (!v || isAvailable(v.plans[plan])) return plan;
   return PLANS.find((p) => isAvailable(v.plans[p.id]))?.id ?? plan;
 };
-const OPTIONS = [...PRE_ADD_ONS.filter((o) => o.id !== "person"), REVISIT_OPTION];
+/** STEP 4 추가 선택: 시간 추가 → 반반 옵션 → 촬영 도움 서비스 (재방문은 STEP 5 이벤트 참여로 옮김) */
+const OPTIONS = PRE_ADD_ONS.filter((o) => o.id !== "person");
+/** 주소 ?plan=value|package 로 들어오면 필수 선택을 미리 (PRICE 02 카드 버튼) */
+function initialPlan(): PlanId {
+  const p = new URLSearchParams(window.location.search).get("plan");
+  return PLANS.some((x) => x.id === p) ? (p as PlanId) : "package";
+}
 /** 예약 변경·취소 안내 */
 const POLICY = [
   "변경·취소는 촬영일 3일 전까지 가능해요.",
@@ -96,8 +105,22 @@ const firstOpenSlot = (now: number, day: Day) => {
   return i < 0 ? null : i;
 };
 
-/** 예약 완료 기록. phone 은 숫자만, carNo 는 선택 (비면 없음) */
-type Done = { no: string; name: string; phone: string; email: string; carNo?: string; product: string; when: string; total: number };
+/** 예약 완료 기록. phone 은 숫자만, carNo·address 는 선택 (비면 없음), events = 참여한 이벤트 id */
+type Done = {
+  no: string;
+  name: string;
+  phone: string;
+  email: string;
+  carNo?: string;
+  address?: string;
+  events: FreeBenefit["id"][];
+  product: string;
+  when: string;
+  total: number;
+};
+/** 주소 한 줄 표기: (우편번호) 기본 주소 상세 주소 */
+const addressText = (a: Address | null, detail: string) =>
+  a ? `(${a.zonecode}) ${a.base}${detail.trim() ? " " + detail.trim() : ""}` : "";
 
 const noopSubscribe = () => () => {};
 
@@ -137,7 +160,7 @@ function BookingForm() {
   // STEP 1: 컨셉 → (증명·프로필 세부 상품 / 시즌 테마) → 필수 선택(가성비/패키지)
   const [conceptId, setConceptId] = useState<ConceptId | null>(initialConcept);
   const [variantId, setVariantId] = useState<string | null>(() => firstVariant(initialConcept()));
-  const [plan, setPlan] = useState<PlanId>("package");
+  const [plan, setPlan] = useState<PlanId>(() => fitPlan(firstVariant(initialConcept()), initialPlan()));
   const [date, setDate] = useState(initDate);
   const [slot, setSlot] = useState<number | null>(initSlot);
   const [adults, setAdults] = useState(2);
@@ -147,9 +170,11 @@ function BookingForm() {
   const [phone, setPhone] = useState("010-1234-5678");
   const [email, setEmail] = useState("");
   const [carNo, setCarNo] = useState("");
+  const [address, setAddress] = useState<Address | null>(null);
+  const [addressDetail, setAddressDetail] = useState("");
+  const [events, setEvents] = useState<Partial<Record<FreeBenefit["id"], boolean>>>({});
   const [agreePolicy, setAgreePolicy] = useState(false);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
-  const [agreeSns, setAgreeSns] = useState(false);
   const [err, setErr] = useState("");
   const [done, setDone] = useState<Done | null>(null);
 
@@ -173,6 +198,20 @@ function BookingForm() {
     setVariantId(id);
     setPlan((p) => fitPlan(id, p));
   };
+
+  // PRICE 02 카드 '가성비로/패키지로 예약하기': 새로고침 없이 필수 선택을 그 플랜으로 (판매 안 하는 조합이면 판매하는 쪽)
+  useEffect(() => {
+    const onPick = (e: Event) => {
+      const p = (e as CustomEvent<PlanId>).detail;
+      if (PLANS.some((x) => x.id === p)) setPlan(fitPlan(variantId, p));
+    };
+    window.addEventListener(PICK_PLAN_EVENT, onPick);
+    return () => window.removeEventListener(PICK_PLAN_EVENT, onPick);
+  }, [variantId]);
+
+  /** 패키지(인화 포함)를 고르면 인화 사진 받으실 주소가 필수 */
+  const addressRequired = plan === "package";
+  const eventIds = FREE_BENEFITS.filter((b) => events[b.id]).map((b) => b.id);
 
   const ext = (() => {
     if (slot === null) return { ok: false, why: "먼저 시간을 선택해 주세요." };
@@ -208,6 +247,7 @@ function BookingForm() {
     else if (!name.trim()) e = "예약자 이름을 입력해 주세요.";
     else if (digits.length < 10) e = "휴대폰 번호를 확인해 주세요. 예약 안내를 카카오톡으로 보내드려요.";
     else if (!EMAIL_RE.test(email.trim())) e = "이메일 주소를 확인해 주세요. 예약 조회 로그인에 쓰여요.";
+    else if (addressRequired && !address) e = "패키지는 인화 사진을 보내드려요. 받으실 주소를 검색해 주세요.";
     else if (!agreePolicy || !agreePrivacy) e = "필수 동의 항목에 체크해 주세요.";
     setErr(e);
     if (e || slot === null) return;
@@ -217,6 +257,8 @@ function BookingForm() {
       phone: digits,
       email: email.trim(),
       carNo: carNo.trim() || undefined,
+      address: addressText(address, addressDetail) || undefined,
+      events: eventIds,
       product: productLabel,
       when: whenLabel(false),
       total,
@@ -248,6 +290,18 @@ function BookingForm() {
               <>
                 <dt>차량번호</dt>
                 <dd>{done.carNo}</dd>
+              </>
+            )}
+            {done.address && (
+              <>
+                <dt>받으실 주소</dt>
+                <dd>{done.address}</dd>
+              </>
+            )}
+            {done.events.length > 0 && (
+              <>
+                <dt>이벤트</dt>
+                <dd>{eventLabels(done.events)}</dd>
               </>
             )}
             <dt>결제 금액</dt>
@@ -388,13 +442,19 @@ function BookingForm() {
         <div className="bstep">
           <div className="bstep-h">
             <span className="index">STEP 3</span>
-            <h3 className="t-kr">추가 선택</h3>
+            <h3 className="t-kr">인원 선택</h3>
           </div>
           <Counter label="어른·만 8세 이상" help="기준 인원 1~2명" value={adults} min={1} onChange={setAdults} noun="어른" />
-          <Counter label="만 7세 이하" help="1명 무료, 2명부터 인원 추가"
+          <Counter
+            label="만 7세 이하"
+            help="1명 무료, 2명부터 인원 추가"
             note="나이 확인을 위해 증빙 서류를 요청드릴 수 있어요."
-            value={kids} min={0} onChange={setKids} noun="아이" />
-          <p className="cap muted" style={{ margin: "10px 0 var(--space-6)" }}>
+            value={kids}
+            min={0}
+            onChange={setKids}
+            noun="아이"
+          />
+          <p className="cap muted" style={{ margin: "10px 0 0" }}>
             <Sentences
               text={
                 extra
@@ -403,6 +463,14 @@ function BookingForm() {
               }
             />
           </p>
+        </div>
+
+        <div className="bstep">
+          <div className="bstep-h">
+            <span className="index">STEP 4</span>
+            <h3 className="t-kr">추가 선택</h3>
+          </div>
+          {/* 순서: 시간 추가 → 반반 옵션 → 촬영 도움 서비스 (lib/options.ts PRE_ADD_ONS 순서). 시간 추가는 다음 시간이 비어 있을 때만 */}
           <div>
             {OPTIONS.map((o) => {
               const off = o.id === "ext" && !ext.ok;
@@ -429,17 +497,24 @@ function BookingForm() {
 
         <div className="bstep">
           <div className="bstep-h">
-            <span className="index">STEP 4</span>
+            <span className="index">STEP 5</span>
             <h3 className="t-kr">예약자 정보</h3>
           </div>
           <form noValidate onSubmit={(e) => e.preventDefault()}>
-            <div className="fields">
+            {/* 순서: 이름* / 휴대폰 번호* / 이메일* / 차량번호 / 인화 사진 받으실 주소 (패키지면 필수) */}
+            <div className="fields fields-1">
               <div className="field">
-                <label htmlFor="b-name">이름</label>
+                <label htmlFor="b-name">
+                  이름
+                  <Req />
+                </label>
                 <input id="b-name" autoComplete="name" required value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="field">
-                <label htmlFor="b-phone">휴대폰 번호</label>
+                <label htmlFor="b-phone">
+                  휴대폰 번호
+                  <Req />
+                </label>
                 <input
                   id="b-phone"
                   inputMode="tel"
@@ -450,9 +525,28 @@ function BookingForm() {
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
-              {/* 차량번호 (선택): 지하 주차장 사전 등록용. 형식 검사 없음, 앞뒤 공백만 정리해서 저장 */}
-              <div className="field" style={{ gridColumn: "1/-1" }}>
-                <label htmlFor="b-car">차량번호 (선택)</label>
+              <div className="field">
+                <label htmlFor="b-email">
+                  이메일
+                  <Req />
+                </label>
+                <input
+                  id="b-email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="name@example.com"
+                  required
+                  aria-describedby="b-email-help"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <span id="b-email-help" className="cap muted">
+                  예약 조회 로그인과 사진 링크 발송에 쓰여요.
+                </span>
+              </div>
+              {/* 차량번호: 지하 주차장 사전 등록용. 형식 검사 없음, 앞뒤 공백만 정리해서 저장 */}
+              <div className="field">
+                <label htmlFor="b-car">차량번호</label>
                 <input
                   id="b-car"
                   autoComplete="off"
@@ -468,23 +562,50 @@ function BookingForm() {
                   <Sentences text="지하 주차장 무료 이용을 위해 사전 등록이 필요해요. 차량으로 오시면 입력해 주세요." />
                 </span>
               </div>
-              <div className="field" style={{ gridColumn: "1/-1" }}>
-                <label htmlFor="b-email">이메일</label>
+              {/* 인화 사진 받으실 주소: 카카오 우편번호 검색 + 상세 주소. 패키지(인화 포함)를 고르면 필수 */}
+              <div className="field">
+                <span className="field-label" id="b-addr-label">
+                  인화 사진 받으실 주소
+                  {addressRequired && <Req />}
+                </span>
+                <div className="addr-row">
+                  <input
+                    aria-labelledby="b-addr-label"
+                    readOnly
+                    placeholder="주소 검색으로 입력해 주세요"
+                    value={address ? `(${address.zonecode}) ${address.base}` : ""}
+                  />
+                  <AddressSearch onPick={setAddress} labelledBy="b-addr-label" />
+                </div>
                 <input
-                  id="b-email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="name@example.com"
-                  required
-                  aria-describedby="b-email-help"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="b-addr-detail"
+                  aria-label="상세 주소"
+                  autoComplete="address-line2"
+                  placeholder="상세 주소 (동·호수 등)"
+                  aria-describedby="b-addr-help"
+                  value={addressDetail}
+                  onChange={(e) => setAddressDetail(e.target.value)}
                 />
-                <span id="b-email-help" className="cap muted">
-                  예약 조회 로그인과 사진 링크 발송에 쓰여요.
+                <span id="b-addr-help" className="cap muted">
+                  <Sentences text="패키지·인화 주문 시 이 주소로 보내드려요." />
                 </span>
               </div>
             </div>
+            <p className="t-caption muted req-note">
+              <span className="req">*</span> 필수 입력
+            </p>
+
+            {/* 이벤트 참여 (모두 선택, 기본 해제). 혜택 문구 = PRICE '지금 제공되는 이벤트'와 같은 FREE_BENEFITS */}
+            <p className="sub-h event-h">이벤트 참여</p>
+            {FREE_BENEFITS.map((b) => (
+              <Agree
+                key={b.id}
+                checked={!!events[b.id]}
+                onChange={(v) => setEvents((s) => ({ ...s, [b.id]: v }))}
+                label={`${b.bookingLabel} · ${b.benefit}`}
+              />
+            ))}
+
             <div className="policy">
               <b>예약 변경·취소 안내</b>
               <ul>
@@ -497,7 +618,8 @@ function BookingForm() {
             </div>
             <Agree checked={agreePolicy} onChange={setAgreePolicy} label="변경·취소 안내를 확인했어요 (필수)" />
             <Agree checked={agreePrivacy} onChange={setAgreePrivacy} label="예약 안내를 위한 개인정보 수집·이용에 동의해요 (필수)" />
-            <Agree checked={agreeSns} onChange={setAgreeSns} label="SNS 활용에 동의해요 (선택) · 고화질 원본을 무료로 드려요" />
+            <p className="t-caption muted privacy-items">수집 항목: 이름, 휴대폰 번호, 이메일, 차량번호, 인화 사진 받으실 주소</p>
+            {/* 예전 'SNS 활용에 동의해요 (선택) · 고화질 원본을 무료로 드려요'는 위 이벤트 참여로 옮김 */}
           </form>
         </div>
       </div>
@@ -509,6 +631,8 @@ function BookingForm() {
           <SumRow k="일시" v={whenLabel(true)} />
           <SumRow k="인원" v={`어른 ${adults} · 아이 ${kids}`} />
           {carNo.trim() && <SumRow k="차량번호" v={carNo.trim()} />}
+          {address && <SumRow k="받으실 주소" v={addressText(address, addressDetail)} />}
+          {eventIds.length > 0 && <SumRow k="이벤트" v={eventLabels(eventIds)} />}
           <SumRow k="기본" v={price ? priceLabel(price) : "-"} />
           {extra > 0 && <SumRow k={`인원 추가 ${extra}명`} v={formatKRW(extra * EXTRA_PERSON_PRICE)} />}
           {OPTIONS.filter((o) => selected(o.id)).map((o) => (
@@ -561,6 +685,21 @@ function SubChoices({ label, children }: { label: string; children: ReactNode })
         {children}
       </div>
     </div>
+  );
+}
+
+/** 참여한 이벤트 → '고화질 원본 무료 · 보정 1컷 무료' */
+const eventLabels = (ids: FreeBenefit["id"][]) =>
+  FREE_BENEFITS.filter((b) => ids.includes(b.id))
+    .map((b) => b.benefit)
+    .join(" · ");
+
+/** 필수 항목 표시 (라벨 옆 --danger) */
+function Req() {
+  return (
+    <span className="req" aria-label="필수">
+      *
+    </span>
   );
 }
 

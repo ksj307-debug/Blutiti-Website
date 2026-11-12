@@ -26,6 +26,10 @@ export type StoredBooking = {
   trackingNo?: string;
   /** 차량번호 (선택, 지하 주차장 사전 등록용). 입력값 앞뒤 공백만 정리, 형식 검사 없음 */
   carNo?: string;
+  /** 인화 사진 받으실 주소 '(우편번호) 기본 주소 상세 주소' (패키지면 필수, 예전 예약은 없음) */
+  address?: string;
+  /** 참여한 이벤트 id (lib/options.ts FREE_BENEFITS: sns·review·revisit) */
+  events?: ("sns" | "review" | "revisit")[];
 };
 
 /** 미리보기 로그인 기본값 (login 폼 기본 입력값으로 사용) */
@@ -47,6 +51,8 @@ const BOOKINGS: StoredBooking[] = [
     stage: 4,
     // 예시 값 (입력칸 placeholder 와 같음)
     carNo: "12가 3456",
+    address: "경기 안산시 단원구 예시로 1, 101동 101호 (예시 주소)",
+    events: ["sns", "review"],
   },
   {
     id: "BT-0823-03",

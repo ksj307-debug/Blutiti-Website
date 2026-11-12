@@ -8,6 +8,7 @@ import { ToTop } from "@/components/site/to-top";
 import { getSession } from "@/lib/auth";
 import { findBookings, type StoredBooking } from "@/lib/bookings";
 import { bookingLabel, formatKRW } from "@/lib/concepts";
+import { FREE_BENEFITS } from "@/lib/options";
 import { logout } from "../login/actions";
 import { DemoButtons } from "./demo-buttons";
 import { SessionTimer } from "./session-timer";
@@ -144,6 +145,22 @@ function BookingDetail({ booking: b, backToList }: { booking: StoredBooking; bac
             <>
               <dt>차량번호</dt>
               <dd>{b.carNo}</dd>
+            </>
+          )}
+          {b.address && (
+            <>
+              <dt>받으실 주소</dt>
+              <dd>{b.address}</dd>
+            </>
+          )}
+          {b.events && b.events.length > 0 && (
+            <>
+              <dt>이벤트</dt>
+              <dd>
+                {FREE_BENEFITS.filter((x) => b.events?.includes(x.id))
+                  .map((x) => x.benefit)
+                  .join(" · ")}
+              </dd>
             </>
           )}
         </dl>

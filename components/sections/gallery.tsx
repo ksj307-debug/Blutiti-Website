@@ -15,6 +15,7 @@ function InstagramGlyph() {
 
 /**
  * GALLERY 10장 (public/images/gallery, 가로 800px 이하 webp, 정사각형으로 잘라 보여줌)
+ * - 라벨은 사진 내용(만삭·셀프웨딩 등)이 아니라 컨셉명. 셀프웨딩 사진은 원본이 흑백(클래식흑백4)이라 클래식 흑백
  * - 08~10 은 구글 드라이브 폴더 사진 중 FOR YOU 와 다른 사진
  *   만삭 '지보미48376.jpg' / 셀프웨딩 'blutiti_상품사진템플렛_클래식흑백4.jpg' / 아이 '이슬기.jpg' (템플릿 테두리 잘라냄)
  * - 시즌 컨셉: 샘플사진 'So This Is Christmas' 폴더 '지안_크리스마스5.jpg' (히어로·CONCEPTS 와 다른 사진)
@@ -24,15 +25,15 @@ function InstagramGlyph() {
 type Photo = { src: string; alt: string; caption: string; width: number };
 const PHOTOS: Photo[] = [
   { src: "/images/gallery/gallery-02-basic-couple.webp", alt: "베이직 컬러 - 하트 풍선을 든 커플", caption: "베이직 컬러", width: 800 },
+  { src: "/images/gallery/gallery-maternity.webp", alt: "베이직 컬러 - 아이와 함께 선 만삭 부부", caption: "베이직 컬러", width: 800 },
+  { src: "/images/gallery/gallery-kids-family.webp", alt: "베이직 컬러 - 생일 케이크를 들고 웃는 아이", caption: "베이직 컬러", width: 800 },
+  { src: "/images/gallery/gallery-self-wedding.webp", alt: "클래식 흑백 - 스툴에 앉은 신부와 옆에 선 신랑", caption: "클래식 흑백", width: 800 },
   { src: "/images/gallery/gallery-03-bw-couple.webp", alt: "클래식 흑백 - 꽃다발 앞에서 입맞추는 커플", caption: "클래식 흑백", width: 800 },
   { src: "/images/gallery/gallery-season.webp", alt: "시즌 컨셉 크리스마스 - 트리 옆에 모인 가족", caption: "시즌 컨셉", width: 756 },
   { src: "/images/gallery/gallery-01-four-cut.webp", alt: "베이직 컬러 4컷 프레임 - 풍선과 함께한 아이", caption: "4컷 프레임", width: 800 },
   { src: "/images/gallery/gallery-04-nine-cut.webp", alt: "크리스마스 9컷 프레임 포스터", caption: "9컷 프레임", width: 800 },
   { src: "/images/gallery/gallery-05-100days.webp", alt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기", caption: "100일상", width: 800 },
   { src: "/images/gallery/gallery-frame.webp", alt: "원목 액자에 담긴 웨딩 흑백 사진", caption: "원목 액자", width: 292 },
-  { src: "/images/gallery/gallery-maternity.webp", alt: "만삭 - 아이와 함께 선 만삭 부부", caption: "만삭", width: 800 },
-  { src: "/images/gallery/gallery-self-wedding.webp", alt: "셀프웨딩 - 스툴에 앉은 신부와 옆에 선 신랑", caption: "셀프웨딩", width: 800 },
-  { src: "/images/gallery/gallery-kids-family.webp", alt: "아이가 있는 가족 - 생일 케이크를 들고 웃는 아이", caption: "아이가 있는 가족", width: 800 },
 ];
 
 export function Gallery() {

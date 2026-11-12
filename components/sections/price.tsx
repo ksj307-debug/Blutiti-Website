@@ -3,6 +3,7 @@ import { CONCEPTS, PLANS, formatKRW, isAvailable, priceLabel, type PlanPrice } f
 import { BASIC_INCLUDES, FREE_BENEFITS, POST_ADD_ONS, PRE_ADD_ONS } from "@/lib/options";
 import { Sentences } from "@/components/site/sentences";
 import { MoreList } from "@/components/site/more-list";
+import { PlanBookLink } from "@/components/site/plan-book-link";
 
 /**
  * PRICE · 요금 안내 — 예약 순서(컨셉 → 가성비/패키지 → 부가서비스)를 따라가는 설명형
@@ -15,7 +16,7 @@ const ROWS = CONCEPTS.flatMap((c) =>
   c.variants.map((v) => ({
     key: v.id,
     name: c.variants.length > 1 ? v.name : c.bookingName,
-    note: v.note,
+    // 컨셉명 아래 주석(note)은 화면에서 뺌. 데이터 v.note 는 그대로
     plans: v.plans,
   })),
 );
@@ -38,6 +39,26 @@ function Amount({ price }: { price: PlanPrice }) {
       )}
       <span className={price.amount === null ? "ask" : undefined}>{priceLabel(price)}</span>
     </span>
+  );
+}
+
+/** 02 카드 가격: 베이직 컬러·클래식 흑백·시즌 공통 고정가 (사용자 지시: '~부터' 표기 없이) */
+const CARD_PRICE = CONCEPTS[0].variants[0].plans;
+
+/** 02 카드 가격 블록: 정가 줄은 없어도 자리를 잡아 두 카드 가격 높이를 맞춤 */
+function PlanPriceBlock({ price }: { price: PlanPrice }) {
+  return (
+    <p className="plan-price">
+      <s className="list" aria-hidden={!price.listAmount || undefined}>
+        {price.listAmount ? (
+          <>
+            <span className="sr">정가 </span>
+            {formatKRW(price.listAmount)}
+          </>
+        ) : null}
+      </s>
+      <span className="amount">{priceLabel(price)}</span>
+    </p>
   );
 }
 
@@ -102,7 +123,6 @@ export function Price() {
                 <tr key={r.key}>
                   <th scope="row">
                     <span className="name">{r.name}</span>
-                    {r.note && <span className="note t-caption muted">{r.note}</span>}
                   </th>
                   {PLANS.map((p) => (
                     <td key={p.id} className="col-price">
@@ -125,7 +145,7 @@ export function Price() {
             title="필수 선택"
             lead="컨셉을 고른 뒤 가성비와 패키지 중 하나를 선택하세요. 모든 컨셉에 똑같이 적용돼요."
           />
-          {/* 예약 버튼 없음: 따라다니는 헤더·하단 바 '예약하기'로 이동 / 모바일은 패키지 카드가 먼저 (site.css) */}
+          {/* 모든 화면에서 왼쪽 가성비 · 오른쪽 패키지. 가격은 고정가(베이직 컬러 기준 CARD_PRICE), 버튼은 그 플랜으로 BOOKING */}
           <div className="plans">
             {PLANS.map((p, i) => {
               const featured = !!p.badge;
@@ -137,6 +157,7 @@ export function Price() {
                     <h4 className="t-title-kr">{p.name}</h4>
                     {p.badge && <span className="badge">{p.badge}</span>}
                   </div>
+                  <PlanPriceBlock price={CARD_PRICE[p.id]} />
                   <p className="muted">
                     <Sentences text={p.summary} />
                   </p>
@@ -158,7 +179,7 @@ export function Price() {
                     <MoreList
                       className="plan-list"
                       visible={3}
-                      moreLabel="기본 제공 전체 보기"
+                      moreLabel="전체 보기"
                       items={[...p.includes, ...BASIC_INCLUDES].map((item) => (
                         <Fragment key={item}>
                           <CheckIcon />
@@ -167,6 +188,9 @@ export function Price() {
                       ))}
                     />
                   )}
+                  <PlanBookLink plan={p.id} className={`${featured ? "btn-primary" : "btn-secondary"} plan-book`}>
+                    {p.name}로 예약하기
+                  </PlanBookLink>
                 </article>
               );
             })}

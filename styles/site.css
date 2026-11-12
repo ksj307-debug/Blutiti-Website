@@ -136,33 +136,34 @@ a { color: inherit; }
 /* 조건 배지 (예: GUIDE 04 '보정/인화 서비스 선택 시') — PRICE .tag 와 같은 모양 */
 .badge { display: inline-block; padding: 0 8px; border-radius: var(--radius-pill); background: var(--titi-sky); color: var(--titi-navy); font-family: var(--font-sans); font-size: 11px; line-height: 20px; font-weight: 600; letter-spacing: 0; vertical-align: middle; white-space: nowrap; }
 
-/* steps (GUIDE 5단계): 데스크톱(1180px 이상) 5열 / 태블릿 3열 + 2열 / 모바일(720px 이하) 1열 */
-.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); }
-.step { padding: var(--space-6) var(--space-6) var(--space-6) 0; display: grid; gap: var(--space-2); align-content: start; border-right: 1px solid var(--line); }
-.step + .step { padding-left: var(--space-6); }
-.step:last-child { border-right: 0; }
+/* steps (GUIDE 6단계): 데스크톱(1024px 이상) 3열 x 2줄 / 태블릿 2열 x 3줄 / 모바일(720px 이하) 1열
+ * 칸 사이 세로 헤어라인 + 줄 사이 가로 헤어라인, 그림자 없음 */
+.steps { --steps-cols: 3; display: grid; grid-template-columns: repeat(var(--steps-cols), minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.step { padding: var(--space-6); display: grid; gap: var(--space-2); align-content: start; border-right: 1px solid var(--line); }
 .step .big { font-family: var(--font-display); font-weight: 300; font-size: 56px; line-height: 1; color: var(--titi-navy); }
 .step p { margin: 0; }
 .step .t-kr { word-break: keep-all; }
 .step-badge { justify-self: start; white-space: normal; }
-/* 데스크톱 5열: 05 제목('원하는 대로 보정해드려요')이 한 줄에 들어가게 카드 좌우 여백을 24 → 12px (바깥 쪽은 0). 제목 크기는 01~05 같음 */
-@media (min-width: 1180px) {
-  .step, .step + .step { padding-left: 12px; padding-right: 12px; }
-  .step:first-child { padding-left: 0; }
-  .step:last-child { padding-right: 0; }
+.text-link { position: relative; color: var(--titi-navy); text-decoration: underline; text-underline-offset: 3px; }
+/* 글 안 링크: 보이는 크기는 그대로, 누르는 영역만 44px */
+.text-link::after { content: ""; position: absolute; inset: -13px -4px; }
+@media (min-width: 1024px) {
+  .step:nth-child(3n + 1) { padding-left: 0; }
+  .step:nth-child(3n) { padding-right: 0; border-right: 0; }
+  .step:nth-child(n + 4) { border-top: 1px solid var(--line); }
+  /* 제목 6개 같은 크기로 한 줄 */
+  .step .t-kr { white-space: nowrap; }
 }
-@media (max-width: 1179px) {
-  /* 6칸 그리드: 위 3개는 2칸씩, 아래 2개는 3칸씩 */
-  .steps { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .step { grid-column: span 2; }
-  .step:nth-child(n+4) { grid-column: span 3; border-top: 1px solid var(--line); }
-  .step:nth-child(3) { border-right: 0; }
-  .step:nth-child(4) { padding-left: 0; }
+@media (min-width: 721px) and (max-width: 1023px) {
+  .steps { --steps-cols: 2; }
+  .step:nth-child(2n + 1) { padding-left: 0; }
+  .step:nth-child(2n) { padding-right: 0; border-right: 0; }
+  .step:nth-child(n + 3) { border-top: 1px solid var(--line); }
 }
 @media (max-width: 720px) {
-  .steps { grid-template-columns: minmax(0, 1fr); }
-  .step, .step:nth-child(n+4) { grid-column: auto; padding-left: 0; border-right: 0; }
-  .step + .step { padding-left: 0; border-top: 1px solid var(--line); }
+  .steps { --steps-cols: 1; }
+  .step { padding-inline: 0; border-right: 0; }
+  .step + .step { border-top: 1px solid var(--line); }
 }
 
 /* 예전 섹션 id 로 들어온 링크용 빈 앵커: 섹션 맨 위에 둬서 새 id 와 같은 위치로 이동 */
@@ -305,14 +306,15 @@ a { color: inherit; }
 .ptable { width: 100%; border-collapse: collapse; border-top: 1px solid var(--line); table-layout: fixed; }
 .ptable th, .ptable td { padding: 14px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; font-weight: 400; }
 .ptable thead th { font-family: var(--font-sans); font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0; color: var(--ink); padding-block: 10px; }
-.ptable .col-price { width: 30%; text-align: right; }
+.ptable .col-price { width: 30%; text-align: center; }
 .ptable thead .badge { margin-left: 6px; }
 .ptable tbody th { padding-right: var(--space-4); word-break: keep-all; }
 .ptable .name { display: block; font-weight: 600; }
 .ptable .note { display: block; margin-top: 2px; }
-.ptable td { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ptable td { text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 /* 정가 취소선은 할인가 위에 작게 쌓아 폭을 줄임 */
-.ptable .amt { display: grid; justify-items: end; }
+/* 금액 칸: 가운데 정렬, 정가 취소선은 할인가 위에 작게 쌓음 */
+.ptable .amt { display: grid; justify-items: center; }
 .ptable s.list { color: var(--ink-muted); font-weight: 400; font-size: 13px; line-height: 18px; }
 .plan s.list { color: var(--ink-muted); font-weight: 400; margin-right: 6px; }
 .ptable .ask { font-weight: 400; color: var(--ink-muted); }
@@ -320,7 +322,7 @@ a { color: inherit; }
 @media (min-width: 721px) { .ptable th, .ptable td { padding-block: var(--space-4); } .ptable .col-price { width: 24%; } }
 .plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); align-items: stretch; }
 /* 모바일: 위아래로 쌓고 패키지 카드를 먼저 */
-@media (max-width: 720px) { .plans { grid-template-columns: 1fr; } .plan-featured { order: -1; } }
+/* 모든 화면에서 왼쪽 가성비 · 오른쪽 패키지 나란히 (예전: 모바일은 위아래 + 패키지 먼저) */
 .plan { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-6); border: 1px solid var(--ink); border-radius: 0; background: var(--paper-100); }
 .plan-featured { border: 2px solid var(--titi-navy); padding: calc(var(--space-6) - 1px); }
 .plan p { margin: 0; }
@@ -337,9 +339,27 @@ a { color: inherit; }
   .more-list[data-collapsed] .more-hidden { display: none; }
   .more-btn { display: inline-flex; align-items: center; align-self: flex-start; min-height: 44px; padding: 0; border: 0; background: none; color: var(--titi-navy); font: 600 15px/24px var(--font-sans); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
 }
-.plan-price { display: grid; gap: 2px; }
-.plan-price .amount { font-family: var(--font-display); font-size: 36px; line-height: 1.2; font-variant-numeric: tabular-nums; }
-.plan-price .amount s.list { font-size: 20px; }
+/* 카드 가격: 정가 줄은 두 카드 모두 같은 높이로 자리를 잡아 가격이 좌우 같은 높이에 옴 */
+.plan-price { display: grid; gap: 0; }
+.plan-price .list { min-height: 20px; font-size: 13px; line-height: 20px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+.plan-price .amount { font-family: var(--font-sans); font-weight: 600; font-size: 28px; line-height: 36px; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+/* 카드 아래 예약 버튼: 가로 전체, 맨 아래에 붙음 */
+.plan-book { width: 100%; margin-top: auto; }
+@media (max-width: 720px) {
+  /* 390px: 카드 폭 약 170px → 안쪽 여백 12px, 항목 13px */
+  .plans { gap: var(--space-2); }
+  .plan { gap: var(--space-2); padding: 12px; }
+  .plan-featured { padding: 11px; }
+  .plan-h { flex-wrap: wrap; gap: 4px var(--space-2); }
+  .plan-h .t-title-kr { font-size: 20px; line-height: 28px; }
+  .plan-price .amount { font-size: 22px; line-height: 30px; }
+  .plan .muted { font-size: 13px; line-height: 20px; }
+  .plan-list { gap: 6px; padding-top: var(--space-2); font-size: 13px; line-height: 20px; }
+  .plan-list li { grid-template-columns: 14px 1fr; gap: 6px; word-break: keep-all; }
+  .plan-icon { width: 14px; height: 14px; margin-top: 3px; }
+  .more-btn { font-size: 13px; line-height: 20px; }
+  .plan-book { padding: 0 8px; font-size: 13px; }
+}
 .plan .basic { flex: 1; }
 .plan > a { align-self: flex-start; }
 .addons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-10); align-items: start; }
@@ -425,6 +445,26 @@ a { color: inherit; }
 .field input { height: 46px; padding: 0 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--paper-100); color: var(--ink); font: inherit; }
 .field input:focus { border-color: var(--titi-cobalt); outline: 1px solid var(--titi-cobalt); outline-offset: 0; }
 .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--space-4); }
+/* STEP 5 예약자 정보: 한 줄에 한 칸씩 (이름 → 휴대폰 → 이메일 → 차량번호 → 주소) */
+.fields-1 { grid-template-columns: minmax(0, 1fr); }
+.field .field-label { font-size: 13px; font-weight: 600; }
+/* 필수 표시 * (라벨 옆 --danger) */
+.req { color: var(--danger); margin-left: 2px; font-weight: 600; }
+.req-note { margin: 0 0 var(--space-6); }
+/* 주소: 검색 결과 칸 + '주소 검색' 버튼, 아래 상세 주소 */
+.addr-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2); }
+.addr-row input { cursor: default; background: var(--paper-200); }
+.addr-btn { min-height: 46px; padding: 0 16px; white-space: nowrap; }
+/* 주소 검색 창: 모바일은 화면 전체를 덮고, 데스크톱은 가운데 창 */
+.addr-layer { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: color-mix(in srgb, var(--night) 55%, transparent); }
+.addr-panel { display: grid; grid-template-rows: auto 1fr; width: min(480px, 100%); height: min(640px, 100%); background: var(--paper-100); }
+.addr-head { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-2) 0 var(--space-4); border-bottom: 1px solid var(--line); min-height: 52px; }
+.addr-close { display: grid; place-items: center; width: 44px; height: 44px; border: 0; background: none; color: var(--ink); cursor: pointer; }
+.addr-box { min-height: 0; overflow: auto; }
+@media (max-width: 640px) { .addr-panel { width: 100%; height: 100%; padding-top: env(safe-area-inset-top, 0px); } }
+/* 이벤트 참여 소제목, 개인정보 수집 항목 */
+.event-h { margin: 0 0 var(--space-1); }
+.privacy-items { margin: 0 0 0 28px; }
 @media (max-width: 560px) { .fields { grid-template-columns: 1fr; } }
 .agree { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; padding: 10px 0; font-size: 14px; line-height: 22px; cursor: pointer; }
 .agree input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--titi-cobalt); }
