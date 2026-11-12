@@ -21,9 +21,10 @@ export default function Home() {
       <main>
         <HeroSection />
         <Message />
+        {/* 순서 = 메뉴 순서 (GUIDE · CONCEPTS · PRICE · REVIEW · LOCATION). FOR YOU 는 메뉴에 없음 */}
+        <ForYou />
         <Guide />
         <ConceptSection />
-        <ForYou />
         <Gallery />
         <Price />
         <Review />

@@ -30,7 +30,7 @@ const STEPS: { title: string; desc: string; badge?: string }[] = [
 
 export function Guide() {
   return (
-    <section id="guide" className="wrap" aria-labelledby="guide-h">
+    <section id="guide" className="band wrap" aria-labelledby="guide-h">
       <div className="section-head">
         {/* 메뉴 이름은 lib/nav.ts 'GUIDE' 그대로 */}
         <p className="eyebrow">GUIDE (예약 안내)</p>

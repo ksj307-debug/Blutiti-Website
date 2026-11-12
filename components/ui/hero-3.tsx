@@ -40,7 +40,8 @@ export interface AnimatedMarqueeHeroProps {
   /** 한글 제목 */
   title: React.ReactNode;
   description: string;
-  ctaText: string;
+  /** 주 버튼 (선택). 없으면 버튼 줄 자체가 없음 */
+  ctaText?: string;
   /** CTA 이동 경로. 기본 "#booking" */
   ctaHref?: string;
   /** 보조 버튼 (선택) */
@@ -116,22 +117,24 @@ export function AnimatedMarqueeHero({
           <Sentences text={description} />
         </motion.p>
 
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={FADE_UP}
-          custom={0.6}
-          className="mt-8 flex flex-wrap items-center justify-center gap-2"
-        >
-          <a href={ctaHref} className="btn-primary">
-            {ctaText}
-          </a>
-          {secondaryText && secondaryHref && (
-            <a href={secondaryHref} className="btn-secondary">
-              {secondaryText}
+        {ctaText && (
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={FADE_UP}
+            custom={0.6}
+            className="mt-8 flex flex-wrap items-center justify-center gap-2"
+          >
+            <a href={ctaHref} className="btn-primary">
+              {ctaText}
             </a>
-          )}
-        </motion.div>
+            {secondaryText && secondaryHref && (
+              <a href={secondaryHref} className="btn-secondary">
+                {secondaryText}
+              </a>
+            )}
+          </motion.div>
+        )}
       </div>
 
       {/* 하단 이미지 마키 (사진 높이 192·256px → 1.2배 230·307px → 1.3배 299·399px, 영역 38svh·40vh → 45.6svh·48vh → 59.28svh·62.4vh) */}

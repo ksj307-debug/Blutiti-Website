@@ -4,18 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Logo } from "@/components/site/logo";
+import { KakaoChatButton } from "@/components/site/kakao";
 import { BOOKING_HREF, LOGIN_HREF, MAIN_NAV } from "@/lib/nav";
-import { useOwnCtaVisible } from "@/lib/use-own-cta-visible";
 
 /**
  * 상단 고정 헤더
  * - 메뉴 클릭: 메인에서는 해당 섹션으로 부드럽게 스크롤, 다른 페이지에서는 메인의 해당 섹션으로 이동
  * - 스크롤 위치에 따라 현재 섹션 메뉴 표시 (aria-current)
- * - '예약하기'는 자체 코발트 예약 버튼이 있는 섹션(히어로 [data-hero], [data-own-cta])이 보이는 동안
- *   보조 버튼, 그 밖에서는 코발트 버튼 (한 화면 코발트 한 곳)
+ * - 한 줄 배치, 로고는 화면 정중앙 (좌우 칸 1fr 로 폭을 맞춤)
+ *   데스크톱: 왼쪽 메뉴 / 가운데 가로형 로고 / 오른쪽 로그인·예약하기
+ *   모바일: 왼쪽 햄버거 / 가운데 세로형 로고 / 오른쪽 예약하기
+ * - '예약하기'는 스크롤 위치와 상관없이 항상 코발트(.btn-primary)
+ *   (예전: 히어로·[data-own-cta] 가 보이면 보조 버튼으로 바뀜 → 사용자 지시로 제거)
+ * - 모바일 메뉴: 섹션 메뉴 → 구분선 → 카카오톡 문의 → 로그인
  */
-/** 섹션 노출 판단에서 빼는 헤더 높이 (데스크톱 2줄 헤더 기준 근사값) */
-const HEADER_FALLBACK_H = 100;
 /** 메뉴에 없는 섹션: 여기에 닿으면 현재 메뉴 표시 해제 */
 const SPY_STOPS = ["booking"];
 
@@ -26,7 +28,6 @@ export function Header() {
   const barRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
-  const ownCtaVisible = useOwnCtaVisible(HEADER_FALLBACK_H);
 
   // 실제 헤더 높이 → --header-h (섹션 scroll-margin-top, 예약 요약 sticky 위치에 사용)
   // 모바일 메뉴가 열려도 값이 바뀌지 않게 메뉴 줄(top-bar) + 하단 헤어라인만 잼
@@ -86,7 +87,6 @@ export function Header() {
   };
 
   const current = isHome ? active : null;
-  const bookClass = ownCtaVisible ? "btn-secondary" : "btn-primary";
 
   return (
     <header className="top" ref={headerRef}>
@@ -122,7 +122,7 @@ export function Header() {
           <Link className="btn-secondary top-login" href={LOGIN_HREF}>
             로그인
           </Link>
-          <Link className={bookClass} href={BOOKING_HREF} onClick={scrollTo("booking")}>
+          <Link className="btn-primary" href={BOOKING_HREF} onClick={scrollTo("booking")}>
             예약하기
           </Link>
         </div>
@@ -139,6 +139,11 @@ export function Header() {
             <small>{item.sub}</small>
           </Link>
         ))}
+        <div className="drawer-sep" role="separator" />
+        <KakaoChatButton className="drawer-kakao">
+          <span className="kr">카카오톡 문의</span>
+          <small>채널 &apos;블루티티&apos;</small>
+        </KakaoChatButton>
         <Link href={LOGIN_HREF} onClick={() => setOpen(false)}>
           <span className="kr">로그인</span>
           <small>예약 조회</small>

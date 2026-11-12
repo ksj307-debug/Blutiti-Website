@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Logo } from "@/components/site/logo";
-import { MobileBar } from "@/components/site/mobile-bar";
 import { Sentences } from "@/components/site/sentences";
 import { INSTAGRAM_URL, KAKAO_LABEL, KAKAO_URL, PHONE } from "@/lib/nav";
 
@@ -48,7 +47,7 @@ export function Footer() {
         </div>
       </footer>
 
-      <MobileBar />
+      {/* 하단 고정 바(카카오톡 문의·예약하기)는 뺌. components/site/mobile-bar.tsx 는 보관 */}
     </>
   );
 }

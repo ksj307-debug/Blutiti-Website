@@ -32,10 +32,7 @@ export default function HeroSection() {
       // 태그라인 없음 (예전: 'BLUTITI SELFIE STUDIO · 안산')
       title="우리끼리 자유롭게 찍는 화보같은 셀프촬영"
       description="아이 생일부터 가족사진, 만삭, 셀프웨딩, 100일상까지. 단독룸으로 운영하는 셀프사진관, 블루티티입니다. 전문 장비와 조명, 배경, 소품까지 모두 준비되어 있습니다. 셀렉은 집에서 천천히, 보정은 요청하신 대로 꼼꼼히 해드립니다."
-      ctaText="예약하기"
-      ctaHref="#booking"
-      secondaryText="컨셉 보기"
-      secondaryHref="#concepts"
+      // 예약하기·컨셉 보기 버튼은 뺌 (헤더 '예약하기'가 항상 코발트로 보임)
       // 모바일 우선: 화면 표시 크기의 2배까지만 (480·640·900px 중 선택)
       images={HERO_IMAGES.map((img) => ({ ...img, srcSet: srcSet(img.src, [480, 640], 900), sizes: SIZES.hero }))}
     />
