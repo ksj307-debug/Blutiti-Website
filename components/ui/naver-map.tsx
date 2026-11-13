@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { NAVER_MAP_CLIENT_ID } from "@/lib/studio-info";
 
 /**
  * 네이버 지도 (네이버 클라우드 Maps · Dynamic Map, JavaScript API v3)
@@ -70,7 +71,7 @@ export function NaverMap({
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<NaverMapInstance | null>(null);
-  const keyId = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID ?? "";
+  const keyId = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID || NAVER_MAP_CLIENT_ID;
   const ready = !!keyId && lat !== null && lng !== null;
   const [status, setStatus] = useState<"idle" | "ok" | "failed">("idle");
   const [touch, setTouch] = useState(false);

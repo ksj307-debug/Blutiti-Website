@@ -3,6 +3,13 @@
  * - 주소를 바꿀 때는 이 파일만 고치면 화면과 복사 버튼이 같이 바뀜
  * - 위도·경도는 네이버 Geocoding API 로 '좌표 조회용 주소'를 한 번 조회해 넣은 값 (지도 표시 때 다시 조회하지 않음)
  */
+/**
+ * 네이버 지도 Client ID (공개용 값). 지도 스크립트 주소에 그대로 실려 방문자 브라우저에 보이는 값이라 코드에 둠.
+ * 네이버 콘솔의 'Web 서비스 URL'에 등록된 주소에서만 동작함. Client Secret 은 절대 여기 넣지 않음.
+ * 환경변수 NEXT_PUBLIC_NAVER_MAP_CLIENT_ID 가 있으면 그 값이 우선 (Vercel 빌드에 환경변수가 안 들어가 지도가 안 보이던 문제 대비)
+ */
+export const NAVER_MAP_CLIENT_ID = "alnqb270j2";
+
 export const STUDIO = {
   name: "블루티티 셀프스튜디오",
   /** 화면 표시 주소 (주소 복사 버튼도 이 값) */
