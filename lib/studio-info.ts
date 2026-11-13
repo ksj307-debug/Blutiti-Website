@@ -21,6 +21,8 @@ export const BOOKING_LINKS: { kakaoBookingUrl: string; naverBookingUrl: string }
 
 export const STUDIO = {
   name: "블루티티 셀프스튜디오",
+  /** 카카오톡 채널 '블루티티' 1:1 채팅. 오른쪽 아래 고정 버튼·메뉴 '카카오톡 문의'·푸터 CONTACT 가 모두 이 값 (lib/nav.ts KAKAO_CHAT_URL) */
+  kakaoChatUrl: "https://pf.kakao.com/_VexnFn/chat",
   /** 화면 표시 주소 (주소 복사 버튼도 이 값) */
   address: "경기 안산시 단원구 화랑로 130 2동 2층 207호",
   /** 건물명 (주소 아래 보조 문구) */

@@ -651,14 +651,24 @@ footer { background: var(--night); color: var(--on-night); padding-block: var(--
   .bar { display: grid; grid-template-columns: 1fr 1.4fr; gap: var(--space-2); position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--paper-100); border-top: 1px solid var(--line); padding: 10px var(--gutter-r) calc(10px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); }
 }
 
-/* 맨 위로 (to-top.tsx)
- * z-index 15: 헤더·모바일 메뉴(20), 사진 팝업(50)보다 아래
- * 하단 고정 바를 뺐으므로 모바일도 화면 아래 24px
+/* 오른쪽 아래 고정 버튼 묶음 (floating-actions.tsx): 위 '맨 위로' 44px · 아래 카카오톡 52px, 간격 12px, 가운데 정렬
+ * - 오른쪽·아래 16px + 아이폰 홈바(safe-area) 여백
+ * - z-index 15: 헤더·모바일 메뉴(20), 사진 팝업(50)보다 아래. 메뉴가 열리면 숨김
+ * - 묶음 자체는 클릭을 받지 않고 버튼만 받음 (숨은 '맨 위로' 자리가 아래 내용을 막지 않게)
+ * 예전: '맨 위로'만 따로 오른쪽 16px·아래 24px 고정
  */
-.to-top { position: fixed; right: var(--gutter-r); bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px)); z-index: 15; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%; border: 1px solid var(--ink); background: var(--paper-100); color: var(--ink); cursor: pointer; opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s, background .2s, color .2s; }
+.float-stack { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 15; display: flex; flex-direction: column; align-items: center; gap: 12px; pointer-events: none; transition: opacity .2s, visibility .2s; }
+.float-stack > * { pointer-events: auto; }
+html[data-menu-open] .float-stack { opacity: 0; visibility: hidden; }
+html[data-menu-open] .float-stack > * { pointer-events: none; }
+/* 카카오톡 채널 채팅: 카카오 노랑 원형 (코발트 규칙 예외). 그림자 대신 --line 1px 테두리 */
+.float-kakao { display: block; width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line); background: #fee500; overflow: hidden; }
+.float-kakao img { display: block; width: 100%; height: 100%; }
+.float-kakao:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.to-top { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%; border: 1px solid var(--ink); background: var(--paper-100); color: var(--ink); cursor: pointer; opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s, background .2s, color .2s; }
 .to-top[data-show] { opacity: 1; visibility: visible; }
 .to-top:hover { background: var(--ink); color: var(--paper-100); }
-@media (prefers-reduced-motion: reduce) { .to-top { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .to-top, .float-stack { transition: none; } }
 
 /* ============================================================
  * 모바일 우선 규칙 보정 (_handoff/CLAUDE.md '모바일 우선')

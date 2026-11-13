@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/site/logo";
 import { Sentences } from "@/components/site/sentences";
-import { INSTAGRAM_URL, KAKAO_LABEL, KAKAO_URL, PHONE } from "@/lib/nav";
+import { INSTAGRAM_URL, KAKAO_CHAT_URL, KAKAO_LABEL, PHONE } from "@/lib/nav";
 
 export function Footer() {
   return (
@@ -22,7 +22,8 @@ export function Footer() {
           <div id="contact">
             <p className="eyebrow">CONTACT</p>
             <p>
-              <a href={KAKAO_URL} target="_blank" rel="noopener">
+              {/* 예전: 채널 홈(KAKAO_URL). 문의 링크는 모두 채널 채팅으로 통일 */}
+              <a href={KAKAO_CHAT_URL} target="_blank" rel="noopener">
                 {KAKAO_LABEL}
               </a>
               <br />

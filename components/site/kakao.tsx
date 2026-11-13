@@ -48,7 +48,18 @@ export function KakaoSdkLoader() {
 }
 
 /** '카카오톡 문의' 버튼: SDK 준비되면 채널 채팅 열기, 아니면 채팅 주소로 이동 */
-export function KakaoChatButton({ className, style, children }: { className?: string; style?: CSSProperties; children: ReactNode }) {
+export function KakaoChatButton({
+  className,
+  style,
+  children,
+  ariaLabel,
+}: {
+  className?: string;
+  style?: CSSProperties;
+  children: ReactNode;
+  /** 글자 없는 아이콘 버튼일 때 화면 낭독기용 이름 */
+  ariaLabel?: string;
+}) {
   const onClick = (e: MouseEvent<HTMLAnchorElement>) => {
     const kakao = window.Kakao;
     if (!kakao?.isInitialized()) return;
@@ -56,7 +67,7 @@ export function KakaoChatButton({ className, style, children }: { className?: st
     kakao.Channel.chat({ channelPublicId: KAKAO_CHANNEL_ID });
   };
   return (
-    <a className={className} style={style} href={KAKAO_CHAT_URL} target="_blank" rel="noopener" onClick={onClick}>
+    <a className={className} style={style} href={KAKAO_CHAT_URL} target="_blank" rel="noopener" onClick={onClick} aria-label={ariaLabel}>
       {children}
     </a>
   );

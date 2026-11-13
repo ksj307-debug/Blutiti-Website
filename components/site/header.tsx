@@ -40,6 +40,12 @@ export function Header() {
     return () => ro.disconnect();
   }, []);
 
+  // 모바일 메뉴가 열려 있는 동안 오른쪽 아래 고정 버튼(맨 위로·카카오톡)을 숨김 (site.css html[data-menu-open])
+  useEffect(() => {
+    document.documentElement.toggleAttribute("data-menu-open", open);
+    return () => document.documentElement.removeAttribute("data-menu-open");
+  }, [open]);
+
   // 스크롤 위치 → 현재 섹션
   useEffect(() => {
     if (!isHome) return;

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { Sentences } from "@/components/site/sentences";
-import { ToTop } from "@/components/site/to-top";
 
 export const metadata: Metadata = { title: "Our Story · 블루티티 셀프스튜디오" };
 
@@ -37,7 +36,7 @@ export default function OurStoryPage() {
         </section>
       </main>
       <Footer />
-      <ToTop />
+      {/* 맨 위로 버튼은 루트 레이아웃 FloatingActions 로 옮김 */}
     </>
   );
 }
