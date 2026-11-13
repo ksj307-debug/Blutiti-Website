@@ -8,7 +8,7 @@
  *  - 패키지: 원본 무제한 + 2컷 보정(수정 1회) + 2장 인화 + 종이액자 우편 발송
  * 금액 = 레퍼런스(_handoff/reference/index.html) '이용 요금' 값 + 확정 지시 (1~2인 기준)
  *  - 베이직 컬러·클래식 흑백·시즌(크리스마스·졸업): 가성비 59,000원 / 패키지 89,000원 (정가 99,000원)
- *  - 100일상: 가성비 79,000원 / 패키지 99,000원
+ *  - 100일상: 가성비 79,000원 / 패키지 99,000원 (정가 109,000원)
  *  - 증명·여권: 가성비 판매 안 함 / 패키지 25,000원, 프로필: 가성비 판매 안 함 / 패키지 55,000원
  * 판매 안 함(available: false) → 화면 '–', 선택 불가
  * 문의(amount: null) → 화면 label 또는 '문의', 결제 대신 카카오톡 문의 (지금은 해당 상품 없음)
@@ -91,7 +91,7 @@ export const CONCEPTS: Concept[] = [
     name: "100일상",
     bookingName: "100일상",
     label: "100 DAYS",
-    variants: [{ id: "100days", name: "100일상", note: "한복, 돌상 준비", plans: { value: { amount: 79000 }, package: { amount: 99000 } } }],
+    variants: [{ id: "100days", name: "100일상", note: "한복, 돌상 준비", plans: { value: { amount: 79000 }, package: { amount: 99000, listAmount: 109000 } } }],
   },
   {
     id: "id-profile",

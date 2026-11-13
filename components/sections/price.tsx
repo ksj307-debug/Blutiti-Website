@@ -42,26 +42,6 @@ function Amount({ price }: { price: PlanPrice }) {
   );
 }
 
-/** 02 카드 가격: 베이직 컬러·클래식 흑백·시즌 공통 고정가 (사용자 지시: '~부터' 표기 없이) */
-const CARD_PRICE = CONCEPTS[0].variants[0].plans;
-
-/** 02 카드 가격 블록: 정가 줄은 없어도 자리를 잡아 두 카드 가격 높이를 맞춤 */
-function PlanPriceBlock({ price }: { price: PlanPrice }) {
-  return (
-    <p className="plan-price">
-      <s className="list" aria-hidden={!price.listAmount || undefined}>
-        {price.listAmount ? (
-          <>
-            <span className="sr">정가 </span>
-            {formatKRW(price.listAmount)}
-          </>
-        ) : null}
-      </s>
-      <span className="amount">{priceLabel(price)}</span>
-    </p>
-  );
-}
-
 /** 요금제 카드 목록 아이콘 (1px 선) */
 const CheckIcon = () => (
   <svg className="plan-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -145,7 +125,8 @@ export function Price() {
             title="필수 선택"
             lead="컨셉을 고른 뒤 가성비와 패키지 중 하나를 선택하세요. 모든 컨셉에 똑같이 적용돼요."
           />
-          {/* 모든 화면에서 왼쪽 가성비 · 오른쪽 패키지. 가격은 고정가(베이직 컬러 기준 CARD_PRICE), 버튼은 그 플랜으로 BOOKING */}
+          {/* 모든 화면에서 왼쪽 가성비 · 오른쪽 패키지. 버튼은 그 플랜으로 BOOKING
+              카드에는 가격을 넣지 않음: 컨셉마다 가격이 달라 헷갈릴 수 있어서 (가격은 01 표). 예전: 베이직 컬러 기준 고정가 표시 */}
           <div className="plans">
             {PLANS.map((p, i) => {
               const featured = !!p.badge;
@@ -157,7 +138,6 @@ export function Price() {
                     <h4 className="t-title-kr">{p.name}</h4>
                     {p.badge && <span className="badge">{p.badge}</span>}
                   </div>
-                  <PlanPriceBlock price={CARD_PRICE[p.id]} />
                   <p className="muted">
                     <Sentences text={p.summary} />
                   </p>
