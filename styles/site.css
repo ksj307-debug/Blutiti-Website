@@ -588,7 +588,8 @@ details .ans { padding: 0 0 var(--space-4) 44px; margin: 0; color: var(--ink-mut
 /* 네이버 지도 (components/ui/naver-map.tsx): 가로 전체, 높이 모바일 240 · 데스크톱 360, 각진 모서리·그림자 없음 */
 .naver-map { position: relative; width: 100%; height: 240px; background: var(--mist); overflow: hidden; }
 @media (min-width: 861px) { .naver-map { height: 360px; } }
-.naver-map-canvas { position: absolute; inset: 0; }
+/* 네이버 라이브러리가 컨테이너에 position:relative 를 덮어써서 높이가 0이 되므로 크기를 직접 지정 */
+.naver-map-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 /* 모바일: 지도는 터치를 받지 않음 → 손가락으로 쓸면 페이지가 스크롤됨 (버튼만 동작) */
 .naver-map[data-touch] .naver-map-canvas { pointer-events: none; }
 .naver-map-fallback { display: grid; place-items: center; padding: var(--space-6); text-align: center; }

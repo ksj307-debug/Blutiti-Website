@@ -18,6 +18,7 @@ type NaverMaps = {
   LatLng: new (lat: number, lng: number) => LatLng;
   Marker: new (opts: Record<string, unknown>) => unknown;
   Point: new (x: number, y: number) => unknown;
+  Position: { BOTTOM_LEFT: unknown };
 };
 declare global {
   interface Window {
@@ -109,6 +110,8 @@ export function NaverMap({
             mapDataControl: false,
             scaleControl: false,
             mapTypeControl: false,
+            // 네이버 로고는 가리면 안 돼서 확대·축소 버튼과 겹치지 않게 왼쪽 아래로
+            logoControlOptions: { position: nm.Position.BOTTOM_LEFT },
             // 모바일: 지도는 터치를 받지 않음 (페이지 스크롤 우선). 데스크톱: 끌기만 허용, 휠 확대 끔
             draggable: !touchLayout,
             pinchZoom: false,
