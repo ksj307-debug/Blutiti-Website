@@ -204,6 +204,12 @@ a { color: inherit; }
   .cc-arrow-next { right: -14px; }
   .cc-arrow::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; }
 }
+/* 태블릿·좁은 데스크톱(640~1239px): 화면 좌우 여백이 16px 뿐이라 44px 화살표가 반(22px) 걸치면 6px 화면 밖으로 나가
+   가로 스크롤이 생김 → 모바일처럼 바깥으로 14px 만. 1240px 이상은 여백이 넉넉해 반쯤 걸치는 기존 모양 그대로 */
+@media (min-width: 640px) and (max-width: 1239px) {
+  .cc-arrow-prev { left: -14px; }
+  .cc-arrow-next { right: -14px; }
+}
 .cc-track { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--cc-gap); overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
 .cc-track::-webkit-scrollbar { display: none; }
 .cc-track:focus-visible { outline: 1px solid var(--ink); outline-offset: 4px; }
