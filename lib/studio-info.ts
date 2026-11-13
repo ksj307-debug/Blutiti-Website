@@ -10,6 +10,15 @@
  */
 export const NAVER_MAP_CLIENT_ID = "alnqb270j2";
 
+/**
+ * 예약 채널 링크 (2026-11 웹사이트 자체 예약 중단 → 네이버 예약·카카오톡 예약으로 연결. 결제·예약 관리는 각 채널에서)
+ * 값을 빈 문자열("")로 두면 그 채널 버튼은 화면에 나오지 않음
+ */
+export const BOOKING_LINKS: { kakaoBookingUrl: string; naverBookingUrl: string } = {
+  kakaoBookingUrl: "https://booking.kakao.com/short/8UyorawtCe",
+  naverBookingUrl: "https://booking.naver.com/booking/6/bizes/1451257",
+};
+
 export const STUDIO = {
   name: "블루티티 셀프스튜디오",
   /** 화면 표시 주소 (주소 복사 버튼도 이 값) */

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Sentences } from "@/components/site/sentences";
 import { ConceptCarousel } from "@/components/ui/concept-carousel";
 import { SIZES, srcSet } from "@/lib/img";
-import { CONCEPTS, bookingHref, type ConceptId } from "@/lib/concepts";
+import { CONCEPTS, conceptBookingLink, type ConceptId } from "@/lib/concepts";
 
 /**
  * CONCEPTS · 같은 크기 카드 가로 캐러셀 (components/ui/concept-carousel.tsx)
@@ -102,9 +102,20 @@ export default function ConceptSection() {
                 <p className="t-body muted">
                   <Sentences text={copy.description} />
                 </p>
-                <Link className="btn-secondary cc-book" href={bookingHref(c.id)} aria-label={`${c.bookingName} 이걸로 예약하기`}>
-                  이걸로 예약하기
-                </Link>
+                {/* 컨셉 네이버 예약 상품 링크(naverItemUrl)가 있으면 새 탭, 없으면 BOOKING 섹션.
+                    예전: bookingHref(c.id) = /?concept={id}#booking (자체 예약 STEP 1 미리 선택) */}
+                {(() => {
+                  const link = conceptBookingLink(c);
+                  return link.external ? (
+                    <a className="btn-secondary cc-book" href={link.href} target="_blank" rel="noopener" aria-label={`${c.bookingName} 이걸로 예약하기`}>
+                      이걸로 예약하기
+                    </a>
+                  ) : (
+                    <Link className="btn-secondary cc-book" href={link.href} aria-label={`${c.bookingName} 이걸로 예약하기`}>
+                      이걸로 예약하기
+                    </Link>
+                  );
+                })()}
               </article>
             );
           })}

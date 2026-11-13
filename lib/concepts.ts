@@ -20,6 +20,8 @@
  * 저장된 'season' 예약은 데이터를 바꾸지 않고 LEGACY_CONCEPT_NAMES 로 '시즌 컨셉' 표기
  */
 
+import { BOOKING_LINKS } from "@/lib/studio-info";
+
 export type ConceptId = "basic-color" | "classic-bw" | "100days" | "id-profile" | "season-christmas" | "season-graduation";
 export type PlanId = "value" | "package";
 
@@ -64,6 +66,8 @@ export type Concept = {
   /** 영문 라벨 (캐러셀 오버레이) */
   label: string;
   variants: ConceptVariant[];
+  /** 이 컨셉의 네이버 예약 상품 링크. 비어 있으면 메인 네이버 예약 링크(lib/studio-info.ts)를 씀 */
+  naverItemUrl: string;
 };
 
 /** 판매하지 않는 필수 선택 */
@@ -78,6 +82,7 @@ export const CONCEPTS: Concept[] = [
     bookingName: "베이직 컬러",
     label: "BASIC COLOR",
     variants: [{ id: "basic-color", name: "베이직 컬러", plans: STANDARD }],
+    naverItemUrl: "",
   },
   {
     id: "classic-bw",
@@ -85,6 +90,7 @@ export const CONCEPTS: Concept[] = [
     bookingName: "클래식 흑백",
     label: "CLASSIC B&W",
     variants: [{ id: "classic-bw", name: "클래식 흑백", plans: STANDARD }],
+    naverItemUrl: "",
   },
   {
     id: "100days",
@@ -92,6 +98,7 @@ export const CONCEPTS: Concept[] = [
     bookingName: "100일상",
     label: "100 DAYS",
     variants: [{ id: "100days", name: "100일상", note: "한복, 돌상 준비", plans: { value: { amount: 79000 }, package: { amount: 99000, listAmount: 109000 } } }],
+    naverItemUrl: "",
   },
   {
     id: "id-profile",
@@ -102,6 +109,7 @@ export const CONCEPTS: Concept[] = [
       { id: "id-photo", name: "증명·여권", note: "30분 촬영, 당일 인화 불가", plans: { value: NOT_SOLD, package: { amount: 25000 } } },
       { id: "profile", name: "프로필", note: "셀렉은 집에서", plans: { value: NOT_SOLD, package: { amount: 55000 } } },
     ],
+    naverItemUrl: "",
   },
   // 시즌 컨셉: 크리스마스 → 졸업 (기존 시즌 자리)
   {
@@ -110,6 +118,7 @@ export const CONCEPTS: Concept[] = [
     bookingName: "(시즌) 크리스마스",
     label: "SEASON",
     variants: [{ id: "season-christmas", name: "크리스마스", plans: STANDARD }],
+    naverItemUrl: "",
   },
   {
     id: "season-graduation",
@@ -117,6 +126,7 @@ export const CONCEPTS: Concept[] = [
     bookingName: "(시즌) 졸업",
     label: "SEASON",
     variants: [{ id: "season-graduation", name: "졸업", plans: STANDARD }],
+    naverItemUrl: "",
   },
 ];
 
@@ -164,8 +174,18 @@ export const findVariant = (variantId: string) => {
   return undefined;
 };
 
-/** 컨셉별 예약 이동 경로: 메인의 BOOKING 섹션으로 이동하면서 STEP 1 을 해당 컨셉으로 미리 선택 */
+/**
+ * 미사용(2026-11 자체 예약 중단): 메인 BOOKING 으로 이동하면서 예전 STEP 1 을 해당 컨셉으로 미리 선택하던 경로
+ * (예전 예약 화면 components/sections/booking.tsx 의 BookingForm 이 ?concept= 를 읽음)
+ */
 export const bookingHref = (id: ConceptId) => `/?concept=${id}#booking`;
+
+/** 컨셉의 네이버 예약 링크: 상품 링크(naverItemUrl)가 없으면 메인 네이버 예약 링크. 둘 다 없으면 "" */
+export const naverBookingUrl = (c: Concept) => c.naverItemUrl || BOOKING_LINKS.naverBookingUrl;
+
+/** CONCEPTS 카드 '이걸로 예약하기': 컨셉 상품 링크가 있으면 그 링크(새 탭), 없으면 메인 BOOKING 섹션 */
+export const conceptBookingLink = (c: Concept): { href: string; external: boolean } =>
+  c.naverItemUrl ? { href: c.naverItemUrl, external: true } : { href: "/#booking", external: false };
 
 /** 원화 표기: 45000 → "45,000원" */
 export const formatKRW = (value: number) => `${value.toLocaleString("ko-KR")}원`;

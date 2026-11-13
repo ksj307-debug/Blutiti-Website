@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { KakaoChatButton } from "@/components/site/kakao";
-import { BOOKING_HREF, LOGIN_HREF, MAIN_NAV } from "@/lib/nav";
+import { BOOKING_HREF, MAIN_NAV } from "@/lib/nav";
 
 /**
  * 상단 고정 헤더
@@ -128,9 +128,8 @@ export function Header() {
           ))}
         </nav>
         <div className="top-actions">
-          <Link className="btn-secondary top-login" href={LOGIN_HREF}>
-            로그인
-          </Link>
+          {/* 예전 '로그인'(예약 조회) 버튼: 2026-11 자체 예약 중단으로 화면에서 뺌
+              <Link className="btn-secondary top-login" href={LOGIN_HREF}>로그인</Link> */}
           <Link className="btn-primary" href={BOOKING_HREF} onClick={scrollTo("booking")}>
             예약하기
           </Link>
@@ -153,10 +152,7 @@ export function Header() {
           <span className="kr">카카오톡 문의</span>
           <small>채널 &apos;블루티티&apos;</small>
         </KakaoChatButton>
-        <Link href={LOGIN_HREF} onClick={() => setOpen(false)}>
-          <span className="kr">로그인</span>
-          <small>예약 조회</small>
-        </Link>
+        {/* 예전 메뉴 '로그인 · 예약 조회'(LOGIN_HREF): 자체 예약 중단으로 화면에서 뺌 */}
       </div>
     </header>
   );

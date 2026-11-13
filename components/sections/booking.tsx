@@ -20,6 +20,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { AddressSearch, type Address } from "@/components/site/address-search";
 import { PICK_PLAN_EVENT } from "@/components/site/plan-book-link";
 import { EXTRA_PERSON_PRICE, FREE_BENEFITS, PRE_ADD_ONS, type FreeBenefit } from "@/lib/options";
+import { BOOKING_LINKS } from "@/lib/studio-info";
 
 /**
  * BOOKING (미리보기 예약 흐름. 실제 결제 없음)
@@ -124,7 +125,48 @@ const addressText = (a: Address | null, detail: string) =>
 
 const noopSubscribe = () => () => {};
 
+/**
+ * BOOKING · 예약 채널 안내 (2026-11~)
+ * 웹사이트 자체 예약을 중단하고 네이버 예약·카카오톡 예약으로 연결. 결제와 예약 관리는 각 채널에서
+ * - 링크: lib/studio-info.ts BOOKING_LINKS. 비어 있는 채널 버튼은 숨김
+ * - 모바일: 버튼 위아래 가로 전체 폭 / 데스크톱: 나란히. 둘 다 새 탭
+ * 예전 STEP 1~5 예약 화면·예약 요약 패널은 아래 LegacyBooking 으로 보관 (화면에서 뺌)
+ */
 export function Booking() {
+  const { naverBookingUrl, kakaoBookingUrl } = BOOKING_LINKS;
+  return (
+    <section id="booking" className="band wrap" aria-labelledby="book-h">
+      <div className="section-head">
+        <p className="eyebrow">BOOKING</p>
+        <h2 id="book-h" className="h-kr">
+          편한 곳에서 예약하세요
+        </h2>
+        <p className="muted" style={{ margin: 0 }}>
+          <Sentences text="네이버 예약 또는 카카오톡으로 예약할 수 있어요. 예약은 촬영 시작 6시간 전까지 가능해요." />
+        </p>
+      </div>
+      <div className="book-channels">
+        {naverBookingUrl && (
+          <a className="btn-primary" href={naverBookingUrl} target="_blank" rel="noopener">
+            네이버로 예약하기
+          </a>
+        )}
+        {kakaoBookingUrl && (
+          <a className="btn-secondary" href={kakaoBookingUrl} target="_blank" rel="noopener">
+            카카오톡으로 예약하기
+          </a>
+        )}
+      </div>
+      <p className="t-caption muted book-channels-note">예약 변경·취소는 예약하신 곳에서 해주세요.</p>
+    </section>
+  );
+}
+
+/**
+ * 미사용(2026-11 자체 예약 중단): 예전 BOOKING 섹션 (STEP 1~5 예약 화면 + 예약 요약 패널, 미리보기 결제)
+ * ?concept= · ?plan= 미리 선택과 PRICE 카드의 PICK_PLAN_EVENT 는 이 화면 안에서만 동작했음
+ */
+export function LegacyBooking() {
   // 예약 가능 시간은 현재 시각 기준이라 서버 렌더와 어긋나지 않게 브라우저에서만 그림
   const mounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
 
