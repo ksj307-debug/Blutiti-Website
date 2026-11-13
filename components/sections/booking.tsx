@@ -142,8 +142,8 @@ export function Booking() {
           편한 곳에서 예약하세요
         </h2>
         <p className="muted" style={{ margin: 0 }}>
-          {/* 예전: 예약은 촬영 시작 6시간 전까지 가능해요. */}
-          <Sentences text="네이버 예약 또는 카카오톡으로 예약할 수 있어요. 예약은 촬영 시간 5시간 전까지 가능해요." />
+          {/* 예전: 네이버 예약 또는 카카오톡으로 예약할 수 있어요. 예약은 촬영 시작 6시간 전까지 가능해요. */}
+          <Sentences text="네이버 예약 또는 카카오로 예약할 수 있어요. 예약은 촬영 시간 5시간 전까지 가능해요." />
         </p>
       </div>
       <div className="book-channels">
