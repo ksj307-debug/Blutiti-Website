@@ -26,30 +26,39 @@ function InstagramGlyph() {
 type Photo = { src: string; alt: string; caption: string; width: number; height: number; position?: string };
 const PHOTOS: Photo[] = [
   { src: "/images/gallery/gallery-02-basic-couple.webp", alt: "베이직 컬러 - 하트 풍선을 든 커플", caption: "베이직 컬러", width: 800, height: 1039 },
-  // 02 레터링: 구글 드라이브 '레터링' 폴더 '임상헌_4CUT_lettering.jpg' (템플릿 테두리 잘라냄). 아래 2컷 레터링이 보이게 세로 75% 기준
-  // 예전 02 만삭 사진(gallery-maternity.webp)은 화면에서만 뺌
+  // 02 레터링: 샘플사진 '레터링/happy1000days.jpg' (자르지 않음, 테두리 없음)
+  // 예전 02 사진(gallery-lettering.webp '임상헌_4CUT_lettering.jpg', 그 전 만삭 gallery-maternity.webp)은 화면에서만 뺌
   {
-    src: "/images/gallery/gallery-lettering.webp",
-    alt: "레터링 - 4컷 사진에 Our 2nd Wedding Anniversary 손글씨를 넣은 커플 사진",
+    src: "/images/gallery/gallery-lettering-1000days.webp",
+    alt: "레터링 - Happy 1000 Days 손글씨 아래에서 케이크 촛불을 부는 아이",
     caption: "레터링",
-    width: 800, height: 1000,
-    position: "center 75%",
+    width: 800,
+    height: 1120,
   },
-  { src: "/images/gallery/gallery-kids-family.webp", alt: "베이직 컬러 - 생일 케이크를 들고 웃는 아이", caption: "베이직 컬러", width: 800, height: 870 },
+  // 03 베이직 컬러: 샘플사진 '베이직 칼라/insta_blutiti_황유정5.jpg' (템플릿 테두리 잘라냄). 예전 gallery-kids-family.webp 는 화면에서만 뺌
+  { src: "/images/gallery/gallery-basic-balloon-100.webp", alt: "베이직 컬러 - 100 숫자 풍선 앞에서 꽃다발을 든 아이", caption: "베이직 컬러", width: 800, height: 1040 },
   { src: "/images/gallery/gallery-self-wedding.webp", alt: "클래식 흑백 - 스툴에 앉은 신부와 옆에 선 신랑", caption: "클래식 흑백", width: 800, height: 1000 },
-  { src: "/images/gallery/gallery-03-bw-couple.webp", alt: "클래식 흑백 - 꽃다발 앞에서 입맞추는 커플", caption: "클래식 흑백", width: 800, height: 1040 },
+  // 05 생일 패치워크: 샘플사진 '생일 패치워크/insta_blutiti_상품사진템플렛 복사2.jpg' (템플릿 테두리 잘라냄)
+  // 예전 05 클래식 흑백 '꽃다발 앞에서 입맞추는 커플'(gallery-03-bw-couple.webp)은 화면에서만 뺌
+  {
+    src: "/images/gallery/gallery-birthday-patchwork.webp",
+    alt: "생일 패치워크 - HAPPY BIRTHDAY 패치워크 배경 앞에 앉아 웃는 아기",
+    caption: "생일 패치워크",
+    width: 800,
+    height: 1040,
+  },
   { src: "/images/gallery/gallery-season.webp", alt: "시즌 컨셉 크리스마스 - 트리 옆에 모인 가족", caption: "시즌 컨셉", width: 756, height: 1000 },
   { src: "/images/gallery/gallery-01-four-cut.webp", alt: "베이직 컬러 4컷 프레임 - 풍선과 함께한 아이", caption: "4컷 프레임", width: 800, height: 1000 },
   { src: "/images/gallery/gallery-04-nine-cut.webp", alt: "크리스마스 9컷 프레임 포스터", caption: "9컷 프레임", width: 800, height: 1132 },
   { src: "/images/gallery/gallery-05-100days.webp", alt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기", caption: "100일상", width: 800, height: 1040 },
-  // 10: 사용자가 보내준 백일상 가족 사진 (템플릿 테두리 잘라냄, 자르지 않은 원본 비율).
-  // 예전 10 원목 액자(gallery-frame.webp)는 화면에서만 뺌
+  // 10 졸업 사진: 샘플사진 'Graduation Snap/GraduationPackage_C.jpg' (졸업 패키지 포스터 디자인 그대로, 자르지 않음)
+  // 예전 10 100일상 백일상 가족(gallery-100days-family.webp), 그 전 원목 액자(gallery-frame.webp)는 화면에서만 뺌
   {
-    src: "/images/gallery/gallery-100days-family.webp",
-    alt: "100일상 - 백일상 앞에서 아기와 함께 웃는 부부",
-    caption: "100일상",
+    src: "/images/gallery/gallery-graduation.webp",
+    alt: "졸업 사진 - 학사모를 쓰고 활짝 웃는 아이의 졸업 포스터",
+    caption: "졸업 사진",
     width: 800,
-    height: 1040,
+    height: 1120,
   },
 ];
 

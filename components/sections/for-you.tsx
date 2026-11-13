@@ -22,9 +22,11 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; s
   },
   {
     eyebrow: "MATERNITY",
-    image: "/images/for-you/maternity.webp",
-    srcSet: srcSet("/images/for-you/maternity.webp", [440, 560, 640, 700], 800, [["/images/for-you/maternity@2x.webp", 1600]]),
-    alt: "딸의 손을 잡고 선 만삭 부부",
+    // 샘플사진 '만삭/손평강_흑백00550.jpg' (2:3 → 3:4, 위 110px부터 잘라 얼굴·배·발까지 보이게). 2x 는 원본 폭 1365px 까지만
+    // 예전 사진(maternity.webp, '이보미31498.jpg', alt '딸의 손을 잡고 선 만삭 부부')은 파일 그대로 두고 화면에서만 뺌
+    image: "/images/for-you/foryou-maternity.webp",
+    srcSet: srcSet("/images/for-you/foryou-maternity.webp", [440, 560, 640, 700], 800, [["/images/for-you/foryou-maternity@2x.webp", 1365]]),
+    alt: "클래식 흑백 - 초음파 사진을 든 엄마와 아이, 아빠가 나란히 앉아 웃는 만삭 가족",
     title: "만삭 촬영",
     desc: "놓치면 아쉬운 만삭 사진, 꼭 남겨 주세요. 작가 없이 우리끼리만 있어서 편하고 자유롭게 찍을 수 있어요.",
     // 예전: 산모 가족 / 편한 날 오셔서 찍고, 사진은 집에서 골라요. 레터링·드로잉도 넣어드려요.
