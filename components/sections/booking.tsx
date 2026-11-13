@@ -142,23 +142,48 @@ export function Booking() {
           편한 곳에서 예약하세요
         </h2>
         <p className="muted" style={{ margin: 0 }}>
-          <Sentences text="네이버 예약 또는 카카오톡으로 예약할 수 있어요. 예약은 촬영 시작 6시간 전까지 가능해요." />
+          {/* 예전: 예약은 촬영 시작 6시간 전까지 가능해요. */}
+          <Sentences text="네이버 예약 또는 카카오톡으로 예약할 수 있어요. 예약은 촬영 시간 5시간 전까지 가능해요." />
         </p>
       </div>
       <div className="book-channels">
+        {/* 브랜드 색 버튼 (사용자 지시로 코발트·보조 버튼 대신). 예전: 네이버 .btn-primary / '카카오톡으로 예약하기' .btn-secondary */}
         {naverBookingUrl && (
-          <a className="btn-primary" href={naverBookingUrl} target="_blank" rel="noopener">
+          <a className="book-btn book-btn-naver" href={naverBookingUrl} target="_blank" rel="noopener">
+            <NaverLogo />
             네이버로 예약하기
           </a>
         )}
         {kakaoBookingUrl && (
-          <a className="btn-secondary" href={kakaoBookingUrl} target="_blank" rel="noopener">
-            카카오톡으로 예약하기
+          <a className="book-btn book-btn-kakao" href={kakaoBookingUrl} target="_blank" rel="noopener">
+            <KakaoLogo />
+            카카오로 예약하기
           </a>
         )}
       </div>
       <p className="t-caption muted book-channels-note">예약 변경·취소는 예약하신 곳에서 해주세요.</p>
     </section>
+  );
+}
+
+/** 네이버 'N' 로고 (흰색, 초록 버튼 위) */
+function NaverLogo() {
+  return (
+    <svg className="book-logo" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" d="M16.273 12.845 7.376 0H0v24h7.726V11.156L16.624 24H24V0h-7.727v12.845Z" />
+    </svg>
+  );
+}
+
+/** 카카오 말풍선 심볼 (검정, 노란 버튼 위) */
+function KakaoLogo() {
+  return (
+    <svg className="book-logo" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 3C6.48 3 2 6.54 2 10.9c0 2.82 1.87 5.29 4.69 6.69l-.95 3.48c-.09.31.27.56.54.38l4.14-2.75c.52.06 1.05.1 1.58.1 5.52 0 10-3.54 10-7.9S17.52 3 12 3Z"
+      />
+    </svg>
   );
 }
 

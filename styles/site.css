@@ -700,6 +700,13 @@ footer { background: var(--night); color: var(--on-night); padding-block: var(--
 /* BOOKING · 예약 채널 안내 (네이버 예약·카카오톡). 모바일 우선: 버튼 위아래 가로 전체 폭 → 데스크톱 나란히 */
 .book-channels { display: grid; gap: var(--space-3, 12px); }
 .book-channels a { min-height: 52px; width: 100%; justify-content: center; text-align: center; }
+/* 브랜드 색 버튼: 네이버 초록(#03C75A)·흰 글자 / 카카오 노랑(#FEE500)·검정 글자(카카오 가이드: 85% 검정) */
+.book-btn { display: inline-flex; align-items: center; gap: 8px; padding: 0 22px; border-radius: var(--radius-pill); font-family: var(--font-sans); font-weight: 600; font-size: 15px; line-height: 20px; text-decoration: none; border: 0; transition: filter .2s; }
+.book-btn:hover { filter: brightness(.95); }
+.book-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.book-btn-naver { background: #03c75a; color: #fff; }
+.book-btn-kakao { background: #fee500; color: rgba(0, 0, 0, .85); }
+.book-logo { flex: none; }
 .book-channels-note { margin: var(--space-4) 0 0; }
 @media (min-width: 640px) {
   .book-channels { grid-template-columns: repeat(auto-fit, minmax(0, 260px)); }
