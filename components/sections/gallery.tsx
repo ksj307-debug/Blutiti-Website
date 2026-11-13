@@ -42,7 +42,15 @@ const PHOTOS: Photo[] = [
   { src: "/images/gallery/gallery-01-four-cut.webp", alt: "베이직 컬러 4컷 프레임 - 풍선과 함께한 아이", caption: "4컷 프레임", width: 800, height: 1000 },
   { src: "/images/gallery/gallery-04-nine-cut.webp", alt: "크리스마스 9컷 프레임 포스터", caption: "9컷 프레임", width: 800, height: 1132 },
   { src: "/images/gallery/gallery-05-100days.webp", alt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기", caption: "100일상", width: 800, height: 1040 },
-  { src: "/images/gallery/gallery-frame.webp", alt: "원목 액자에 담긴 웨딩 흑백 사진", caption: "원목 액자", width: 292, height: 292 },
+  // 10: 사용자가 보내준 백일상 가족 사진 (템플릿 테두리 잘라냄, 자르지 않은 원본 비율).
+  // 예전 10 원목 액자(gallery-frame.webp)는 화면에서만 뺌
+  {
+    src: "/images/gallery/gallery-100days-family.webp",
+    alt: "100일상 - 백일상 앞에서 아기와 함께 웃는 부부",
+    caption: "100일상",
+    width: 800,
+    height: 1040,
+  },
 ];
 
 export function Gallery() {
