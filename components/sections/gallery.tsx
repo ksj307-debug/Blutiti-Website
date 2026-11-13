@@ -22,10 +22,19 @@ function InstagramGlyph() {
  * - 원목 액자는 레퍼런스 사진(292px)뿐이라 작은 그대로 webp 변환 (큰 사진이 생기면 교체)
  * 화면에서 뺀 예전 사진(파일은 그대로): gallery-06-basic-family, gallery-08-basic-baby, reference/letter.jpg(레터링 & 드로잉)
  */
-type Photo = { src: string; alt: string; caption: string; width: number };
+/** position: 정사각형으로 자를 때 기준 위치 (object-position, 없으면 가운데) */
+type Photo = { src: string; alt: string; caption: string; width: number; position?: string };
 const PHOTOS: Photo[] = [
   { src: "/images/gallery/gallery-02-basic-couple.webp", alt: "베이직 컬러 - 하트 풍선을 든 커플", caption: "베이직 컬러", width: 800 },
-  { src: "/images/gallery/gallery-maternity.webp", alt: "베이직 컬러 - 아이와 함께 선 만삭 부부", caption: "베이직 컬러", width: 800 },
+  // 02 레터링: 구글 드라이브 '레터링' 폴더 '임상헌_4CUT_lettering.jpg' (템플릿 테두리 잘라냄). 아래 2컷 레터링이 보이게 세로 75% 기준
+  // 예전 02 만삭 사진(gallery-maternity.webp)은 화면에서만 뺌
+  {
+    src: "/images/gallery/gallery-lettering.webp",
+    alt: "레터링 - 4컷 사진에 Our 2nd Wedding Anniversary 손글씨를 넣은 커플 사진",
+    caption: "레터링",
+    width: 800,
+    position: "center 75%",
+  },
   { src: "/images/gallery/gallery-kids-family.webp", alt: "베이직 컬러 - 생일 케이크를 들고 웃는 아이", caption: "베이직 컬러", width: 800 },
   { src: "/images/gallery/gallery-self-wedding.webp", alt: "클래식 흑백 - 스툴에 앉은 신부와 옆에 선 신랑", caption: "클래식 흑백", width: 800 },
   { src: "/images/gallery/gallery-03-bw-couple.webp", alt: "클래식 흑백 - 꽃다발 앞에서 입맞추는 커플", caption: "클래식 흑백", width: 800 },
@@ -56,6 +65,7 @@ export function Gallery() {
               // 작은 사본이 있는 사진만 srcset (원목 액자 292px 는 원본만)
               srcSet={p.width > 360 ? srcSet(p.src, [360, 480, 560], p.width) : undefined}
               sizes={SIZES.gallery}
+              position={p.position}
               alt={p.alt}
             >
               <figcaption className="index gallery-cap">

@@ -81,6 +81,7 @@ export function GalleryImage({
   src,
   srcSet,
   sizes,
+  position,
   alt,
   id,
   className,
@@ -90,6 +91,8 @@ export function GalleryImage({
   /** 썸네일 반응형 srcset (크게 보기는 src 원본) */
   srcSet?: string;
   sizes?: string;
+  /** 썸네일을 정사각형으로 자를 때 기준 위치 (object-position) */
+  position?: string;
   alt?: string;
   id: string;
   className?: string;
@@ -116,6 +119,7 @@ export function GalleryImage({
           sizes={sizes}
           alt={alt ?? ""}
           loading="lazy"
+          style={position ? { objectPosition: position } : undefined}
           className="block aspect-square h-auto w-full object-cover"
           variants={{ hover: { scale: 0.98 }, tap: { scale: 0.95 } }}
           transition={spring}
