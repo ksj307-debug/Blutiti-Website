@@ -24,7 +24,7 @@ import { EXTRA_PERSON_PRICE, FREE_BENEFITS, PRE_ADD_ONS, type FreeBenefit } from
 /**
  * BOOKING (미리보기 예약 흐름. 실제 결제 없음)
  * STEP 1 컨셉 선택(lib/concepts.ts, 시즌은 크리스마스·졸업 따로) → 세부 상품 → 필수 선택(가성비/패키지)
- * STEP 2 날짜와 시간 → STEP 3 인원 선택 → STEP 4 추가 선택 → STEP 5 예약자 정보 + 이벤트 참여 + 동의
+ * STEP 2 날짜와 시간 → STEP 3 인원 선택 → STEP 4 추가 선택 + 이벤트 참여 → STEP 5 예약자 정보 + 동의
  * 금액이 '문의'인 조합은 결제 대신 카카오톡 문의
  */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -49,7 +49,7 @@ const fitPlan = (variantId: string | null, plan: PlanId): PlanId => {
   if (!v || isAvailable(v.plans[plan])) return plan;
   return PLANS.find((p) => isAvailable(v.plans[p.id]))?.id ?? plan;
 };
-/** STEP 4 추가 선택: 시간 추가 → 반반 옵션 → 촬영 도움 서비스 (재방문은 STEP 5 이벤트 참여로 옮김) */
+/** STEP 4 추가 선택: 시간 추가 → 반반 옵션 → 촬영 도움 서비스 (재방문은 같은 단계 아래 이벤트 참여로 옮김) */
 const OPTIONS = PRE_ADD_ONS.filter((o) => o.id !== "person");
 /** 주소 ?plan=value|package 로 들어오면 필수 선택을 미리 (PRICE 02 카드 버튼) */
 function initialPlan(): PlanId {
@@ -493,6 +493,18 @@ function BookingForm() {
               );
             })}
           </div>
+
+          {/* 이벤트 참여 (모두 선택, 기본 해제): STEP 4 마지막. 혜택 문구 = PRICE '지금 제공되는 이벤트'와 같은 FREE_BENEFITS
+              예전 위치: STEP 5 예약자 정보 아래 */}
+          <p className="sub-h event-h">이벤트 참여</p>
+          {FREE_BENEFITS.map((b) => (
+            <Agree
+              key={b.id}
+              checked={!!events[b.id]}
+              onChange={(v) => setEvents((s) => ({ ...s, [b.id]: v }))}
+              label={`${b.bookingLabel} · ${b.benefit}`}
+            />
+          ))}
         </div>
 
         <div className="bstep">
@@ -595,17 +607,6 @@ function BookingForm() {
               <span className="req">*</span> 필수 입력
             </p>
 
-            {/* 이벤트 참여 (모두 선택, 기본 해제). 혜택 문구 = PRICE '지금 제공되는 이벤트'와 같은 FREE_BENEFITS */}
-            <p className="sub-h event-h">이벤트 참여</p>
-            {FREE_BENEFITS.map((b) => (
-              <Agree
-                key={b.id}
-                checked={!!events[b.id]}
-                onChange={(v) => setEvents((s) => ({ ...s, [b.id]: v }))}
-                label={`${b.bookingLabel} · ${b.benefit}`}
-              />
-            ))}
-
             <div className="policy">
               <b>예약 변경·취소 안내</b>
               <ul>
@@ -619,7 +620,7 @@ function BookingForm() {
             <Agree checked={agreePolicy} onChange={setAgreePolicy} label="변경·취소 안내를 확인했어요 (필수)" />
             <Agree checked={agreePrivacy} onChange={setAgreePrivacy} label="예약 안내를 위한 개인정보 수집·이용에 동의해요 (필수)" />
             <p className="t-caption muted privacy-items">수집 항목: 이름, 휴대폰 번호, 이메일, 차량번호, 인화 사진 받으실 주소</p>
-            {/* 예전 'SNS 활용에 동의해요 (선택) · 고화질 원본을 무료로 드려요'는 위 이벤트 참여로 옮김 */}
+            {/* 예전 'SNS 활용에 동의해요 (선택) · 고화질 원본을 무료로 드려요'는 STEP 4 이벤트 참여로 옮김 */}
           </form>
         </div>
       </div>

@@ -467,7 +467,8 @@ a { color: inherit; }
 .addr-box { min-height: 0; overflow: auto; }
 @media (max-width: 640px) { .addr-panel { width: 100%; height: 100%; padding-top: env(safe-area-inset-top, 0px); } }
 /* 이벤트 참여 소제목, 개인정보 수집 항목 */
-.event-h { margin: 0 0 var(--space-1); }
+/* STEP 4 추가 선택 아래 '이벤트 참여' 소제목: 위 옵션 목록과 간격 */
+.event-h { margin: var(--space-6) 0 var(--space-1); }
 .privacy-items { margin: 0 0 0 28px; }
 @media (max-width: 560px) { .fields { grid-template-columns: 1fr; } }
 .agree { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; padding: 10px 0; font-size: 14px; line-height: 22px; cursor: pointer; }
