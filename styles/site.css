@@ -585,6 +585,28 @@ details[open] summary::after { content: "–"; }
 summary .t-kr { font-size: 17px; line-height: 26px; }
 details .ans { padding: 0 0 var(--space-4) 44px; margin: 0; color: var(--ink-muted); }
 .visit { display: grid; gap: var(--space-6); }
+/* 네이버 지도 (components/ui/naver-map.tsx): 가로 전체, 높이 모바일 240 · 데스크톱 360, 각진 모서리·그림자 없음 */
+.naver-map { position: relative; width: 100%; height: 240px; background: var(--mist); overflow: hidden; }
+@media (min-width: 861px) { .naver-map { height: 360px; } }
+.naver-map-canvas { position: absolute; inset: 0; }
+/* 모바일: 지도는 터치를 받지 않음 → 손가락으로 쓸면 페이지가 스크롤됨 (버튼만 동작) */
+.naver-map[data-touch] .naver-map-canvas { pointer-events: none; }
+.naver-map-fallback { display: grid; place-items: center; padding: var(--space-6); text-align: center; }
+.naver-map-address { margin: 0; font-size: 15px; line-height: 24px; color: var(--ink); word-break: keep-all; }
+/* 핀 위 라벨 (마커 HTML, 좌표가 점의 아래 가운데에 오게) */
+.nm-pin { display: grid; justify-items: center; gap: 4px; transform: translate(-50%, -100%); pointer-events: none; }
+.nm-label { padding: 4px 10px; background: var(--paper-100); border: 1px solid var(--ink); color: var(--ink); font: 600 13px/18px var(--font-sans); white-space: nowrap; }
+.nm-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--titi-navy); border: 2px solid var(--paper-100); outline: 1px solid var(--titi-navy); }
+/* 오른쪽 위 '네이버 지도에서 크게 보기' */
+.naver-map-large { position: absolute; top: var(--space-2); right: var(--space-2); z-index: 2; display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; background: var(--paper-100); border: 1px solid var(--ink); color: var(--ink); font: 500 13px/16px var(--font-sans); text-decoration: none; }
+.naver-map-large::after { content: ""; position: absolute; inset: -6px 0; }
+/* 오른쪽 아래 작은 확대·축소 (보이는 크기 36px, 누르는 영역 44px: 위 버튼은 위로, 아래 버튼은 아래로만 넓힘) */
+.naver-map-zoom { position: absolute; right: var(--space-2); bottom: var(--space-2); z-index: 2; display: grid; }
+.naver-map-zoom button { position: relative; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--ink); background: var(--paper-100); color: var(--ink); cursor: pointer; }
+.naver-map-zoom button + button { border-top: 0; }
+.naver-map-zoom button::after { content: ""; position: absolute; inset: -8px -4px 0; }
+.naver-map-zoom button + button::after { inset: 0 -4px -8px; }
+.naver-map-zoom button:hover { background: var(--ink); color: var(--paper-100); }
 .mapcard { background: var(--mist); aspect-ratio: 16/10; max-width: 100%; position: relative; overflow: hidden; display: grid; place-items: end start; padding: var(--space-6); }
 .mapcard svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .mapcard .pin { position: relative; display: grid; gap: 4px; background: var(--paper-100); padding: 12px 16px; border: 1px solid var(--ink); }

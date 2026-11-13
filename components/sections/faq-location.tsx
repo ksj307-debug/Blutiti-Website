@@ -3,6 +3,7 @@ import { Sentences } from "@/components/site/sentences";
 import { NAVER_URL } from "@/lib/reviews";
 import { KAKAO_MAP_URL, PHONE } from "@/lib/nav";
 import { STUDIO } from "@/lib/studio-info";
+import { NaverMap } from "@/components/ui/naver-map";
 
 /** FAQ · 자주 묻는 질문 (기존 GUIDE 이용 안내) + LOCATION · 오시는 길 (기존 VISIT) */
 const FAQ = [
@@ -57,26 +58,14 @@ export function FaqLocation() {
           <p className="eyebrow">LOCATION</p>
           <h2 className="h-kr">오시는 길</h2>
         </div>
-        <div className="mapcard">
-          <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <g fill="none" stroke="var(--stone)" strokeWidth="10">
-              <path d="M-20 170 L420 120" />
-              <path d="M150 -20 L190 270" />
-            </g>
-            <g fill="none" stroke="var(--line)" strokeWidth="4">
-              <path d="M-20 60 L420 30" />
-              <path d="M60 -20 L90 270" />
-              <path d="M300 -20 L330 270" />
-              <path d="M-20 230 L420 200" />
-            </g>
-            <circle cx="250" cy="98" r="9" fill="var(--titi-navy)" />
-            <circle cx="250" cy="98" r="18" fill="none" stroke="var(--titi-navy)" strokeWidth="1" />
-          </svg>
-          <div className="pin">
-            <b>블루티티 셀프스튜디오</b>
-            <span className="cap muted">초지역 2번 출구에서 697m</span>
-          </div>
-        </div>
+        {/* 네이버 지도 (주소·지하철·주차 정보 위). 키·좌표가 없거나 인증 실패면 회색 박스 + 주소 */}
+        <NaverMap
+          lat={STUDIO.lat}
+          lng={STUDIO.lng}
+          label={STUDIO.name}
+          address={STUDIO.address}
+          largeMapUrl={NAVER_URL}
+        />
         <dl className="kv">
           <dt>주소</dt>
           <dd>
@@ -112,5 +101,31 @@ export function FaqLocation() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** 미사용: 예전 그림 지도 카드 (네이버 지도로 교체). '초지역 2번 출구에서 697m' 문구 보관 */
+export function LegacyMapIllustration() {
+  return (
+    <div className="mapcard">
+      <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g fill="none" stroke="var(--stone)" strokeWidth="10">
+          <path d="M-20 170 L420 120" />
+          <path d="M150 -20 L190 270" />
+        </g>
+        <g fill="none" stroke="var(--line)" strokeWidth="4">
+          <path d="M-20 60 L420 30" />
+          <path d="M60 -20 L90 270" />
+          <path d="M300 -20 L330 270" />
+          <path d="M-20 230 L420 200" />
+        </g>
+        <circle cx="250" cy="98" r="9" fill="var(--titi-navy)" />
+        <circle cx="250" cy="98" r="18" fill="none" stroke="var(--titi-navy)" strokeWidth="1" />
+      </svg>
+      <div className="pin">
+        <b>블루티티 셀프스튜디오</b>
+        <span className="cap muted">초지역 2번 출구에서 697m</span>
+      </div>
+    </div>
   );
 }
