@@ -276,6 +276,10 @@ a { color: inherit; }
   .ig-glyph { width: 36px; height: 36px; }
 }
 .gallery-note { margin: var(--space-4) 0 0; }
+/* GALLERY 메이슨리: 열 폭만 같고 사진 높이는 원본 비율 그대로 (shared-element-gallery.tsx GalleryGrid) */
+.gallery-masonry { display: grid; grid-template-columns: repeat(var(--gm-cols, 2), minmax(0, 1fr)); gap: var(--space-4); align-items: start; }
+.gallery-col { display: grid; gap: var(--space-4); align-content: start; }
+@media (min-width: 768px) { .gallery-masonry, .gallery-col { gap: var(--space-6); } }
 /* 갤러리 아래 인스타그램 유도: 가운데 정렬, 모바일은 버튼 가로 전체 */
 .ig-more { display: grid; justify-items: center; gap: var(--space-4); margin-top: var(--space-10); text-align: center; }
 .ig-more p { margin: 0; }

@@ -71,9 +71,36 @@ export function Gallery({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** 반응형 메이슨리 격자 (모바일 2열 · 데스크톱 3열) */
+/** 화면 폭별 열 수: 모바일 2 · 태블릿(768px~) 3 · 데스크톱(1024px~) 5 */
+const COLUMN_QUERIES: [string, number][] = [
+  ["(min-width: 1024px)", 5],
+  ["(min-width: 768px)", 3],
+];
+function subscribeColumns(cb: () => void) {
+  const mqs = COLUMN_QUERIES.map(([q]) => window.matchMedia(q));
+  mqs.forEach((m) => m.addEventListener("change", cb));
+  return () => mqs.forEach((m) => m.removeEventListener("change", cb));
+}
+const getColumns = () => COLUMN_QUERIES.find(([q]) => window.matchMedia(q).matches)?.[1] ?? 2;
+
+/**
+ * 메이슨리 격자: 사진을 자르지 않고 원본 비율 그대로 (열 폭만 같고 높이는 사진마다 다름)
+ * - 번호가 왼쪽 → 오른쪽으로 읽히게 차례대로 열에 나눠 담음 (2열: 01 왼쪽, 02 오른쪽, 03 왼쪽 …)
+ * - 서버·첫 화면은 모바일 2열 기준, 브라우저에서 화면 폭에 맞춰 3·5열로
+ */
 export function GalleryGrid({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn("grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-5", className)}>{children}</div>;
+  const cols = React.useSyncExternalStore(subscribeColumns, getColumns, () => 2);
+  const items = React.Children.toArray(children);
+  const columns = Array.from({ length: cols }, (_, c) => items.filter((_, i) => i % cols === c));
+  return (
+    <div className={cn("gallery-masonry", className)} style={{ "--gm-cols": cols } as React.CSSProperties}>
+      {columns.map((col, c) => (
+        <div className="gallery-col" key={c}>
+          {col}
+        </div>
+      ))}
+    </div>
+  );
 }
 
 /** 썸네일 한 장. children 은 사진 아래 캡션 */
@@ -82,6 +109,8 @@ export function GalleryImage({
   srcSet,
   sizes,
   position,
+  width,
+  height,
   alt,
   id,
   className,
@@ -91,8 +120,11 @@ export function GalleryImage({
   /** 썸네일 반응형 srcset (크게 보기는 src 원본) */
   srcSet?: string;
   sizes?: string;
-  /** 썸네일을 정사각형으로 자를 때 기준 위치 (object-position) */
+  /** 썸네일 기준 위치 (object-position). 지금은 자르지 않아 영향 없음, 다시 자를 때를 위해 유지 */
   position?: string;
+  /** 원본 크기: 이미지가 불러와지기 전에도 비율대로 자리를 잡음 */
+  width?: number;
+  height?: number;
   alt?: string;
   id: string;
   className?: string;
@@ -119,8 +151,10 @@ export function GalleryImage({
           sizes={sizes}
           alt={alt ?? ""}
           loading="lazy"
+          width={width}
+          height={height}
           style={position ? { objectPosition: position } : undefined}
-          className="block aspect-square h-auto w-full object-cover"
+          className="block h-auto w-full"
           variants={{ hover: { scale: 0.98 }, tap: { scale: 0.95 } }}
           transition={spring}
         />

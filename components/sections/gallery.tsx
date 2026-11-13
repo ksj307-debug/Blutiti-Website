@@ -14,7 +14,7 @@ function InstagramGlyph() {
 }
 
 /**
- * GALLERY 10장 (public/images/gallery, 가로 800px 이하 webp, 정사각형으로 잘라 보여줌)
+ * GALLERY 10장 (public/images/gallery, 가로 800px 이하 webp). 자르지 않고 원본 비율 그대로 메이슨리 배치 (예전: 정사각형 크롭)
  * - 라벨은 사진 내용(만삭·셀프웨딩 등)이 아니라 컨셉명. 셀프웨딩 사진은 원본이 흑백(클래식흑백4)이라 클래식 흑백
  * - 08~10 은 구글 드라이브 폴더 사진 중 FOR YOU 와 다른 사진
  *   만삭 '지보미48376.jpg' / 셀프웨딩 'blutiti_상품사진템플렛_클래식흑백4.jpg' / 아이 '이슬기.jpg' (템플릿 테두리 잘라냄)
@@ -22,27 +22,27 @@ function InstagramGlyph() {
  * - 원목 액자는 레퍼런스 사진(292px)뿐이라 작은 그대로 webp 변환 (큰 사진이 생기면 교체)
  * 화면에서 뺀 예전 사진(파일은 그대로): gallery-06-basic-family, gallery-08-basic-baby, reference/letter.jpg(레터링 & 드로잉)
  */
-/** position: 정사각형으로 자를 때 기준 위치 (object-position, 없으면 가운데) */
-type Photo = { src: string; alt: string; caption: string; width: number; position?: string };
+/** width·height: 원본 크기 (자르지 않고 이 비율 그대로). position: 예전 정사각형 크롭 기준 (지금은 미사용) */
+type Photo = { src: string; alt: string; caption: string; width: number; height: number; position?: string };
 const PHOTOS: Photo[] = [
-  { src: "/images/gallery/gallery-02-basic-couple.webp", alt: "베이직 컬러 - 하트 풍선을 든 커플", caption: "베이직 컬러", width: 800 },
+  { src: "/images/gallery/gallery-02-basic-couple.webp", alt: "베이직 컬러 - 하트 풍선을 든 커플", caption: "베이직 컬러", width: 800, height: 1039 },
   // 02 레터링: 구글 드라이브 '레터링' 폴더 '임상헌_4CUT_lettering.jpg' (템플릿 테두리 잘라냄). 아래 2컷 레터링이 보이게 세로 75% 기준
   // 예전 02 만삭 사진(gallery-maternity.webp)은 화면에서만 뺌
   {
     src: "/images/gallery/gallery-lettering.webp",
     alt: "레터링 - 4컷 사진에 Our 2nd Wedding Anniversary 손글씨를 넣은 커플 사진",
     caption: "레터링",
-    width: 800,
+    width: 800, height: 1000,
     position: "center 75%",
   },
-  { src: "/images/gallery/gallery-kids-family.webp", alt: "베이직 컬러 - 생일 케이크를 들고 웃는 아이", caption: "베이직 컬러", width: 800 },
-  { src: "/images/gallery/gallery-self-wedding.webp", alt: "클래식 흑백 - 스툴에 앉은 신부와 옆에 선 신랑", caption: "클래식 흑백", width: 800 },
-  { src: "/images/gallery/gallery-03-bw-couple.webp", alt: "클래식 흑백 - 꽃다발 앞에서 입맞추는 커플", caption: "클래식 흑백", width: 800 },
-  { src: "/images/gallery/gallery-season.webp", alt: "시즌 컨셉 크리스마스 - 트리 옆에 모인 가족", caption: "시즌 컨셉", width: 756 },
-  { src: "/images/gallery/gallery-01-four-cut.webp", alt: "베이직 컬러 4컷 프레임 - 풍선과 함께한 아이", caption: "4컷 프레임", width: 800 },
-  { src: "/images/gallery/gallery-04-nine-cut.webp", alt: "크리스마스 9컷 프레임 포스터", caption: "9컷 프레임", width: 800 },
-  { src: "/images/gallery/gallery-05-100days.webp", alt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기", caption: "100일상", width: 800 },
-  { src: "/images/gallery/gallery-frame.webp", alt: "원목 액자에 담긴 웨딩 흑백 사진", caption: "원목 액자", width: 292 },
+  { src: "/images/gallery/gallery-kids-family.webp", alt: "베이직 컬러 - 생일 케이크를 들고 웃는 아이", caption: "베이직 컬러", width: 800, height: 870 },
+  { src: "/images/gallery/gallery-self-wedding.webp", alt: "클래식 흑백 - 스툴에 앉은 신부와 옆에 선 신랑", caption: "클래식 흑백", width: 800, height: 1000 },
+  { src: "/images/gallery/gallery-03-bw-couple.webp", alt: "클래식 흑백 - 꽃다발 앞에서 입맞추는 커플", caption: "클래식 흑백", width: 800, height: 1040 },
+  { src: "/images/gallery/gallery-season.webp", alt: "시즌 컨셉 크리스마스 - 트리 옆에 모인 가족", caption: "시즌 컨셉", width: 756, height: 1000 },
+  { src: "/images/gallery/gallery-01-four-cut.webp", alt: "베이직 컬러 4컷 프레임 - 풍선과 함께한 아이", caption: "4컷 프레임", width: 800, height: 1000 },
+  { src: "/images/gallery/gallery-04-nine-cut.webp", alt: "크리스마스 9컷 프레임 포스터", caption: "9컷 프레임", width: 800, height: 1132 },
+  { src: "/images/gallery/gallery-05-100days.webp", alt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기", caption: "100일상", width: 800, height: 1040 },
+  { src: "/images/gallery/gallery-frame.webp", alt: "원목 액자에 담긴 웨딩 흑백 사진", caption: "원목 액자", width: 292, height: 292 },
 ];
 
 export function Gallery() {
@@ -54,7 +54,7 @@ export function Gallery() {
           Real days, <em>real</em> us
         </h2>
       </div>
-      {/* 사진을 누르면 크게 보기 (shared-element-gallery). 모바일 2열 · 태블릿 3열 · 데스크톱 5열, 정사각형 */}
+      {/* 사진을 누르면 크게 보기 (shared-element-gallery). 모바일 2열 · 태블릿 3열 · 데스크톱 5열, 자르지 않고 원본 비율 그대로 */}
       <SharedGallery>
         <GalleryGrid>
           {PHOTOS.map((p, i) => (
@@ -66,6 +66,8 @@ export function Gallery() {
               srcSet={p.width > 360 ? srcSet(p.src, [360, 480, 560], p.width) : undefined}
               sizes={SIZES.gallery}
               position={p.position}
+              width={p.width}
+              height={p.height}
               alt={p.alt}
             >
               <figcaption className="index gallery-cap">
