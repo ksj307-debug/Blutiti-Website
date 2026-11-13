@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { Logo } from "@/components/site/logo";
 import { KakaoChatButton } from "@/components/site/kakao";
 import { BOOKING_HREF, LOGIN_HREF, MAIN_NAV } from "@/lib/nav";
 
@@ -102,9 +101,19 @@ export function Header() {
           <span />
           <span className="sr">메뉴</span>
         </button>
-        <Link className="brand" href="/" aria-label="블루티티 셀프스튜디오 홈 (맨 위로)" onClick={scrollTo("top")}>
-          <Logo shape="horizontal" className="logo-h" decorative />
-          <Logo shape="stacked" className="logo-s" decorative />
+        {/*
+          로고 하나만 불러오기 (<picture> 가 화면 폭에 맞는 파일 1개만 받음)
+          - 1024px 미만: 기존 세로형 SVG 그대로 (navy, 다크 테마 ivory, 높이 36px)
+          - 1024px 이상: 새 가로형 PNG (public/brand/logo-horizontal.png, 1180x122, navy 한 가지)
+          예전: <Logo shape="horizontal" className="logo-h" /> + <Logo shape="stacked" className="logo-s" /> 두 개를 CSS 로 숨김
+               (숨긴 쪽 파일도 내려받음). Logo 컴포넌트·가로형 SVG 는 푸터 등에서 그대로 사용
+        */}
+        <Link className="brand" href="/" onClick={scrollTo("top")}>
+          <picture className="logo logo-s header-logo">
+            <source media="(min-width: 1024px)" srcSet="/brand/logo-horizontal.png" width={1180} height={122} />
+            <source media="(prefers-color-scheme: dark)" srcSet="/brand/blutiti-stacked-ivory.svg" />
+            <img src="/brand/blutiti-stacked-navy.svg" alt="BLUTITI SELFIE STUDIO" />
+          </picture>
         </Link>
         <nav className="nav" aria-label="주요 메뉴">
           {MAIN_NAV.map((item) => (

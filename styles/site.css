@@ -104,6 +104,18 @@ a { color: inherit; }
   :root { --header-h: 73px; }
   .drawer { display: none !important; }
 }
+/* 1024px 이상(태블릿 가로·PC): 새 가로형 PNG 로고. PNG 위아래 투명 여백(약 17%)이 있어 글자는 높이의 약 65%
+   - 1024~1179px: 24px (가로 약 232px) — 28px 이면 LOCATION 메뉴와 14px 까지 붙어 답답함
+   - 1180px 이상: 28px (가로 약 271px, 글자 약 18px)
+   1024px 미만은 위 .logo-s 규칙 그대로 (세로형 36px) */
+@media (min-width: 1024px) {
+  .top .brand { padding: 10px 0; }
+  .top .brand .header-logo { display: block; height: 24px; }
+}
+@media (min-width: 1180px) {
+  .top .brand { padding: 8px 0; }
+  .top .brand .header-logo { height: 28px; }
+}
 
 /* hero */
 .hero { padding-top: var(--space-10); }
