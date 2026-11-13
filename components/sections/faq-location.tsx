@@ -2,6 +2,7 @@ import { CopyButton } from "@/components/site/copy-button";
 import { Sentences } from "@/components/site/sentences";
 import { NAVER_URL } from "@/lib/reviews";
 import { KAKAO_MAP_URL, PHONE } from "@/lib/nav";
+import { STUDIO } from "@/lib/studio-info";
 
 /** FAQ · 자주 묻는 질문 (기존 GUIDE 이용 안내) + LOCATION · 오시는 길 (기존 VISIT) */
 const FAQ = [
@@ -30,7 +31,6 @@ const FAQ = [
   },
 ];
 
-const ADDRESS = "경기 안산시 단원구 화랑로 130 2동 2층 207호";
 
 export function FaqLocation() {
   return (
@@ -81,10 +81,10 @@ export function FaqLocation() {
           <dt>주소</dt>
           <dd>
             <span className="copyrow">
-              <span>{ADDRESS}</span>
-              <CopyButton text={ADDRESS} />
+              <span>{STUDIO.address}</span>
+              <CopyButton text={STUDIO.address} />
             </span>
-            <span className="cap muted">초지역메이저타운 푸르지오 에코단지 상가 2동</span>
+            <span className="cap muted">{STUDIO.building}</span>
           </dd>
           <dt>지하철</dt>
           <dd>4호선·수인분당선·서해선 초지역 2번 출구</dd>
