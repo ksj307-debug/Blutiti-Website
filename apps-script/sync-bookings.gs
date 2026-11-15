@@ -390,7 +390,13 @@ function pad2_(n) {
 /** 스크립트 속성에서 접속 정보 읽기 (값은 로그에 남기지 않음) */
 function readConfig_() {
   var props = PropertiesService.getScriptProperties();
-  var url = (props.getProperty('SUPABASE_URL') || '').trim().replace(/\/+$/, '');
+  // 'https://xxxx.supabase.co/rest/v1/' 처럼 경로가 붙어 있어도 앞부분(https://호스트)만 사용
+  var rawUrl = (props.getProperty('SUPABASE_URL') || '').trim();
+  var origin = rawUrl.match(/^https?:\/\/[^\/?#]+/i);
+  var url = origin ? origin[0] : '';
+  if (rawUrl && !url) {
+    throw new Error('SUPABASE_URL 형식이 맞지 않아요. https://xxxx.supabase.co 형태로 넣어 주세요');
+  }
   var key = (props.getProperty('SUPABASE_SECRET_KEY') || '').trim();
   if (!url || !key) {
     throw new Error('스크립트 속성 SUPABASE_URL, SUPABASE_SECRET_KEY 를 먼저 입력해 주세요 (README 3단계)');
