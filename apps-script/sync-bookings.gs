@@ -5,8 +5,8 @@
  * 설치 순서: 같은 폴더 README.md
  *
  * 함수
- *   syncBookings()  예약번호가 있는 모든 행을 bookings 에 upsert (100건씩). 15분 트리거·메뉴에서 실행
- *   setup()         처음 한 번 실행: 15분 트리거, N1·O1 헤더, O열 진행상태 드롭다운
+ *   syncBookings()  예약번호가 있는 모든 행을 bookings 에 upsert (100건씩). 1시간 트리거·메뉴에서 실행
+ *   setup()         처음 한 번 실행: 1시간 트리거, N1·O1 헤더, O열 진행상태 드롭다운
  *   onOpen()        시트 위 메뉴 '블루티티 > 지금 동기화'
  *
  * 접속 정보는 코드에 쓰지 않음 → 프로젝트 설정 > 스크립트 속성
@@ -53,7 +53,7 @@ var COLUMNS = [
 
 /** 예약번호가 있는 모든 행을 Supabase bookings 에 upsert. 결과 { sent, failed } */
 function syncBookings() {
-  // 15분 트리거와 '지금 동기화'가 겹쳐 두 번 보내지 않게 잠금
+  // 자동 트리거와 '지금 동기화'가 겹쳐 두 번 보내지 않게 잠금
   var lock = LockService.getScriptLock();
   if (!lock.tryLock(30 * 1000)) {
     console.log('다른 동기화가 실행 중이라 이번 실행은 건너뜀');
@@ -246,18 +246,18 @@ function logHttpError_(res, what, conf) {
 // 2) 처음 한 번 설정
 // =====================================================================
 
-/** 15분 트리거(중복 없이), N1·O1 헤더, O열 진행상태 드롭다운 */
+/** 1시간 트리거(기존 시간 트리거는 교체), N1·O1 헤더, O열 진행상태 드롭다운 */
 function setup() {
-  // 15분마다 syncBookings (이미 있으면 새로 만들지 않음)
-  var exists = ScriptApp.getProjectTriggers().some(function (t) {
-    return t.getHandlerFunction() === 'syncBookings' && t.getEventType() === ScriptApp.EventType.CLOCK;
+  // 1시간마다 syncBookings. 예전 15분 트리거 등 syncBookings 시간 트리거는 지우고 새로 만듦 (중복 없음)
+  var removed = 0;
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'syncBookings' && t.getEventType() === ScriptApp.EventType.CLOCK) {
+      ScriptApp.deleteTrigger(t);
+      removed++;
+    }
   });
-  if (!exists) {
-    ScriptApp.newTrigger('syncBookings').timeBased().everyMinutes(15).create();
-    console.log('15분 자동 동기화 트리거를 만들었어요');
-  } else {
-    console.log('15분 자동 동기화 트리거가 이미 있어요');
-  }
+  ScriptApp.newTrigger('syncBookings').timeBased().everyHours(1).create();
+  console.log(removed ? '자동 동기화 주기를 1시간으로 바꿨어요' : '1시간 자동 동기화 트리거를 만들었어요');
 
   var sheet = getSheet_();
   var headers = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), 15)).getValues()[0].map(function (h) {
