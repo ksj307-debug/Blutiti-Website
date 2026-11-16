@@ -721,3 +721,82 @@ html[data-menu-open] .float-stack > * { pointer-events: none; }
 @media (min-width: 640px) {
   .book-channels { grid-template-columns: repeat(auto-fit, minmax(0, 260px)); }
 }
+
+/* ============================================================
+ * MY PAGE (/mypage · app/mypage/mypage-app.tsx)
+ * - 모바일 390 기준: 카드 가로 전체, 좌우 16px. 768 이상은 가운데 720px
+ * - 코발트는 한 화면 한 곳: 로그인 '내 사진 보기' / 로그인 후 '열린 탭의 제출 버튼'
+ * - 카드 구분은 1px 헤어라인 (그림자 없음)
+ * ============================================================ */
+.mp-narrow { max-width: 440px; margin: 0 auto; }
+.mp-list { max-width: 720px; margin: 0 auto; }
+.mp-head { margin-bottom: var(--space-6); }
+.mp-head p { margin: 0; word-break: keep-all; }
+.mp-wide { width: 100%; min-height: 48px; font-size: 15px; letter-spacing: 0; }
+.mp-login .field input { font-size: 16px; } /* iOS 입력 시 화면 확대 방지 */
+.mp-login-note { margin: var(--space-6) 0 0; }
+.mp-top { min-width: 0; display: flex; justify-content: space-between; align-items: start; gap: var(--space-4); }
+.mp-top .btn { flex: none; letter-spacing: 0; font-size: 15px; }
+.mp-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+.mp-card { min-width: 0; background: var(--paper-100); border: 1px solid var(--line); }
+.mp-card-head { display: grid; gap: var(--space-1); padding: var(--space-6) var(--space-4) var(--space-4); }
+.mp-card-head p { margin: 0; }
+.mp-card-head .t-kr { font-size: 22px; line-height: 32px; }
+.mp-time { font-family: var(--font-sans); font-size: 17px; color: var(--ink-muted); }
+.mp-product { font-weight: 600; }
+.mp-options { font-size: 15px; line-height: 24px; }
+.mp-block { padding: var(--space-4); border-top: 1px solid var(--line); }
+.mp-block .sub-h { margin: 0 0 var(--space-2); }
+.mp-photo .cap { margin: var(--space-2) 0 0; }
+
+/* 진행 상태: 7단계 가로 스텝. 모바일은 가로 스크롤(카드 안), 640 이상은 7칸 한 줄 */
+.mp-steps { list-style: none; margin: 0 calc(var(--space-4) * -1); padding: var(--space-2) var(--space-4) var(--space-2); display: flex; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.mp-steps:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+.mp-steps li { flex: 0 0 84px; display: grid; justify-items: center; gap: var(--space-2); text-align: center; position: relative; scroll-snap-align: center; }
+/* 점 사이 연결선 */
+.mp-steps li + li::before { content: ""; position: absolute; top: 14px; right: 50%; width: 100%; height: 1px; background: var(--line); z-index: 0; }
+.mp-steps li.is-done + li::before, .mp-steps li.is-now::before { background: var(--titi-navy); }
+.mp-dot { position: relative; z-index: 1; width: 29px; height: 29px; border-radius: var(--radius-round); display: grid; place-items: center; border: 1px solid var(--stone); background: var(--paper-100); color: var(--ink-muted); font: 13px/1 var(--font-mono); }
+.mp-step-label { font-size: 13px; line-height: 18px; color: var(--ink-muted); word-break: keep-all; }
+.mp-steps .is-done .mp-dot { background: var(--titi-navy); border-color: var(--titi-navy); color: var(--paper-100); }
+.mp-steps .is-done .mp-step-label { color: var(--ink); }
+/* 현재 단계: 네이비 테두리 + 하늘색 면 + 라벨 600 (코발트 아님) */
+.mp-steps .is-now .mp-dot { width: 33px; height: 33px; margin-top: -2px; margin-bottom: -2px; background: var(--titi-sky); border: 2px solid var(--titi-navy); color: var(--titi-navy); font-weight: 600; }
+.mp-steps .is-now .mp-step-label { color: var(--titi-navy); font-weight: 600; }
+@media (min-width: 640px) {
+  .mp-steps { margin: 0; padding: var(--space-2) 0; overflow: visible; }
+  .mp-steps li { flex: 1 1 0; min-width: 0; }
+}
+
+/* 셀렉 / 추가 주문 / 문의 탭: 선택 탭은 ink 밑줄 (코발트는 제출 버튼 한 곳) */
+.mp-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
+.mp-tab { min-height: 48px; padding: 0 var(--space-2); border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; color: var(--ink-muted); font: 400 15px/20px var(--font-sans); cursor: pointer; word-break: keep-all; }
+.mp-tab[aria-selected="true"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--ink); }
+.mp-tab:hover { color: var(--ink); }
+.mp-tab:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+.mp-tab-hint { margin: var(--space-4) 0 0; }
+.mp-panel { padding-top: var(--space-4); }
+.mp-panel form { display: grid; }
+.mp-panel .field input { font-size: 16px; }
+.mp-prev { margin: 0 0 var(--space-4); padding: 10px 12px; background: var(--paper-200); color: var(--ink); font-size: 13px; line-height: 20px; }
+.mp-help { margin: 0; }
+.mp-label-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-2); }
+.mp-label-row label { font-size: 13px; font-weight: 600; }
+.mp-count { white-space: nowrap; }
+.mp-count.is-over { color: var(--danger); }
+.mp-textarea { width: 100%; min-height: 112px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--paper-100); color: var(--ink); font: 16px/24px var(--font-sans); resize: vertical; }
+.mp-textarea:focus { border-color: var(--titi-cobalt); outline: 1px solid var(--titi-cobalt); outline-offset: 0; }
+.mp-fieldset { border: 0; margin: 0 0 var(--space-4); padding: 0; min-width: 0; }
+.mp-fieldset legend { padding: 0; margin-bottom: var(--space-1); font-size: 13px; font-weight: 600; }
+.mp-check { border-bottom: 1px solid var(--line); font-size: 15px; align-items: center; }
+.mp-check input { margin: 0; accent-color: var(--titi-navy); } /* 체크 표시는 네이비 (코발트는 제출 버튼 한 곳) */
+.mp-submit { display: grid; gap: var(--space-2); }
+.mp-submit p { margin: 0; min-height: 20px; }
+
+@media (min-width: 768px) {
+  .mp-card-head { padding: var(--space-6) var(--space-6) var(--space-4); }
+  .mp-block { padding: var(--space-4) var(--space-6) var(--space-6); }
+  .mp-photo .mp-wide, .mp-submit .mp-wide { width: auto; min-width: 220px; justify-self: start; }
+  .mp-photo { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .mp-photo .cap { margin: 0; }
+}
