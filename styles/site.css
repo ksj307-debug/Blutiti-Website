@@ -916,3 +916,8 @@ body { padding-bottom: calc(var(--cta-bar-h) + env(safe-area-inset-bottom, 0px))
   .mp-row-arrow { display: block; }
   .mp-row .mp-row-date { font-size: 15px; }
 }
+/* PC 헤더(861px 이상): 메뉴는 화면 왼쪽 끝, My Page 버튼은 오른쪽 끝 (2026-11)
+ * 예전: 본문과 같은 가운데 1180px 폭(.wrap) 안에 배치 → 넓은 화면에서 양쪽이 안쪽으로 몰려 보임. 로고는 그대로 화면 정중앙 */
+@media (min-width: 861px) {
+  .top .top-bar { max-width: none; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
+}
