@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 /**
  * /mypage (My Page): 이름 + 휴대폰 뒷 4자리로 로그인 → 예약 목록 → 상세 /mypage/[예약번호]
  * - 로그인 상태는 서버 API(/api/mypage/*)의 httpOnly 쿠키로 유지. 화면은 클라이언트에서 API 를 호출
- * - 헤더 오른쪽 사람 아이콘(aria-label "My Page")·모바일 메뉴 'My Page' 에서 들어옴
+ * - 헤더 오른쪽 집 아이콘(aria-label "My Page")·모바일 메뉴 'My Page' 에서 들어옴
  */
 export default function MypagePage() {
   return (

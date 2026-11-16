@@ -8,6 +8,7 @@ import { SIZES, srcSet } from "@/lib/img";
  * 원본 = 구글 드라이브 폴더별 1장 → /images/for-you/*.webp (@2x)
  * - 아이가 있는 가족: '유주지안6_noletter.jpg' / 만삭 촬영: '이보미31498.jpg'
  * - 가족 사진: '김한빛29516.jpg' / 셀프웨딩 촬영: 'blutiti_상품사진템플렛_클래식흑백2.jpg' (템플릿 테두리 잘라냄)
+ * - 아이생일: 샘플사진 '베이직 칼라/insta_blutiti_김지안2.jpg' (흰 템플릿 테두리·BLUTITI 글자 잘라내고 3:4) → kids-birthday.webp
  * 예전 레퍼런스 사진(b1.jpg, letter.jpg, frame.jpg)은 public/images/reference 에 그대로 둠
  */
 const STORIES: { eyebrow: string; title: string; desc: string; image?: string; srcSet?: string; alt?: string }[] = [
@@ -51,6 +52,14 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; s
     title: "셀프웨딩 촬영",
     desc: "자유로운 우리만의 모습을 남길 수 있어요. 웨딩드레스, 구두, 부케, 남자 정장까지 모두 준비되어 있어요. 평범한 게 싫은 신랑 신부라면 모여라!",
     // 예전: 결혼 준비 커플 / 꾸미지 않은 우리를 담아요. 원목 액자에 넣어 보내드릴 수도 있어요.
+  },
+  {
+    eyebrow: "Kid's Birthday",
+    image: "/images/for-you/kids-birthday.webp",
+    srcSet: srcSet("/images/for-you/kids-birthday.webp", [440, 560, 640, 700], 800, [["/images/for-you/kids-birthday@2x.webp", 1600]]),
+    alt: "하트 풍선을 들고 갈대 화분 옆에 서서 웃는 아이",
+    title: "아이생일",
+    desc: "해마다 달라지는 아이의 생일, 사진으로 남겨 보세요. 아이 기분에 맞춰 우리 가족끼리 편하게 찍을 수 있어요.",
   },
 ];
 

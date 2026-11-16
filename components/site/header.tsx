@@ -11,8 +11,8 @@ import { BOOKING_HREF, MAIN_NAV, MYPAGE_HREF } from "@/lib/nav";
  * - 메뉴 클릭: 메인에서는 해당 섹션으로 부드럽게 스크롤, 다른 페이지에서는 메인의 해당 섹션으로 이동
  * - 스크롤 위치에 따라 현재 섹션 메뉴 표시 (aria-current)
  * - 한 줄 배치, 로고는 화면 정중앙 (좌우 칸 1fr 로 폭을 맞춤)
- *   데스크톱: 왼쪽 메뉴 / 가운데 가로형 로고 / 오른쪽 사람 아이콘(마이페이지)
- *   모바일: 왼쪽 햄버거 / 가운데 세로형 로고 / 오른쪽 사람 아이콘(마이페이지)
+ *   데스크톱: 왼쪽 메뉴 / 가운데 가로형 로고 / 오른쪽 집 아이콘(마이페이지)
+ *   모바일: 왼쪽 햄버거 / 가운데 세로형 로고 / 오른쪽 집 아이콘(마이페이지)
  *   (예약하기·카카오톡 문의는 화면 아래 고정 바 components/site/bottom-bar.tsx)
  * - (숨김) '예약하기'는 항상 코발트(.btn-primary), /mypage 에서는 보조 버튼(.btn-secondary). 지금은 SHOW_HEADER_BOOKING = false
  *   (예전: 히어로·[data-own-cta] 가 보이면 보조 버튼으로 바뀜 → 사용자 지시로 제거)
@@ -23,12 +23,12 @@ const SPY_STOPS = ["booking"];
 /** 헤더 오른쪽 '예약하기': 화면 아래 고정 바로 옮겨 숨김 (코드는 유지) */
 const SHOW_HEADER_BOOKING = false;
 
-/** 사람 모양 1px 라인 아이콘 (디자인 시스템: 아이콘은 1px 라인, ink) */
-function PersonIcon() {
+/** 집 모양 1px 라인 아이콘 (디자인 시스템: 아이콘은 1px 라인, ink). 예전: 사람 모양(머리 원 + 어깨 곡선) */
+function HomeIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.25" aria-hidden="true">
-      <circle cx="11" cy="7.5" r="3.75" />
-      <path d="M3.75 19.25c.9-3.6 3.75-5.75 7.25-5.75s6.35 2.15 7.25 5.75" strokeLinecap="round" />
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3.5 10 11 3.5 18.5 10" strokeLinecap="round" />
+      <path d="M5.5 8.5v10h4.25v-5.25h2.5v5.25h4.25v-10" />
     </svg>
   );
 }
@@ -150,7 +150,7 @@ export function Header() {
         <div className="top-actions">
           {/* 예전 '로그인'(예약 조회) 버튼: 2026-11 자체 예약 중단으로 화면에서 뺌
               <Link className="btn-secondary top-login" href={LOGIN_HREF}>로그인</Link> */}
-          {/* 마이페이지: 사람 아이콘 (모바일·PC 공통, 누르는 영역 44px, 햄버거와 같은 ink 1px 선)
+          {/* 마이페이지: 집 아이콘 (모바일·PC 공통, 누르는 영역 44px, 햄버거와 같은 ink 1px 선)
               예전: 데스크톱만 '내 사진' 테두리 버튼(className="btn-secondary top-login") */}
           <Link
             className="top-mypage"
@@ -159,7 +159,7 @@ export function Header() {
             aria-current={isMypage ? "page" : undefined}
             onClick={() => setOpen(false)}
           >
-            <PersonIcon />
+            <HomeIcon />
           </Link>
           {/* '예약하기'는 화면 아래 고정 바(BottomBar)로 옮겨 헤더에서는 숨김 (SHOW_HEADER_BOOKING = true 면 다시 보임)
               마이페이지에서는 제출 버튼이 그 화면의 코발트라 보조 버튼(ink 테두리)으로 */}

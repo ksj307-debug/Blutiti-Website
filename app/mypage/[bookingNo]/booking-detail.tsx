@@ -108,7 +108,7 @@ function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => 
               </button>
               <div id={`${id}-photo`} className="mp-photo-notes">
                 <p className="cap muted">사진을 준비 중이에요.</p>
-                <p className="cap muted mp-small">사진 파일은 최대 3개월 간 보관해요.</p>
+                <p className="cap muted mp-small">사진 파일은 최대 3개월 간 보관합니다.</p>
               </div>
             </>
           )}

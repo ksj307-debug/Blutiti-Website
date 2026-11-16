@@ -75,9 +75,7 @@ export default function ConceptSection() {
               <h2 id="concept-h" className="t-heading-kr-lg" style={{ margin: 0, wordBreak: "keep-all" }}>
                 원하는 분위기를 골라보세요
               </h2>
-              <p className="muted" style={{ margin: 0 }}>
-                <Sentences text="'베이직 컬러'와 '클래식 흑백'은 반반 옵션으로 선택할 수 있어요." />
-              </p>
+              {/* 예전 설명: '베이직 컬러'와 '클래식 흑백'은 반반 옵션으로 선택할 수 있어요. (2026-11 삭제) */}
             </div>
           }
         >

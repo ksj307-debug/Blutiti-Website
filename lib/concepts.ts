@@ -26,7 +26,7 @@ export type ConceptId = "basic-color" | "classic-bw" | "100days" | "id-profile" 
 export type PlanId = "value" | "package";
 
 export const PLANS: { id: PlanId; name: string; summary: string; includes: string[]; badge?: string }[] = [
-  { id: "value", name: "가성비", summary: "보정·인화 없이 원본만 받는 구성", includes: ["원본 무제한 (웹사이즈)"] },
+  { id: "value", name: "가성비", summary: "보정·인화 없이 파일만", includes: ["원본 무제한 (웹사이즈)"] },
   {
     id: "package",
     name: "패키지",

@@ -40,20 +40,21 @@ export const PRE_ADD_ONS: AddOn[] = [
     id: "help",
     name: "촬영 도움 서비스",
     price: 29000,
-    desc: "첫 20분 동안 직원이 포즈·소품·촬영 방법을 알려드려요",
+    // 예전: 첫 20분 동안 직원이 포즈·소품·촬영 방법을 알려드려요
+    desc: "첫 20분 간 직원이 포즈·소품·촬영 등을 도와줘요",
     bookingDesc: "첫 20분 동안 직원이 포즈·소품·촬영 방법을 알려드려요.",
   },
 ];
 
-/** 촬영 후 추가 (3개월 안에 주문 가능) */
-export const POST_ADD_ONS: { name: string; price: string }[] = [
-  { name: "보정 추가 (1컷)", price: "15,000원" },
+/** 촬영 후 추가. 2026-11 순서: 고화질 원본 구매를 맨 위로 (예전: 보정 추가가 첫 줄). desc = 항목 아래 작은 설명 */
+export const POST_ADD_ONS: { name: string; price: string; desc?: string }[] = [
   { name: "고화질 원본 구매", price: "20,000원" },
+  { name: "보정 추가 (1컷)", price: "15,000원" },
   { name: "4컷 프레임 제작·인화", price: "15,000원" },
   { name: "9컷 프레임 제작·인화", price: "25,000원" },
-  { name: "인화 추가 4x6 / 5x7 (1장)", price: "각 5,000원" },
+  { name: "인화 추가 4x6 / 5x7 (1장)", price: "5,000원" }, // 예전 표기: 각 5,000원
   { name: "원목액자 (5x7)", price: "5,000원" },
-  { name: "레터링 & 드로잉", price: "5,000원" },
+  { name: "레터링 & 드로잉", price: "5,000원", desc: "인화 불포함" },
   { name: "증명·프로필 사진용 보정", price: "15,000원" },
 ];
 

@@ -68,6 +68,12 @@ function StepHead({ no, title, lead }: { no: string; title: string; lead?: strin
   );
 }
 
+/** PRICE 02 가성비 카드 목록: '모든 촬영 원본 당일 제공 (웹사이즈)' 를 첫 줄로, 나머지 기본 제공 순서는 그대로 */
+const VALUE_FIRST = "모든 촬영 원본 당일 제공 (웹사이즈)";
+function valueCardItems(): string[] {
+  return [VALUE_FIRST, ...BASIC_INCLUDES.filter((item) => item !== VALUE_FIRST)];
+}
+
 export function Price() {
   return (
     <section id="price" className="alt band" aria-labelledby="price-h">
@@ -155,12 +161,13 @@ export function Price() {
                       ))}
                     </ul>
                   ) : (
-                    // 가성비: 원본 무제한 + '모든 촬영에 기본 제공' 전체. 모바일은 처음 3줄만, 펼쳐 보기
+                    // 가성비: '모든 촬영에 기본 제공' 전체 (첫 줄 = 모든 촬영 원본 당일 제공). 모바일은 처음 3줄만, 펼쳐 보기
+                    // 2026-11: '원본 무제한 (웹사이즈)' 줄은 화면에서 뺌. 데이터(lib/concepts.ts includes)는 패키지 카드 비교에 쓰여 그대로 둠
                     <MoreList
                       className="plan-list"
                       visible={3}
                       moreLabel="전체 보기"
-                      items={[...p.includes, ...BASIC_INCLUDES].map((item) => (
+                      items={valueCardItems().map((item) => (
                         <Fragment key={item}>
                           <CheckIcon />
                           <span>{item}</span>
@@ -182,7 +189,7 @@ export function Price() {
           <StepHead no="03" title="부가서비스 선택" lead="필요한 서비스만 추가로 선택하세요." />
           <div className="addons">
             <div>
-              <p className="sub-h">촬영 전 추가</p>
+              {/* 예전 소제목 '촬영 전 추가' 는 2026-11 뺌 */}
               <ul className="plist small">
                 {PRE_ADD_ONS.map((o) => (
                   <li key={o.id}>
@@ -194,20 +201,21 @@ export function Price() {
               </ul>
             </div>
             <div>
-              <p className="sub-h addon-after">
-                <span className="badge">촬영 후 추가도 가능</span>
-                <span className="t-caption muted">3개월 안에 주문할 수 있어요</span>
-              </p>
+              {/* 예전: 위에 '촬영 후 추가도 가능' 배지 + '3개월 안에 주문할 수 있어요' → 배지는 섹션 맨 아래로, 3개월 문구는 뺌 */}
               <ul className="plist small">
                 {POST_ADD_ONS.map((o) => (
                   <li key={o.name}>
                     <span className="name">{o.name}</span>
                     <span className="price">{o.price}</span>
+                    {o.desc && <span className="desc">{o.desc}</span>}
                   </li>
                 ))}
               </ul>
             </div>
           </div>
+          <p className="addon-after addon-foot">
+            <span className="badge">촬영 후 추가도 가능</span>
+          </p>
         </div>
 
         {/* 4. 이벤트 ('모든 촬영에 기본 제공' 목록은 02 가성비 카드로 옮김. 예전 제목: 이벤트 · 기본 제공) */}

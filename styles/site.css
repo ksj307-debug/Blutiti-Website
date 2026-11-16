@@ -878,3 +878,5 @@ body { padding-bottom: calc(var(--cta-bar-h) + env(safe-area-inset-bottom, 0px))
 .mp-nowrap { white-space: nowrap; }
 /* 동적 주소 페이지(/mypage/[예약번호])에서 헤더가 그려지기 전 자리 (헤더 높이만큼, 레이아웃 밀림 방지) */
 .top-placeholder { height: var(--header-h); border-bottom: 1px solid var(--line); background: var(--paper-100); }
+/* PRICE 03 부가서비스: 맨 아래 '촬영 후 추가도 가능' 배지 (예전: 촬영 후 추가 목록 위) */
+.addon-foot { margin: var(--space-6) 0 0; }
