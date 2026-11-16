@@ -13,7 +13,7 @@ import { BOOKING_HREF, MAIN_NAV } from "@/lib/nav";
  * - 한 줄 배치, 로고는 화면 정중앙 (좌우 칸 1fr 로 폭을 맞춤)
  *   데스크톱: 왼쪽 메뉴 / 가운데 가로형 로고 / 오른쪽 로그인·예약하기
  *   모바일: 왼쪽 햄버거 / 가운데 세로형 로고 / 오른쪽 예약하기
- * - '예약하기'는 스크롤 위치와 상관없이 항상 코발트(.btn-primary)
+ * - '예약하기'는 스크롤 위치와 상관없이 항상 코발트(.btn-primary). 단 /mypage 에서는 보조 버튼(.btn-secondary)
  *   (예전: 히어로·[data-own-cta] 가 보이면 보조 버튼으로 바뀜 → 사용자 지시로 제거)
  * - 모바일 메뉴: 섹션 메뉴 → 구분선 → 카카오톡 문의 → 로그인
  */
@@ -23,6 +23,7 @@ const SPY_STOPS = ["booking"];
 export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isMypage = pathname === "/mypage" || pathname.startsWith("/mypage/");
   const headerRef = useRef<HTMLElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -136,7 +137,12 @@ export function Header() {
         <div className="top-actions">
           {/* 예전 '로그인'(예약 조회) 버튼: 2026-11 자체 예약 중단으로 화면에서 뺌
               <Link className="btn-secondary top-login" href={LOGIN_HREF}>로그인</Link> */}
-          <Link className="btn-primary" href={BOOKING_HREF} onClick={scrollTo("booking")}>
+          {/* 마이페이지는 제출 버튼이 그 화면의 코발트라 '예약하기'를 보조 버튼(ink 테두리)으로 */}
+          <Link
+            className={isMypage ? "btn-secondary" : "btn-primary"}
+            href={BOOKING_HREF}
+            onClick={scrollTo("booking")}
+          >
             예약하기
           </Link>
         </div>
