@@ -16,7 +16,7 @@ import { BOOKING_HREF, MAIN_NAV, MYPAGE_HREF } from "@/lib/nav";
  *   (예약하기·카카오톡 문의는 화면 아래 고정 바 components/site/bottom-bar.tsx)
  * - (숨김) '예약하기'는 항상 코발트(.btn-primary), /mypage 에서는 보조 버튼(.btn-secondary). 지금은 SHOW_HEADER_BOOKING = false
  *   (예전: 히어로·[data-own-cta] 가 보이면 보조 버튼으로 바뀜 → 사용자 지시로 제거)
- * - 모바일 메뉴: 섹션 메뉴 → 구분선 → 카카오톡 문의 → 내 사진 보기(마이페이지)
+ * - 모바일 메뉴: 섹션 메뉴 → 구분선 → 카카오톡 문의 → My Page(마이페이지)
  */
 /** 메뉴에 없는 섹션: 여기에 닿으면 현재 메뉴 표시 해제 */
 const SPY_STOPS = ["booking"];
@@ -192,7 +192,7 @@ export function Header() {
           <small>채널 &apos;블루티티&apos;</small>
         </KakaoChatButton>
         <Link href={MYPAGE_HREF} aria-current={isMypage ? "page" : undefined} onClick={() => setOpen(false)}>
-          <span className="kr">내 사진 보기</span>
+          <span className="kr">My Page</span>
           <small>진행 상태·셀렉</small>
         </Link>
         {/* 예전 메뉴 '로그인 · 예약 조회'(LOGIN_HREF): 자체 예약 중단으로 화면에서 뺌 */}

@@ -11,7 +11,7 @@ export const MAIN_NAV = [
 
 export const BOOKING_HREF = "/#booking";
 export const LOGIN_HREF = "/login";
-/** 마이페이지 (이름 + 휴대폰 뒷 4자리로 내 사진·진행 상태 확인) */
+/** My Page (이름 + 휴대폰 뒷 4자리로 사진·진행 상태 확인) */
 export const MYPAGE_HREF = "/mypage";
 export const KAKAO_LABEL = "카카오톡 채널 '블루티티'";
 /** 카카오톡 채널 '블루티티' 프로필 ID (채널 홈 URL 의 _ 로 시작하는 값) */

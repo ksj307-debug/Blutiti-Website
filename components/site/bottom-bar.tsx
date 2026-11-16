@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import type { MouseEvent } from "react";
 import { KakaoChatButton } from "@/components/site/kakao";
 import { BOOKING_HREF } from "@/lib/nav";
@@ -15,10 +14,9 @@ import { BOOKING_HREF } from "@/lib/nav";
  * 예전: 오른쪽 아래 카카오 노란 원형 버튼(FloatingActions) → 이 바로 대체. 860px 이하 전용 MobileBar(mobile-bar.tsx)는 미사용 보관
  */
 export function BottomBar() {
-  const isHome = usePathname() === "/";
-
+  // 메인인지는 누를 때 주소로 판단 (usePathname 을 쓰면 동적 주소 페이지에서 Suspense 가 필요해짐)
   const toBooking = (e: MouseEvent<HTMLAnchorElement>) => {
-    if (!isHome) return;
+    if (window.location.pathname !== "/") return;
     const target = document.getElementById("booking");
     if (!target) return;
     e.preventDefault();
