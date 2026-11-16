@@ -211,11 +211,12 @@ export function Price() {
                   </li>
                 ))}
               </ul>
+              {/* '촬영 후 추가도 가능': 촬영 후 추가 목록 마지막 줄 아래. PC 는 오른쪽 끝, 모바일은 섹션 맨 아래 왼쪽 */}
+              <p className="addon-after addon-foot">
+                <span className="badge">촬영 후 추가도 가능</span>
+              </p>
             </div>
           </div>
-          <p className="addon-after addon-foot">
-            <span className="badge">촬영 후 추가도 가능</span>
-          </p>
         </div>
 
         {/* 4. 이벤트 ('모든 촬영에 기본 제공' 목록은 02 가성비 카드로 옮김. 예전 제목: 이벤트 · 기본 제공) */}

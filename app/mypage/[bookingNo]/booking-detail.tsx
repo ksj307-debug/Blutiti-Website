@@ -91,7 +91,8 @@ function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => 
         <section className="mp-block" aria-label="진행 상태">
           <p className="sub-h">진행 상태</p>
           <Steps progress={b.progress} />
-          <p className="cap muted mp-steps-note">가성비 고객은 1, 2, 7만 제공</p>
+          {/* 예전: 가성비 고객은 1, 2, 7만 제공 */}
+          <p className="cap muted mp-steps-note">※가성비 상품 이용 시 1·2·7 단계만 해당됩니다. (3~6단계 생략)</p>
         </section>
 
         <section className="mp-block mp-photo" aria-label="사진">

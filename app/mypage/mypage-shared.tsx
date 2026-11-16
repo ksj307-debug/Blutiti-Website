@@ -167,7 +167,8 @@ export function LoginView({ notice, onSuccess }: { notice?: string; onSuccess: (
 
   return (
     <div className="mp-narrow">
-      <Head title="My Page" desc="예약할 때 입력한 이름과 휴대폰 번호 뒷 4자리로 확인해요." />
+      {/* 큰 제목: 예전 'My Page' → 2026-11 'Log In' (위 작은 라벨은 MY PAGE 그대로) */}
+      <Head title="Log In" desc="예약할 때 입력한 이름과 휴대폰 번호 뒷 4자리로 확인해요." />
       <form className="mp-login" onSubmit={submit} noValidate>
         <div className="field">
           <label htmlFor="mp-name">이름</label>

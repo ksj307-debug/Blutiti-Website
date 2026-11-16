@@ -51,6 +51,12 @@ function ListView({ bookings, onLogout }: { bookings: Booking[]; onLogout: () =>
         <>
           <p className="sub-h">예약 {bookings.length}건 · 이용일 최신순</p>
           <ul className="mp-rows">
+            {/* 표 머리행: 날짜 / 구매상품 / 상태 (모바일·PC 공통, 아래 행과 같은 칸 배치) */}
+            <li className="mp-rows-head" aria-hidden="true">
+              <span className="mp-row-date">날짜</span>
+              <span className="mp-row-product">구매상품</span>
+              <span className="mp-row-stage">상태</span>
+            </li>
             {bookings.map((b) => {
               const stage = stageIndex(b.progress);
               return (

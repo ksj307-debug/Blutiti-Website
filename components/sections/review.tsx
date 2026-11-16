@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { Marquee } from "@/components/ui/3d-testimonials";
 import { ReviewCard } from "@/components/site/review-card";
 import { Sentences } from "@/components/site/sentences";
-import { NAVER_REVIEW_URL, REVIEW_GROUPS, REVIEW_TOTAL, REVIEWS } from "@/lib/reviews";
+import { NAVER_REVIEW_URL, REVIEW_GROUPS, REVIEWS } from "@/lib/reviews";
 
 /**
  * REVIEW · 네이버 방문자 리뷰를 기울어진 세로 마키(3d-testimonials)로
@@ -28,7 +28,8 @@ export function Review() {
             </h2>
             <p className="muted cap" style={{ margin: 0 }}>
               <Sentences
-                text={`네이버 예약 방문자 리뷰 ${REVIEW_TOTAL}개, ${basic.name} 평점 ${basic.score}이에요. 카드를 누르면 네이버에서 원문을 볼 수 있어요.`}
+                // 예전: 네이버 예약 방문자 리뷰 {REVIEW_TOTAL}개, {basic.name} 평점 {basic.score}이에요. 카드를 누르면 네이버에서 원문을 볼 수 있어요.
+                text={`네이버 예약 방문자 리뷰 평점 ${basic.score}이에요. 리뷰 내용을 직접 확인하세요.`}
               />
             </p>
           </div>

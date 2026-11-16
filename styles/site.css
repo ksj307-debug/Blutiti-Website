@@ -789,7 +789,8 @@ html[data-menu-open] .float-stack > * { pointer-events: none; }
 }
 
 /* 셀렉 / 추가 주문 / 문의 탭: 선택 탭은 ink 밑줄 (코발트는 제출 버튼 한 곳) */
-.mp-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
+/* 탭 2개(셀렉·추가 주문)를 반반으로. 예전: 3칸(문의 포함) */
+.mp-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
 .mp-tab { min-height: 48px; padding: 0 var(--space-2); border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; color: var(--ink-muted); font: 400 15px/20px var(--font-sans); cursor: pointer; word-break: keep-all; }
 .mp-tab[aria-selected="true"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--ink); }
 .mp-tab:hover { color: var(--ink); }
@@ -879,7 +880,8 @@ body { padding-bottom: calc(var(--cta-bar-h) + env(safe-area-inset-bottom, 0px))
 /* 동적 주소 페이지(/mypage/[예약번호])에서 헤더가 그려지기 전 자리 (헤더 높이만큼, 레이아웃 밀림 방지) */
 .top-placeholder { height: var(--header-h); border-bottom: 1px solid var(--line); background: var(--paper-100); }
 /* PRICE 03 부가서비스: 맨 아래 '촬영 후 추가도 가능' 배지 (예전: 촬영 후 추가 목록 위) */
-.addon-foot { margin: var(--space-6) 0 0; }
+.addon-foot { margin: var(--space-4) 0 0; }
+@media (min-width: 901px) { .addon-foot { justify-content: flex-end; } } /* PC(2열): 오른쪽 목록 마지막 줄 아래 오른쪽 끝 */
 /* 헤더 My Page: 모바일은 사람 아이콘만(44px), PC(861px 이상)는 사람 아이콘 + 'My Page' ink 1px 테두리 버튼 */
 .top-mypage-label { display: none; }
 @media (min-width: 861px) {
@@ -897,4 +899,20 @@ body { padding-bottom: calc(var(--cta-bar-h) + env(safe-area-inset-bottom, 0px))
 @media (min-width: 861px) and (max-width: 1179px) {
   .nav { gap: 8px; }
   .nav a { letter-spacing: .03em; }
+}
+/* My Page 목록을 표로: 첫 행 = 날짜 / 구매상품 / 상태 (2026-11). 모바일도 한 줄 3칸 (예전: 모바일 2줄 카드형) */
+/* 칸 너비 고정(날짜 100px · 상태 90px): 머리행과 각 행이 따로 그리드라 auto 면 줄이 어긋남 */
+.mp-rows-head, .mp-row { grid-template-columns: 100px minmax(0, 1fr) 90px; grid-template-areas: "date product stage"; column-gap: var(--space-2); }
+.mp-rows-head .mp-row-stage, .mp-row .mp-row-stage { justify-self: start; }
+.mp-rows-head { display: grid; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--ink-muted); font-size: 13px; line-height: 20px; font-weight: 600; }
+.mp-rows-head .mp-row-date, .mp-rows-head .mp-row-product { font-size: 13px; line-height: 20px; font-weight: 600; color: var(--ink-muted); }
+.mp-rows-head .mp-row-stage { background: none; padding: 0; color: var(--ink-muted); }
+.mp-row { min-height: 64px; }
+.mp-row .mp-row-date { font-size: 14px; line-height: 20px; }
+.mp-row .mp-row-product { font-size: 15px; line-height: 22px; }
+.mp-row-arrow { display: none; }
+@media (min-width: 768px) {
+  .mp-rows-head, .mp-row { grid-template-columns: 150px minmax(0, 1fr) 96px 24px; grid-template-areas: "date product stage arrow"; column-gap: var(--space-4); }
+  .mp-row-arrow { display: block; }
+  .mp-row .mp-row-date { font-size: 15px; }
 }
