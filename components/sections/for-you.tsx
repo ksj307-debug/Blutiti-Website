@@ -59,7 +59,8 @@ const STORIES: { eyebrow: string; title: string; desc: string; image?: string; s
     srcSet: srcSet("/images/for-you/kids-birthday.webp", [440, 560, 640, 700], 800, [["/images/for-you/kids-birthday@2x.webp", 1600]]),
     alt: "하트 풍선을 들고 갈대 화분 옆에 서서 웃는 아이",
     title: "아이생일",
-    desc: "해마다 달라지는 아이의 생일, 사진으로 남겨 보세요. 아이 기분에 맞춰 우리 가족끼리 편하게 찍을 수 있어요.",
+    desc: "해마다 달라지는 아이의 생일, 사진으로 남겨 보세요. 우리 가족끼리만 찍으니까 아이가 편하게 웃을 수 있어요.",
+    // 예전 둘째 문장: 아이 기분에 맞춰 우리 가족끼리 편하게 찍을 수 있어요.
   },
 ];
 

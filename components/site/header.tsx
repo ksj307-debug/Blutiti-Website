@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { KakaoChatButton } from "@/components/site/kakao";
 import { BOOKING_HREF, MAIN_NAV, MYPAGE_HREF } from "@/lib/nav";
 
 /**
@@ -11,20 +10,30 @@ import { BOOKING_HREF, MAIN_NAV, MYPAGE_HREF } from "@/lib/nav";
  * - 메뉴 클릭: 메인에서는 해당 섹션으로 부드럽게 스크롤, 다른 페이지에서는 메인의 해당 섹션으로 이동
  * - 스크롤 위치에 따라 현재 섹션 메뉴 표시 (aria-current)
  * - 한 줄 배치, 로고는 화면 정중앙 (좌우 칸 1fr 로 폭을 맞춤)
- *   데스크톱: 왼쪽 메뉴 / 가운데 가로형 로고 / 오른쪽 집 아이콘(마이페이지)
- *   모바일: 왼쪽 햄버거 / 가운데 세로형 로고 / 오른쪽 집 아이콘(마이페이지)
+ *   데스크톱: 왼쪽 메뉴 / 가운데 가로형 로고 / 오른쪽 사람 아이콘 + 'My Page' 버튼
+ *   모바일: 왼쪽 햄버거 / 가운데 세로형 로고 / 오른쪽 사람 아이콘
  *   (예약하기·카카오톡 문의는 화면 아래 고정 바 components/site/bottom-bar.tsx)
  * - (숨김) '예약하기'는 항상 코발트(.btn-primary), /mypage 에서는 보조 버튼(.btn-secondary). 지금은 SHOW_HEADER_BOOKING = false
  *   (예전: 히어로·[data-own-cta] 가 보이면 보조 버튼으로 바뀜 → 사용자 지시로 제거)
- * - 모바일 메뉴: 섹션 메뉴 → 구분선 → 카카오톡 문의 → My Page(마이페이지)
+ * - 모바일 메뉴: 섹션 메뉴 → 구분선 → My Page. 메뉴 밖을 누르거나 Esc 로 닫힘 (카카오톡 문의는 아래 고정 바에 있어 뺌)
  */
 /** 메뉴에 없는 섹션: 여기에 닿으면 현재 메뉴 표시 해제 */
 const SPY_STOPS = ["booking"];
 /** 헤더 오른쪽 '예약하기': 화면 아래 고정 바로 옮겨 숨김 (코드는 유지) */
 const SHOW_HEADER_BOOKING = false;
 
-/** 집 모양 1px 라인 아이콘 (디자인 시스템: 아이콘은 1px 라인, ink). 예전: 사람 모양(머리 원 + 어깨 곡선) */
-function HomeIcon() {
+/** 사람 모양 1px 라인 아이콘 (디자인 시스템: 아이콘은 1px 라인, ink) */
+function PersonIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.25" aria-hidden="true">
+      <circle cx="11" cy="7.5" r="3.75" />
+      <path d="M3.75 19.25c.9-3.6 3.75-5.75 7.25-5.75s6.35 2.15 7.25 5.75" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** 미사용(2026-11 사람 아이콘으로 되돌림): 집 모양 1px 라인 아이콘 */
+export function HomeIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinejoin="round" aria-hidden="true">
       <path d="M3.5 10 11 3.5 18.5 10" strokeLinecap="round" />
@@ -54,10 +63,27 @@ export function Header() {
     return () => ro.disconnect();
   }, []);
 
-  // 모바일 메뉴가 열려 있는 동안 오른쪽 아래 고정 버튼(맨 위로·카카오톡)을 숨김 (site.css html[data-menu-open])
+  // 모바일 메뉴가 열려 있는 동안 오른쪽 아래 고정 버튼(맨 위로)을 숨김 (site.css html[data-menu-open])
   useEffect(() => {
     document.documentElement.toggleAttribute("data-menu-open", open);
     return () => document.documentElement.removeAttribute("data-menu-open");
+  }, [open]);
+
+  // 모바일 메뉴: 헤더(메뉴 포함) 밖을 누르거나 Esc 를 누르면 닫힘
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (e: PointerEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
   }, [open]);
 
   // 스크롤 위치 → 현재 섹션
@@ -150,8 +176,8 @@ export function Header() {
         <div className="top-actions">
           {/* 예전 '로그인'(예약 조회) 버튼: 2026-11 자체 예약 중단으로 화면에서 뺌
               <Link className="btn-secondary top-login" href={LOGIN_HREF}>로그인</Link> */}
-          {/* 마이페이지: 집 아이콘 (모바일·PC 공통, 누르는 영역 44px, 햄버거와 같은 ink 1px 선)
-              예전: 데스크톱만 '내 사진' 테두리 버튼(className="btn-secondary top-login") */}
+          {/* 마이페이지: 모바일 = 사람 아이콘만(44px), PC(861px 이상) = 사람 아이콘 + 'My Page' 테두리 버튼
+              예전: 데스크톱만 '내 사진' 테두리 버튼 → 집 아이콘(모바일·PC 공통) → 2026-11 지금 형태 */}
           <Link
             className="top-mypage"
             href={MYPAGE_HREF}
@@ -159,7 +185,10 @@ export function Header() {
             aria-current={isMypage ? "page" : undefined}
             onClick={() => setOpen(false)}
           >
-            <HomeIcon />
+            <PersonIcon />
+            <span className="top-mypage-label" aria-hidden="true">
+              My Page
+            </span>
           </Link>
           {/* '예약하기'는 화면 아래 고정 바(BottomBar)로 옮겨 헤더에서는 숨김 (SHOW_HEADER_BOOKING = true 면 다시 보임)
               마이페이지에서는 제출 버튼이 그 화면의 코발트라 보조 버튼(ink 테두리)으로 */}
@@ -187,10 +216,8 @@ export function Header() {
           </Link>
         ))}
         <div className="drawer-sep" role="separator" />
-        <KakaoChatButton className="drawer-kakao">
-          <span className="kr">카카오톡 문의</span>
-          <small>채널 &apos;블루티티&apos;</small>
-        </KakaoChatButton>
+        {/* 예전 '카카오톡 문의 · 채널 블루티티'(KakaoChatButton className="drawer-kakao"):
+            화면 아래 고정 바에 같은 버튼이 있어 2026-11 메뉴에서 뺌 */}
         <Link href={MYPAGE_HREF} aria-current={isMypage ? "page" : undefined} onClick={() => setOpen(false)}>
           <span className="kr">My Page</span>
           <small>진행 상태·셀렉</small>

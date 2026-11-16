@@ -95,7 +95,10 @@ function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => 
         </section>
 
         <section className="mp-block mp-photo" aria-label="사진">
-          {photo ? (
+          {b.expired ? (
+            // 사진 보관 기간(3개월)이 지난 예약: 다운로드 버튼·링크 없이 안내만 (서버도 photo_url 을 보내지 않음)
+            <p className="cap muted mp-expired">사진 보관 기간(3개월)이 지나 사진 파일이 삭제되었어요.</p>
+          ) : photo ? (
             <a className="btn mp-wide mp-drive" href={photo} target="_blank" rel="noopener noreferrer">
               <DriveLogo />
               사진 다운로드

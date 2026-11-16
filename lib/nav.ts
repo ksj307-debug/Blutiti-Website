@@ -6,6 +6,8 @@ export const MAIN_NAV = [
   { label: "CONCEPTS", sub: "컨셉·갤러리", id: "concepts" },
   { label: "PRICE", sub: "요금 안내", id: "price" },
   { label: "REVIEW", sub: "고객 리뷰", id: "review" },
+  // 2026-11 추가: LOCATION 섹션 왼쪽(모바일은 위) 자주 묻는 질문 (components/sections/faq-location.tsx id="faq")
+  { label: "FAQ", sub: "자주 묻는 질문", id: "faq" },
   { label: "LOCATION", sub: "오시는 길", id: "location" },
 ] as const;
 

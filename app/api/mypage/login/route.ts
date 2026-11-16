@@ -44,9 +44,9 @@ export async function POST(request: Request) {
     return fail(500, MSG.server);
   }
 
-  // 보관 기간이 지났거나(expires_at 이 지금보다 이전) 취소된 예약은 제외. expires_at 이 비어 있으면 아직 유효로 봄
+  // 취소된 예약은 제외. 사진 보관 기간(expires_at, 이용일 + 3개월)이 지난 예약도 목록에는 보여줌
+  // (사진 링크는 /api/mypage/bookings 에서 빼고 보냄). 예전: 보관 기간이 지난 예약은 로그인 대상에서 제외
   const bookingNos = (found.data ?? [])
-    .filter((b) => !b.expires_at || new Date(b.expires_at).getTime() > now)
     .filter((b) => !(b.naver_status ?? "").includes("취소"))
     .map((b) => b.booking_no as string);
 

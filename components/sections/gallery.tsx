@@ -30,8 +30,8 @@ const PHOTOS: Photo[] = [
   // 예전 02 사진(gallery-lettering.webp '임상헌_4CUT_lettering.jpg', 그 전 만삭 gallery-maternity.webp)은 화면에서만 뺌
   {
     src: "/images/gallery/gallery-lettering-1000days.webp",
-    alt: "레터링 - Happy 1000 Days 손글씨 아래에서 케이크 촛불을 부는 아이",
-    caption: "레터링",
+    alt: "레터링 & 드로잉 - Happy 1000 Days 손글씨 아래에서 케이크 촛불을 부는 아이",
+    caption: "레터링 & 드로잉", // 예전: 레터링
     width: 800,
     height: 1120,
   },

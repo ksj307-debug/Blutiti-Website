@@ -6,7 +6,8 @@ import { logDbError, supabaseServer } from "@/lib/supabase-server";
 /**
  * GET /api/mypage/bookings
  * - 세션 쿠키의 예약번호로 예약 조회 (이용일시 최신순)
- * - 반환: booking_no, visit_at, product, options, progress, photo_url + type 별 가장 최근 답변
+ * - 반환: booking_no, visit_at, product, options, progress, photo_url, expired + type 별 가장 최근 답변
+ * - expired: 사진 보관 기간(expires_at) 지남 → photo_url 은 null 로 보냄
  * - 전화번호·이메일·결제금액·차량번호·이름은 반환하지 않음
  */
 type Latest = { content: unknown; created_at: string } | null;
@@ -18,7 +19,7 @@ export async function GET() {
   const db = supabaseServer();
   const bookings = await db
     .from("bookings")
-    .select("booking_no, visit_at, product, options, progress, photo_url")
+    .select("booking_no, visit_at, product, options, progress, photo_url, expires_at")
     .in("booking_no", bookingNos)
     .order("visit_at", { ascending: false, nullsFirst: false });
   if (bookings.error) {
@@ -44,15 +45,21 @@ export async function GET() {
     latest.set(r.booking_no, byType);
   }
 
+  const now = Date.now();
   return json({
-    bookings: (bookings.data ?? []).map((b) => ({
-      booking_no: b.booking_no,
-      visit_at: b.visit_at,
-      product: b.product,
-      options: b.options,
-      progress: b.progress,
-      photo_url: b.photo_url,
-      responses: latest.get(b.booking_no) ?? { select: null, order: null, inquiry: null },
-    })),
+    bookings: (bookings.data ?? []).map((b) => {
+      // 사진 보관 기간(이용일 + 3개월)이 지나면 사진 링크는 보내지 않음
+      const expired = !!b.expires_at && new Date(b.expires_at).getTime() <= now;
+      return {
+        booking_no: b.booking_no,
+        visit_at: b.visit_at,
+        product: b.product,
+        options: b.options,
+        progress: b.progress,
+        photo_url: expired ? null : b.photo_url,
+        expired,
+        responses: latest.get(b.booking_no) ?? { select: null, order: null, inquiry: null },
+      };
+    }),
   });
 }

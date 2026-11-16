@@ -22,6 +22,8 @@ export type Booking = {
   options: string | null;
   progress: string | null;
   photo_url: string | null;
+  /** 사진 보관 기간(3개월) 지남. 이때 photo_url 은 항상 null */
+  expired?: boolean;
   responses: { select: Latest<SelectContent>; order: Latest<OrderContent>; inquiry: Latest<InquiryContent> };
 };
 
@@ -200,7 +202,8 @@ export function LoginView({ notice, onSuccess }: { notice?: string; onSuccess: (
           {pending ? "확인하고 있어요" : "로그인"}
         </button>
       </form>
-      <p className="cap muted mp-login-note">사진 보관 기간이 지난 예약과 취소한 예약은 보이지 않아요.</p>
+      {/* 예전: 사진 보관 기간이 지난 예약과 취소한 예약은 보이지 않아요. */}
+      <p className="cap muted mp-login-note">사진 보관 기간은 최대 3개월 입니다.</p>
     </div>
   );
 }
