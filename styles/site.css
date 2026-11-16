@@ -876,3 +876,5 @@ body { padding-bottom: calc(var(--cta-bar-h) + env(safe-area-inset-bottom, 0px))
 .mp-total { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--ink); font-size: 15px; }
 .mp-total .num { font-size: 20px; line-height: 28px; font-weight: 600; }
 .mp-nowrap { white-space: nowrap; }
+/* 동적 주소 페이지(/mypage/[예약번호])에서 헤더가 그려지기 전 자리 (헤더 높이만큼, 레이아웃 밀림 방지) */
+.top-placeholder { height: var(--header-h); border-bottom: 1px solid var(--line); background: var(--paper-100); }

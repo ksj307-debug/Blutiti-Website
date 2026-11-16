@@ -23,7 +23,10 @@ export const instant = false;
 export default function MypageDetailPage() {
   return (
     <>
-      <Header />
+      {/* 헤더는 현재 주소(usePathname)로 메뉴 표시를 정해, 동적 주소에서는 Suspense 안에서 요청 때 그림 */}
+      <Suspense fallback={<div className="top-placeholder" aria-hidden="true" />}>
+        <Header />
+      </Suspense>
       <main>
         <section className="alt band mp" aria-labelledby="mp-h">
           <div className="wrap">
