@@ -58,7 +58,10 @@ export function Guide() {
     <section id="guide" className="band wrap" aria-labelledby="guide-h">
       <div className="section-head">
         {/* 메뉴 이름은 lib/nav.ts 'GUIDE' 그대로 */}
-        <p className="eyebrow">GUIDE (이용 방법)</p>
+        {/* 예전: GUIDE (이용 방법). 한글 부분은 본문 서체(Pretendard)로 */}
+        <p className="eyebrow">
+          GUIDE <span className="eyebrow-kr">(이용 안내)</span>
+        </p>
         <h2 id="guide-h" className="h-kr">
           버튼만 누르면 끝나는 촬영
         </h2>

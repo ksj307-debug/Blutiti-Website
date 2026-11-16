@@ -2,7 +2,7 @@ import { STUDIO } from "@/lib/studio-info";
 
 /** 메인 메뉴: 메뉴명 = 섹션 영문 제목(eyebrow), id = 섹션 id. 순서 = 메인 섹션 순서 */
 export const MAIN_NAV = [
-  { label: "GUIDE", sub: "이용 방법", id: "guide" },
+  { label: "GUIDE", sub: "이용 안내", id: "guide" }, // 예전 sub: 이용 방법
   { label: "CONCEPTS", sub: "컨셉·갤러리", id: "concepts" },
   { label: "PRICE", sub: "요금 안내", id: "price" },
   { label: "REVIEW", sub: "고객 리뷰", id: "review" },

@@ -921,3 +921,17 @@ body { padding-bottom: calc(var(--cta-bar-h) + env(safe-area-inset-bottom, 0px))
 @media (min-width: 861px) {
   .top .top-bar { max-width: none; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
 }
+/* GUIDE 라벨의 한글 '(이용 안내)': 본문 서체(Pretendard), 대문자·넓은 자간 없이 */
+.eyebrow-kr { font-family: var(--font-sans); letter-spacing: 0; text-transform: none; }
+/* 푸터 맨 아래 사업자 정보 · 저작권 (가운데 정렬, 항목 사이 | 구분) */
+.foot-biz { margin-top: var(--space-10); padding-top: var(--space-6); border-top: 1px solid color-mix(in srgb, var(--on-night) 16%, transparent); text-align: center; display: grid; gap: 2px; }
+.foot-biz p { margin: 0; color: var(--on-night-muted); font-size: 13px; line-height: 22px; word-break: keep-all; }
+.foot-biz span { display: inline-block; }
+.foot-biz p > span + span::before { content: "|"; margin: 0 8px; opacity: .5; }
+.foot-biz .foot-copy { margin-top: var(--space-2); }
+.foot-biz .foot-brand { color: var(--on-night); }
+/* 모바일: 사업자 정보 항목을 한 줄에 하나씩 (| 구분선이 줄 맨 앞에 남지 않게) */
+@media (max-width: 600px) {
+  .foot-biz p > span { display: block; }
+  .foot-biz p > span + span::before { content: none; }
+}
