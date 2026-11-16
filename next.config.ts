@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/login", destination: "/", permanent: false },
       { source: "/my-booking", destination: "/", permanent: false },
+      // 2026-11 Our Story 페이지 삭제 (사용 안 함)
+      { source: "/our-story", destination: "/", permanent: false },
     ];
   },
   turbopack: {

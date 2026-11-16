@@ -84,9 +84,11 @@ export function AnimatedMarqueeHero({
       // 헤더 '예약하기' 버튼이 히어로 노출 여부를 판단하는 기준
       data-hero
       className={cn(
-        "relative w-full min-h-[100svh] overflow-hidden bg-[var(--paper-100)] text-[var(--ink)]",
-        // 아래 여백 = 마키 높이 + 여유. 사진을 키우며 같은 비율로 늘림 (42svh·44vh → ×1.2 → ×1.3)
-        "flex flex-col items-center justify-center px-4 pt-16 pb-[65.52svh] text-center md:pt-20 md:pb-[68.64vh]",
+        "relative w-full overflow-hidden bg-[var(--paper-100)] text-[var(--ink)]",
+        // 글 → 사진 마키를 위에서 아래로 차례로 배치 (간격은 site.css .hero-marquee)
+        // 예전: min-h-[100svh] + justify-center + pb-[65.52svh] md:pb-[68.64vh] 에 마키를 absolute 로 깔아
+        //       글과 사진 사이가 화면 높이에 따라 140~150px → 2026-11 40% 줄이며 고정 간격으로 바꿈
+        "flex flex-col items-center px-4 pt-16 text-center md:pt-20",
         className,
       )}
     >
@@ -138,7 +140,8 @@ export function AnimatedMarqueeHero({
       </div>
 
       {/* 하단 이미지 마키 (사진 높이 192·256px → 1.2배 230·307px → 1.3배 299·399px, 영역 38svh·40vh → 45.6svh·48vh → 59.28svh·62.4vh) */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[59.28svh] md:h-[62.4vh] [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_88%,transparent)]">
+      {/* 마키 영역 = 사진 높이 + 위아래 흐림 여백(site.css .hero-marquee). 예전: absolute bottom-0 h-[59.28svh] md:h-[62.4vh] */}
+      <div className="hero-marquee pointer-events-none relative -mx-4 self-stretch">
         <motion.div
           className="flex h-full w-max items-center"
           animate={reduceMotion ? undefined : { x: ["-50%", "0%"] }}

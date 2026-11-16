@@ -11,7 +11,7 @@ import { Review } from "@/components/sections/review";
 import { Booking } from "@/components/sections/booking";
 import { FaqLocation } from "@/components/sections/faq-location";
 
-/** 메인. 예약 조회(/my-booking·/login)와 Our Story(/our-story)는 별도 페이지 */
+/** 메인. 예약 조회(/my-booking·/login)는 별도 페이지. Our Story(/our-story)는 2026-11 삭제 (주소는 메인으로 이동) */
 export default function Home() {
   return (
     <>

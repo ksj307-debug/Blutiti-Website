@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Logo } from "@/components/site/logo";
 import { Sentences } from "@/components/site/sentences";
 import { INSTAGRAM_URL, KAKAO_CHAT_URL, KAKAO_LABEL, PHONE } from "@/lib/nav";
@@ -13,11 +12,7 @@ export function Footer() {
             <p>
               <Sentences text="세팅은 끝났어요. 버튼만 누르고 웃어주세요." />
             </p>
-            <p>
-              <Link className="link" href="/our-story">
-                Our Story
-              </Link>
-            </p>
+            {/* 예전 'Our Story' 링크(/our-story): 2026-11 페이지 삭제로 뺌 */}
           </div>
           <div id="contact">
             <p className="eyebrow">CONTACT</p>

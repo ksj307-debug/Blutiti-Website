@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Gowun_Batang, IBM_Plex_Mono } from "next/font/googl
 import "./globals.css";
 import { KakaoSdkLoader } from "@/components/site/kakao";
 import { FloatingActions } from "@/components/site/floating-actions";
+import { BottomBar } from "@/components/site/bottom-bar";
 
 // Pretendard 는 styles/blutiti-tokens.css 의 @font-face(public/fonts) 로 로드
 const cormorant = Cormorant_Garamond({
@@ -39,8 +40,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         {children}
-        {/* 오른쪽 아래 '맨 위로' + 카카오톡 채널 채팅 (모든 페이지 공통) */}
+        {/* 오른쪽 아래 '맨 위로' (모든 페이지 공통, 하단 바 위) */}
         <FloatingActions />
+        {/* 화면 아래 고정 바: 예약하기 · 카카오톡 문의하기 (모든 페이지 공통) */}
+        <BottomBar />
         <KakaoSdkLoader />
       </body>
     </html>
