@@ -45,6 +45,10 @@ var COLUMNS = [
   { header: '주차(차량번호)', field: 'parking_car', kind: 'text', required: true },
   { header: '사진링크', field: 'photo_url', kind: 'text', keepIfEmpty: true },
   { header: '진행상태', field: 'progress', kind: 'progress', keepIfEmpty: true },
+  // 2026-11 추가 열 (supabase/migrations/003_add_address_message.sql 실행 후). 비어 있으면 보내지 않음
+  // 시트에 이 헤더가 없어도 동기화는 그대로 진행 (required 아님). 주소는 개인정보라 로그에 남기지 않음
+  { header: '주소', field: 'address', kind: 'text', keepIfEmpty: true },
+  { header: '문구', field: 'message', kind: 'text', keepIfEmpty: true },
 ];
 
 // =====================================================================
@@ -236,6 +240,8 @@ function logHttpError_(res, what, conf) {
     hint = ' → service_role 에 bookings 권한이 없어요. 001_init.sql 을 다시 실행해 주세요';
   } else if (res.code === '23514') {
     hint = ' → 허용되지 않는 값(check 제약)이 있어요';
+  } else if (res.code === 'PGRST204') {
+    hint = ' → DB 에 없는 칸을 보냈어요. 주소·문구 열이면 003_add_address_message.sql 을 먼저 실행해 주세요';
   } else if (res.code === '42P01' || res.status === 404) {
     hint = ' → bookings 테이블을 찾지 못했어요. SUPABASE_URL 과 001_init.sql 실행 여부를 확인해 주세요';
   }
