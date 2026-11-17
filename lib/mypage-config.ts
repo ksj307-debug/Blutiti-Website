@@ -1,7 +1,7 @@
 /**
  * 마이페이지 화면 설정 (사장님이 직접 고치는 값)
  *
- * ORDER_ITEMS: '추가 주문' 탭의 체크 항목
+ * ORDER_ITEMS: '촬영 후 추가 구매' 탭의 체크 항목 (예전 이름: 추가 주문. 저장 type 은 그대로 'order')
  * - name 은 고객 답변에 그대로 저장되는 이름 (responses.content.items). 이미 받은 답변과 맞추려면 이름은 되도록 그대로 두세요
  * - price 만 바꾸면 화면 가격과 합계가 바뀌어요 (원 단위 숫자)
  * - note: 항목 아래 작은 안내 (없으면 생략)
@@ -19,7 +19,59 @@ export const ORDER_ITEMS: readonly OrderItem[] = [
   { name: "레터링 작업 (1컷)", price: 5000 },
 ];
 
-/** 추가 주문 탭 위 안내 (입금 계좌) */
+/**
+ * 셀렉 탭 질문 6개 (2026-11). 문구·줄바꿈(\n)은 사장님이 준 그대로
+ * - key: responses.content 의 칸 이름 (바꾸면 저장 구조가 달라지니 key 는 그대로 두세요)
+ * - kind: line 한 줄 입력 / text 여러 줄 입력 / check 체크박스 1개
+ * - 1번(retouch_files)만 필수
+ */
+export type SelectQuestion =
+  | { key: "retouch_files" | "review_event_files"; kind: "line"; title: string; desc?: string; required?: boolean; placeholder?: string }
+  | { key: "option_files" | "lettering_request" | "retouch_request"; kind: "text"; title: string; desc?: string; placeholder?: string }
+  | { key: "sns_consent"; kind: "check"; title: string; desc?: string; checkLabel: string };
+
+export const SELECT_QUESTIONS: readonly SelectQuestion[] = [
+  {
+    key: "retouch_files",
+    kind: "line",
+    required: true,
+    title: "보정 및 인화를 원하는 사진의 파일명을 알려주세요.(기본 2장)",
+    placeholder: "예: IMG_0012, IMG_0035",
+  },
+  {
+    key: "review_event_files",
+    kind: "line",
+    title: "[무료보정 이벤트]",
+    desc: "네이버 리뷰 등록 시, 1컷을 무료로 보정해서 고화질 원본으로 드립니다.\n이벤트 참여를 원하시면 보정할 사진의 파일명을 적어주세요",
+  },
+  {
+    key: "sns_consent",
+    kind: "check",
+    title: "[무료 고화질 원본 이벤트]",
+    desc: "블루티티 SNS활용 동의 시 무료로 고화질 원본을 제공해드립니다. 참여를 원하실 경우 아래 박스에 체크해주세요",
+    checkLabel: "SNS활용에 동의합니다",
+  },
+  {
+    key: "option_files",
+    kind: "text",
+    title: "[추가 옵션 선택 한 경우]",
+    desc: "예약 시 [보정, 인화, 4컷프레임, A3 포스터, 증명/프로필]중 추가 하셨다면 옵션명과 해당하는 파일명을 적어주세요 (예: 4컷프레임/ 20345, 23944, 23525, 34234)",
+  },
+  {
+    key: "lettering_request",
+    kind: "text",
+    title: "[레터링&드로잉 구매 한 경우]",
+    desc: "원하는 레터링 문구를 구매 시 적어주지 않았거나 변경하고 싶다면 적어주세요. (*보정본 1차 확인 후 수정은 1회까지 가능합니다.)",
+  },
+  {
+    key: "retouch_request",
+    kind: "text",
+    title: "특별히 보정을 원하는 부분을 알려주세요.",
+    desc: "(예: 팔을 얇게 수정해주세요 / 여드름을 지워주세요 등)",
+  },
+];
+
+/** 촬영 후 추가 구매 탭 안내 (위: lead / 합계 아래: 입금 계좌·입금자명) */
 export const ORDER_NOTICE = {
   lead: "촬영 후 추가로 옵션 구매를 원하시면 선택해 주세요. 입금 확인 후 제공됩니다.",
   /** 화면: (입금 계좌: 카카오뱅크 3333-03-3090322 김승준). 계좌번호는 줄바꿈 없이 한 덩어리로 */

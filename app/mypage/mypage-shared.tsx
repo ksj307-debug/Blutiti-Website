@@ -13,7 +13,17 @@ import { PHOTO_KEEP_DAYS } from "@/lib/mypage-config";
  * 타입 (GET /api/mypage/bookings 응답)
  * ------------------------------------------------------------------ */
 export type Latest<T> = { content: T; created_at: string } | null;
-export type SelectContent = { cuts: string };
+/** 셀렉 답변 (2026-11 질문 6개). 1번 retouch_files 만 필수 */
+export type SelectContent = {
+  retouch_files: string;
+  review_event_files?: string;
+  sns_consent: boolean;
+  option_files?: string;
+  lettering_request?: string;
+  retouch_request?: string;
+};
+/** 예전 셀렉 답변 형식 (컷 파일명 한 줄). DB 에 남아 있으면 화면에 '이전 답변'으로 원문 표시 */
+export type LegacySelectContent = { cuts: string };
 export type OrderContent = { items: string[]; memo?: string };
 export type InquiryContent = { message: string };
 export type Booking = {
@@ -25,7 +35,7 @@ export type Booking = {
   photo_url: string | null;
   /** 사진 보관 기간(30일) 지남. 이때 photo_url 은 항상 null */
   expired?: boolean;
-  responses: { select: Latest<SelectContent>; order: Latest<OrderContent>; inquiry: Latest<InquiryContent> };
+  responses: { select: Latest<SelectContent | LegacySelectContent>; order: Latest<OrderContent>; inquiry: Latest<InquiryContent> };
 };
 
 export const FALLBACK_ERROR = "일시적인 오류가 생겼어요. 잠시 후 다시 시도해 주세요";

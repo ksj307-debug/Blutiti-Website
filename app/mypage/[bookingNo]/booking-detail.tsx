@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { PROGRESS_STAGES, RESPONSE_MAX_CHARS, type ResponseType } from "@/lib/mypage-schemas";
-import { ORDER_ITEMS, ORDER_NOTICE, PHOTO_KEEP_DAYS, won } from "@/lib/mypage-config";
+import { ORDER_ITEMS, ORDER_NOTICE, PHOTO_KEEP_DAYS, SELECT_QUESTIONS, won } from "@/lib/mypage-config";
 import {
   FALLBACK_ERROR,
   Head,
@@ -18,6 +18,7 @@ import {
   type Booking,
   type InquiryContent,
   type Latest,
+  type LegacySelectContent,
   type OrderContent,
   type SelectContent,
 } from "../mypage-shared";
@@ -27,13 +28,13 @@ import {
  * - 위: '← 목록으로' / 날짜·상품·옵션
  * - 진행 상태 7단계 (번호 + 이름) + 주석 '가성비 고객은 1, 2, 7만 제공'
  * - 사진 다운로드 (구글 드라이브 로고). 없으면 비활성 + 준비 중 안내 + 보관 기간
- * - 탭: 셀렉 / 추가 주문 (코발트 = 열린 탭의 제출 버튼 한 곳)
+ * - 탭: 셀렉(질문 6개) / 촬영 후 추가 구매 (코발트 = 열린 탭의 제출 버튼 한 곳)
  *   문의 탭은 화면에서 뺌 (API·DB 의 inquiry 타입과 기존 문의 데이터는 그대로, InquiryForm 코드 보관)
  */
 type TabId = Exclude<ResponseType, "inquiry">;
 const TABS: { id: TabId; label: string }[] = [
   { id: "select", label: "셀렉" },
-  { id: "order", label: "추가 주문" },
+  { id: "order", label: "촬영 후 추가 구매" }, // 예전 이름: 추가 주문 (저장 type 'order' 그대로)
   // 예전: { id: "inquiry", label: "문의" } → 2026-11 화면에서 뺌
 ];
 
@@ -118,7 +119,7 @@ function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => 
           )}
         </section>
 
-        <section className="mp-block" aria-label="셀렉·추가 주문">
+        <section className="mp-block" aria-label="셀렉·촬영 후 추가 구매">
           <div className="mp-tabs" role="tablist" aria-label="보내실 내용">
             {TABS.map((t) => (
               <button
@@ -281,49 +282,139 @@ function CharCount({ used }: { used: number }) {
 
 type FormProps<T> = { bookingNo: string; latest: Latest<T>; onSaved: (v: Latest<T>) => void; onExpired: () => void };
 
-/* 셀렉: 컷 파일명 (저장 구조는 그대로 content.cuts 문자열) */
-function SelectForm({ bookingNo, latest, onSaved, onExpired }: FormProps<SelectContent>) {
-  const [cuts, setCuts] = useState(latest?.content.cuts ?? "");
+/* ------------------------------------------------------------------
+ * 셀렉: 질문 6개를 한 번에 제출 (문구는 lib/mypage-config.ts SELECT_QUESTIONS)
+ * - 1번(retouch_files)만 필수, 나머지는 선택. 빈 칸은 저장하지 않음
+ * - 예전 형식 { cuts } 답변은 지우거나 바꾸지 않고 위에 '이전 답변'으로 원문 표시 (폼은 빈 상태로 시작)
+ * 예전(2026-11 첫 버전): '셀렉한 컷 파일명' 한 칸 → content.cuts
+ * ------------------------------------------------------------------ */
+type SelectText = Exclude<keyof SelectContent, "sns_consent">;
+const SELECT_TEXT_KEYS: SelectText[] = ["retouch_files", "review_event_files", "option_files", "lettering_request", "retouch_request"];
+const isNewSelect = (c: unknown): c is SelectContent => !!c && typeof c === "object" && "retouch_files" in c;
+const isLegacySelect = (c: unknown): c is LegacySelectContent => !!c && typeof c === "object" && "cuts" in c;
+
+function SelectForm({
+  bookingNo,
+  latest,
+  onSaved,
+  onExpired,
+}: {
+  bookingNo: string;
+  latest: Latest<SelectContent | LegacySelectContent>;
+  onSaved: (v: Latest<SelectContent>) => void;
+  onExpired: () => void;
+}) {
+  const prev = latest && isNewSelect(latest.content) ? (latest as Latest<SelectContent>) : null;
+  const legacy = latest && isLegacySelect(latest.content) ? latest : null;
+  const [text, setText] = useState<Record<SelectText, string>>(() => ({
+    retouch_files: prev?.content.retouch_files ?? "",
+    review_event_files: prev?.content.review_event_files ?? "",
+    option_files: prev?.content.option_files ?? "",
+    lettering_request: prev?.content.lettering_request ?? "",
+    retouch_request: prev?.content.retouch_request ?? "",
+  }));
+  const [sns, setSns] = useState(prev?.content.sns_consent ?? false);
   const { status, submit, touch, setStatus } = useSubmit<SelectContent>(bookingNo, "select", onSaved, onExpired);
-  const id = `mp-cuts-${bookingNo}`;
+  const used = SELECT_TEXT_KEYS.reduce((sum, k) => sum + text[k].trim().length, 0);
+  const set = (k: SelectText, v: string) => {
+    setText((t) => ({ ...t, [k]: v }));
+    touch();
+  };
+  const qid = (k: string) => `mp-q-${k}-${bookingNo}`;
+
   return (
     <form
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
-        const v = cuts.trim();
-        if (!v) return setStatus({ kind: "error", message: "셀렉한 컷 파일명을 적어 주세요" });
-        if (v.length > RESPONSE_MAX_CHARS) return setStatus({ kind: "error", message: "내용은 2,000자 이내로 적어 주세요" });
-        void submit({ cuts: v });
+        if (!text.retouch_files.trim()) return setStatus({ kind: "error", message: "1번 질문은 꼭 적어주세요" });
+        if (used > RESPONSE_MAX_CHARS) return setStatus({ kind: "error", message: "내용은 2,000자 이내로 적어 주세요" });
+        const content: SelectContent = { retouch_files: text.retouch_files.trim(), sns_consent: sns };
+        for (const k of SELECT_TEXT_KEYS) {
+          const v = text[k].trim();
+          if (k !== "retouch_files" && v) content[k] = v;
+        }
+        void submit(content);
       }}
     >
-      <PreviousNote latest={latest} />
-      <div className="field">
-        <label htmlFor={id}>셀렉한 컷 파일명</label>
-        <input
-          id={id}
-          inputMode="text"
-          autoComplete="off"
-          autoCapitalize="characters"
-          placeholder="예: IMG_0012, IMG_0035"
-          maxLength={RESPONSE_MAX_CHARS}
-          value={cuts}
-          onChange={(e) => {
-            setCuts(e.target.value);
-            touch();
-          }}
-          aria-describedby={`${id}-help`}
-        />
-        <p id={`${id}-help`} className="cap muted mp-help">
-          파일 이름을 쉼표로 나눠 적어 주세요.
-        </p>
-      </div>
-      <SubmitRow status={status} hasPrevious={!!latest} />
+      <PreviousNote latest={prev} />
+      {legacy && (
+        <div className="mp-legacy">
+          <p className="cap muted">이전 답변 · {submittedAt(legacy.created_at)}</p>
+          <p className="mp-legacy-text">{(legacy.content as LegacySelectContent).cuts}</p>
+        </div>
+      )}
+      <ol className="mp-questions">
+        {SELECT_QUESTIONS.map((q, i) => (
+          <li key={q.key} className="mp-q">
+            <p className="mp-q-title" id={`${qid(q.key)}-t`}>
+              <span className="mp-q-no num">{i + 1}</span>
+              <span>
+                {q.title}
+                {q.kind === "line" && q.required && (
+                  <span className="req" aria-label="필수">
+                    *
+                  </span>
+                )}
+              </span>
+            </p>
+            {q.desc && (
+              <p className="mp-q-desc" id={`${qid(q.key)}-d`}>
+                {q.desc}
+              </p>
+            )}
+            {q.kind === "check" ? (
+              <label className="agree mp-check mp-q-check">
+                <input
+                  type="checkbox"
+                  checked={sns}
+                  onChange={(e) => {
+                    setSns(e.target.checked);
+                    touch();
+                  }}
+                  aria-describedby={q.desc ? `${qid(q.key)}-d` : undefined}
+                />
+                <span>{q.checkLabel}</span>
+              </label>
+            ) : q.kind === "line" ? (
+              <input
+                className="mp-input"
+                id={qid(q.key)}
+                aria-labelledby={`${qid(q.key)}-t`}
+                aria-describedby={q.desc ? `${qid(q.key)}-d` : undefined}
+                aria-required={q.required || undefined}
+                inputMode="text"
+                autoComplete="off"
+                placeholder={q.placeholder}
+                maxLength={RESPONSE_MAX_CHARS}
+                value={text[q.key]}
+                onChange={(e) => set(q.key, e.target.value)}
+              />
+            ) : (
+              <textarea
+                className="mp-textarea"
+                id={qid(q.key)}
+                aria-labelledby={`${qid(q.key)}-t`}
+                aria-describedby={q.desc ? `${qid(q.key)}-d` : undefined}
+                rows={3}
+                placeholder={q.placeholder}
+                value={text[q.key]}
+                onChange={(e) => set(q.key, e.target.value)}
+              />
+            )}
+          </li>
+        ))}
+      </ol>
+      <p className="mp-q-count">
+        <CharCount used={used} />
+      </p>
+      <SubmitRow status={status} hasPrevious={!!prev} />
     </form>
   );
 }
 
-/* 추가 주문: 항목(이름·가격 lib/mypage-config.ts) 체크 + 파일명·요청 사항 + 합계 */
+/* 촬영 후 추가 구매 (예전 이름: 추가 주문, 저장 type 'order' 그대로)
+ * 순서: 안내(lead) → 항목(이름·가격 lib/mypage-config.ts) → 파일명·요청 사항 → 합계 → 입금 계좌 안내 → 제출 */
 function OrderForm({ bookingNo, latest, onSaved, onExpired }: FormProps<OrderContent>) {
   const [items, setItems] = useState<string[]>(latest?.content.items ?? []);
   const [memo, setMemo] = useState(latest?.content.memo ?? "");
@@ -343,23 +434,17 @@ function OrderForm({ bookingNo, latest, onSaved, onExpired }: FormProps<OrderCon
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
-        if (items.length === 0) return setStatus({ kind: "error", message: "주문할 항목을 하나 이상 골라 주세요" });
+        if (items.length === 0) return setStatus({ kind: "error", message: "구매할 항목을 하나 이상 골라 주세요" });
         if (used > RESPONSE_MAX_CHARS) return setStatus({ kind: "error", message: "내용은 2,000자 이내로 적어 주세요" });
         const m = memo.trim();
         void submit(m ? { items, memo: m } : { items });
       }}
     >
       <PreviousNote latest={latest} />
-      <div className="mp-notice">
-        <p>{ORDER_NOTICE.lead}</p>
-        <p>
-          (입금 계좌: {ORDER_NOTICE.account.bank} <span className="num mp-nowrap">{ORDER_NOTICE.account.number}</span>{" "}
-          {ORDER_NOTICE.account.holder})
-        </p>
-        <p className="muted">{ORDER_NOTICE.depositor}</p>
-      </div>
+      {/* 항목 위에는 안내 한 줄만 (입금 계좌·입금자명은 합계 아래로 옮김) */}
+      <p className="mp-notice">{ORDER_NOTICE.lead}</p>
       <fieldset className="mp-fieldset">
-        <legend className="field-label">추가 옵션</legend>
+        <legend className="field-label">촬영 후 추가 구매 항목</legend>
         {ORDER_ITEMS.map((o) => (
           <label key={o.name} className="agree mp-check">
             <input type="checkbox" checked={items.includes(o.name)} onChange={(e) => toggle(o.name, e.target.checked)} />
@@ -402,6 +487,14 @@ function OrderForm({ bookingNo, latest, onSaved, onExpired }: FormProps<OrderCon
         <span>합계</span>
         <span className="num">{won(total)}</span>
       </p>
+      {/* 입금 계좌 안내: 합계 바로 아래. 계좌번호는 굵기 600으로 강조 (코발트 안 씀) */}
+      <div className="mp-account">
+        <p>
+          (입금 계좌: {ORDER_NOTICE.account.bank}{" "}
+          <strong className="num mp-nowrap mp-account-no">{ORDER_NOTICE.account.number}</strong> {ORDER_NOTICE.account.holder})
+        </p>
+        <p className="muted">{ORDER_NOTICE.depositor}</p>
+      </div>
       <SubmitRow status={status} hasPrevious={!!latest} />
     </form>
   );

@@ -26,8 +26,16 @@ export const responseSchema = z.discriminatedUnion("type", [
   z.object({
     booking_no: bookingNo,
     type: z.literal("select"),
-    // 컷 번호를 쉼표로 (예: "12, 35, 48")
-    content: z.strictObject({ cuts: z.string().trim().min(1) }),
+    // 2026-11 셀렉 질문 6개 (My Page 상세 '셀렉' 탭). 1번(retouch_files)만 필수
+    // 예전 형식 { cuts: "12, 35, 48" } 은 새로 받지 않음 (DB 에 저장된 예전 답변은 그대로, 화면에서 '이전 답변'으로 표시)
+    content: z.strictObject({
+      retouch_files: z.string().trim().min(1), // 1) 보정·인화할 사진 파일명 (기본 2장)
+      review_event_files: z.string().trim().optional(), // 2) 무료보정 이벤트(네이버 리뷰) 파일명
+      sns_consent: z.boolean(), // 3) 무료 고화질 원본 이벤트: SNS 활용 동의
+      option_files: z.string().trim().optional(), // 4) 추가 옵션명 + 파일명
+      lettering_request: z.string().trim().optional(), // 5) 레터링 문구
+      retouch_request: z.string().trim().optional(), // 6) 특별히 보정을 원하는 부분
+    }),
   }),
   z.object({
     booking_no: bookingNo,

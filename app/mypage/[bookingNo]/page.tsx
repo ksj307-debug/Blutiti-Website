@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * /mypage/[예약번호]: 예약 상세 (진행 상태 · 사진 다운로드 · 셀렉 · 추가 주문)
+ * /mypage/[예약번호]: 예약 상세 (진행 상태 · 사진 다운로드 · 셀렉 · 촬영 후 추가 구매)
  * - 예약번호는 클라이언트에서 useParams 로 읽음
  * - 로그인 세션(/api/mypage/bookings)에 없는 예약번호거나 로그인 전이면 /mypage 로 돌려보냄
  */

@@ -8,7 +8,7 @@ import { Head, LoginView, StatusView, stageIndex, useMypageBookings, visitDateSh
 /**
  * /mypage: 로그인 → 예약 목록 (이용일 최신순, 1건이어도 목록부터)
  * - 한 행 = 날짜 · 상품 · 진행 상태. 누르면 상세 /mypage/[예약번호]
- * - 상세 화면(진행 상태·사진 다운로드·셀렉·추가 주문)은 ./[bookingNo]/booking-detail.tsx
+ * - 상세 화면(진행 상태·사진 다운로드·셀렉·촬영 후 추가 구매)은 ./[bookingNo]/booking-detail.tsx
  * 예전(2026-11 첫 버전): 로그인 후 바로 예약 카드를 모두 펼쳐 보여줌 → 목록 + 상세로 나눔
  */
 export function MypageApp() {
