@@ -35,7 +35,9 @@ export const SELECT_QUESTIONS: readonly SelectQuestion[] = [
     key: "retouch_files",
     kind: "line",
     required: true,
-    title: "보정 및 인화를 원하는 사진의 파일명을 알려주세요.(기본 2장)",
+    // 2026-11-18: 다른 질문처럼 대괄호 제목 + 설명. 예전 title: 보정 및 인화를 원하는 사진의 파일명을 알려주세요.(기본 2장)
+    title: "[패키지 상품]",
+    desc: "보정 및 인화를 원하는 사진의 파일명을 알려주세요.(기본 2장)",
     placeholder: "예: IMG_0012, IMG_0035",
   },
   {
