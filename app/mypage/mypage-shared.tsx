@@ -32,9 +32,10 @@ export type Booking = {
   product: string | null;
   options: string | null;
   progress: string | null;
-  photo_url: string | null;
-  /** 사진 보관 기간(30일) 지남. 이때 photo_url 은 항상 null */
-  expired?: boolean;
+  /** 다운로드 마감이 지나면 서버가 이 칸을 아예 보내지 않음 */
+  photo_url?: string | null;
+  /** 사진 다운로드 마감일(expires_at, 없으면 이용일 + 30일) 지남. 예전 칸 이름: expired */
+  download_expired?: boolean;
   responses: { select: Latest<SelectContent | LegacySelectContent>; order: Latest<OrderContent>; inquiry: Latest<InquiryContent> };
 };
 

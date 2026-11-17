@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { PROGRESS_STAGES, RESPONSE_MAX_CHARS, type ResponseType } from "@/lib/mypage-schemas";
 import { ORDER_ITEMS, ORDER_NOTICE, PHOTO_KEEP_DAYS, SELECT_QUESTIONS, won } from "@/lib/mypage-config";
+import { productLabel } from "@/lib/mypage-labels";
 import {
   FALLBACK_ERROR,
   Head,
@@ -84,7 +85,8 @@ function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => 
             {b.visit_at ? visitDate(b.visit_at) : "이용일 확인 중"}
             {b.visit_at && <span className="mp-time"> {visitTime(b.visit_at)}</span>}
           </h1>
-          {b.product && <p className="mp-product">{b.product}</p>}
+          {/* '베이직 컬러 · 패키지' (lib/mypage-labels.ts, 목록과 같은 함수). 예전: product 원문 */}
+          {productLabel(b.product, b.options) && <p className="mp-product">{productLabel(b.product, b.options)}</p>}
           {b.options && <p className="muted mp-options">{b.options}</p>}
           <p className="index">예약번호 {b.booking_no}</p>
         </header>
@@ -92,32 +94,11 @@ function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => 
         <section className="mp-block" aria-label="진행 상태">
           <p className="sub-h">진행 상태</p>
           <Steps progress={b.progress} />
-          {/* 예전: 가성비 고객은 1, 2, 7만 제공 */}
-          <p className="cap muted mp-steps-note">※가성비 상품 이용 시 1·2·7 단계만 해당됩니다. (3~6단계 생략)</p>
+          {/* 예전: 가성비 고객은 1, 2, 7만 제공 → ※가성비 상품 이용 시 1·2·7 단계만 해당됩니다. (3~6단계 생략) */}
+          <p className="cap muted mp-steps-note">※상품 선택 및 이벤트 참여에 따라 위 단계는 달라질 수 있습니다.</p>
         </section>
 
-        <section className="mp-block mp-photo" aria-label="사진">
-          {b.expired ? (
-            // 사진 보관 기간(30일)이 지난 예약: 다운로드 버튼·링크 없이 안내만 (서버도 photo_url 을 보내지 않음)
-            <p className="cap muted mp-expired">사진 보관 기간({PHOTO_KEEP_DAYS}일)이 지나 사진 파일이 삭제되었어요.</p>
-          ) : photo ? (
-            <a className="btn mp-wide mp-drive" href={photo} target="_blank" rel="noopener noreferrer">
-              <DriveLogo />
-              사진 다운로드
-            </a>
-          ) : (
-            <>
-              <button className="btn mp-wide mp-drive" type="button" disabled aria-describedby={`${id}-photo`}>
-                <DriveLogo />
-                사진 다운로드
-              </button>
-              <div id={`${id}-photo`} className="mp-photo-notes">
-                <p className="cap muted">사진을 준비 중이에요.</p>
-                <p className="cap muted mp-small">사진 파일은 최대 {PHOTO_KEEP_DAYS}일 간 보관합니다.</p>
-              </div>
-            </>
-          )}
-        </section>
+        <PhotoBlock id={id} photo={photo} downloadExpired={!!b.download_expired} />
 
         <section className="mp-block" aria-label="셀렉·촬영 후 추가 구매">
           <div className="mp-tabs" role="tablist" aria-label="보내실 내용">
@@ -161,8 +142,56 @@ function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => 
   );
 }
 
+/**
+ * 사진 다운로드 (상세 화면에서만. 목록 행에는 기간 표시 없음)
+ * - 버튼 바로 아래 같은 자리에 항상: '※사진은 촬영일 기준 30일간 보관해요.'
+ * - 준비 중: 비활성 버튼 + '사진을 준비 중이에요.'
+ * - 다운로드 가능: 구글 드라이브 링크 (새 창)
+ * - 마감 지남: 비활성 모양 버튼(누를 수는 있음). 누르면 아래에 '파일 다운로드 기간이 지났어요.' (서버가 링크를 보내지 않음)
+ * 예전: 마감 지나면 버튼 없이 '사진 보관 기간(30일)이 지나…' 문구 / 준비 중에 '사진 파일은 최대 30일 간 보관합니다.' 주석 → 위 주석으로 합침
+ */
+function PhotoBlock({ id, photo, downloadExpired }: { id: string; photo: string | null; downloadExpired: boolean }) {
+  const [tried, setTried] = useState(false);
+  const noteId = `${id}-photo`;
+  return (
+    <section className="mp-block mp-photo" aria-label="사진">
+      {downloadExpired ? (
+        <button
+          className="btn mp-wide mp-drive is-off"
+          type="button"
+          aria-disabled="true"
+          aria-describedby={noteId}
+          onClick={() => setTried(true)}
+        >
+          <DriveLogo />
+          사진 다운로드
+        </button>
+      ) : photo ? (
+        <a className="btn mp-wide mp-drive" href={photo} target="_blank" rel="noopener noreferrer" aria-describedby={noteId}>
+          <DriveLogo />
+          사진 다운로드
+        </a>
+      ) : (
+        <button className="btn mp-wide mp-drive" type="button" disabled aria-describedby={noteId}>
+          <DriveLogo />
+          사진 다운로드
+        </button>
+      )}
+      <div id={noteId} className="mp-photo-notes">
+        <p className="cap muted">※사진은 촬영일 기준 {PHOTO_KEEP_DAYS}일간 보관해요.</p>
+        {!downloadExpired && !photo && <p className="cap muted">사진을 준비 중이에요.</p>}
+        {downloadExpired && (
+          <p className="cap mp-expired" role="status">
+            {tried ? "파일 다운로드 기간이 지났어요." : ""}
+          </p>
+        )}
+      </div>
+    </section>
+  );
+}
+
 /** 시트에서 온 사진 링크는 http(s) 만 열기 (javascript: 같은 주소 차단) */
-function safeUrl(url: string | null): string | null {
+function safeUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   try {
     const u = new URL(url.trim());

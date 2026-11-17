@@ -7,8 +7,8 @@ import { PHOTO_KEEP_DAYS } from "@/lib/mypage-config";
 /**
  * GET /api/mypage/bookings
  * - 세션 쿠키의 예약번호로 예약 조회 (이용일시 최신순)
- * - 반환: booking_no, visit_at, product, options, progress, photo_url, expired + type 별 가장 최근 답변
- * - expired: 사진 보관 기간(이용일 + 30일) 지남 → photo_url 은 null 로 보냄
+ * - 반환: booking_no, visit_at, product, options, progress, photo_url, download_expired + type 별 가장 최근 답변
+ * - download_expired: 사진 다운로드 마감일(expires_at, 없으면 이용일 + 30일) 지남 → photo_url 칸을 아예 빼고 보냄
  * - 전화번호·이메일·결제금액·차량번호·이름은 반환하지 않음
  */
 type Latest = { content: unknown; created_at: string } | null;
@@ -49,22 +49,23 @@ export async function GET() {
   const now = Date.now();
   return json({
     bookings: (bookings.data ?? []).map((b) => {
-      // 사진 보관 기간(이용일 + PHOTO_KEEP_DAYS = 30일)이 지나면 사진 링크는 보내지 않음
-      // 이용일시가 있으면 그것으로 계산 (DB expires_at 이 예전 3개월 값이어도 30일 기준), 없으면 expires_at
-      const expiresAt = b.visit_at
-        ? new Date(b.visit_at).getTime() + PHOTO_KEEP_DAYS * 86400e3
-        : b.expires_at
-          ? new Date(b.expires_at).getTime()
+      // 사진 다운로드 마감 = expires_at (직접 넣은 날짜 우선). 비어 있으면 이용일 + PHOTO_KEEP_DAYS(30일)
+      // 마감이 지나면 photo_url 칸 자체를 빼서 만료된 링크가 브라우저에 가지 않게 함. 예약 조회는 기간 제한 없음
+      // 예전: 이용일 + 30일로만 판단하고 칸 이름 expired, photo_url 은 null 로 보냄
+      const deadline = b.expires_at
+        ? new Date(b.expires_at).getTime()
+        : b.visit_at
+          ? new Date(b.visit_at).getTime() + PHOTO_KEEP_DAYS * 86400e3
           : null;
-      const expired = expiresAt !== null && expiresAt <= now;
+      const downloadExpired = deadline !== null && deadline <= now;
       return {
         booking_no: b.booking_no,
         visit_at: b.visit_at,
         product: b.product,
         options: b.options,
         progress: b.progress,
-        photo_url: expired ? null : b.photo_url,
-        expired,
+        ...(downloadExpired ? {} : { photo_url: b.photo_url }),
+        download_expired: downloadExpired,
         responses: latest.get(b.booking_no) ?? { select: null, order: null, inquiry: null },
       };
     }),

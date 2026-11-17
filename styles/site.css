@@ -988,3 +988,15 @@ body { padding-bottom: calc(var(--cta-bar-h) + env(safe-area-inset-bottom, 0px))
 .mp-account p { margin: 0; }
 .mp-account .muted { margin-top: var(--space-1); font-size: 13px; line-height: 20px; }
 .mp-account-no { font-weight: 600; font-size: 17px; color: var(--ink); letter-spacing: .01em; }
+/* 푸터 로고 PNG (아이보리). PNG 위아래 투명 여백(약 17%)이 있어 32px 높이 = 글자 약 21px (예전 SVG 22px 와 비슷) */
+.logo-foot-png { display: block; width: auto; height: 32px; max-width: 100%; object-fit: contain; object-position: left center; }
+/* 푸터 CONTACT 세 줄: 보이는 줄 높이는 다른 푸터 본문(15px/24px)과 같게, 누르는 영역만 44px 로 넓힘
+ * 예전: .foot a 가 44px 높이 inline-flex 라 링크 있는 줄만 벌어짐 */
+.foot .foot-lines a { display: inline; min-height: 0; position: relative; }
+.foot .foot-lines a::after { content: ""; position: absolute; inset: -13px -4px; } /* 글자 18px + 위아래 13px = 44px */
+/* My Page 사진 다운로드: 마감 지난 예약은 비활성 모양(누를 수는 있음) → 누르면 아래 안내 */
+.mp-drive.is-off { opacity: .4; cursor: not-allowed; }
+.mp-drive.is-off:hover { background: transparent; color: var(--ink); }
+.mp-drive.is-off .mp-drive-logo { filter: grayscale(1); }
+.mp-photo-notes .mp-expired { color: var(--ink); font-weight: 600; }
+.mp-photo-notes .mp-expired:empty { display: none; }

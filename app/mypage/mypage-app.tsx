@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { PROGRESS_STAGES } from "@/lib/mypage-schemas";
+import { productLabel } from "@/lib/mypage-labels";
 import { Head, LoginView, StatusView, stageIndex, useMypageBookings, visitDateShort, type Booking } from "./mypage-shared";
 
 /**
@@ -63,7 +64,8 @@ function ListView({ bookings, onLogout }: { bookings: Booking[]; onLogout: () =>
                 <li key={b.booking_no}>
                   <Link href={`/mypage/${encodeURIComponent(b.booking_no)}`} className="mp-row">
                     <span className="mp-row-date num">{b.visit_at ? visitDateShort(b.visit_at) : "이용일 확인 중"}</span>
-                    <span className="mp-row-product">{b.product ?? "상품 확인 중"}</span>
+                    {/* '베이직 컬러 · 패키지' (lib/mypage-labels.ts, 상세와 같은 함수). 예전: product 원문 */}
+                    <span className="mp-row-product">{productLabel(b.product, b.options) || "상품 확인 중"}</span>
                     <span className={`mp-row-stage${stage === PROGRESS_STAGES.length - 1 ? " is-end" : ""}`}>
                       {stage + 1} {PROGRESS_STAGES[stage]}
                     </span>

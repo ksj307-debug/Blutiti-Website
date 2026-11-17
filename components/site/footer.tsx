@@ -1,4 +1,3 @@
-import { Logo } from "@/components/site/logo";
 import { Sentences } from "@/components/site/sentences";
 import Link from "next/link";
 import { INSTAGRAM_URL, KAKAO_CHAT_URL, KAKAO_LABEL, PHONE } from "@/lib/nav";
@@ -10,7 +9,16 @@ export function Footer() {
       <footer>
         <div className="wrap foot">
           <div style={{ display: "grid", gap: "var(--space-4)", alignContent: "start" }}>
-            <Logo shape="horizontal" tone="ivory" className="logo-foot" />
+            {/* 푸터 로고: '로고/Blutiti_로고_가로형.png'(네이비, public/brand/blutiti-logo-horizontal-navy.png 로 복사)를
+                검은 배경에서 보이게 글자색만 아이보리(#F7F4EE)로 바꾼 PNG. 예전: <Logo shape="horizontal" tone="ivory" className="logo-foot" /> */}
+            <img
+              className="logo-foot-png"
+              src="/brand/blutiti-logo-horizontal-ivory.png"
+              alt="BLUTITI SELFIE STUDIO"
+              width={1180}
+              height={122}
+              loading="lazy"
+            />
             <p>
               <Sentences text="세팅은 끝났어요. 버튼만 누르고 웃어주세요." />
             </p>
@@ -18,7 +26,8 @@ export function Footer() {
           </div>
           <div id="contact">
             <p className="eyebrow">CONTACT</p>
-            <p>
+            {/* 세 줄 간격은 STUDIO 칸과 같게 (링크가 44px 높이 상자여서 줄이 벌어지던 것 → 보이는 줄 높이는 본문과 같게, 누르는 영역만 넓힘) */}
+            <p className="foot-lines">
               {/* 예전: 채널 홈(KAKAO_URL). 문의 링크는 모두 채널 채팅으로 통일 */}
               <a href={KAKAO_CHAT_URL} target="_blank" rel="noopener">
                 {KAKAO_LABEL}
