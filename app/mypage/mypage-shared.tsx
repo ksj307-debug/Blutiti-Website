@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { PROGRESS_STAGES } from "@/lib/mypage-schemas";
+import { PHOTO_KEEP_DAYS } from "@/lib/mypage-config";
 
 /**
  * 마이페이지 공통 (목록 /mypage · 상세 /mypage/[예약번호])
@@ -22,7 +23,7 @@ export type Booking = {
   options: string | null;
   progress: string | null;
   photo_url: string | null;
-  /** 사진 보관 기간(3개월) 지남. 이때 photo_url 은 항상 null */
+  /** 사진 보관 기간(30일) 지남. 이때 photo_url 은 항상 null */
   expired?: boolean;
   responses: { select: Latest<SelectContent>; order: Latest<OrderContent>; inquiry: Latest<InquiryContent> };
 };
@@ -204,7 +205,7 @@ export function LoginView({ notice, onSuccess }: { notice?: string; onSuccess: (
         </button>
       </form>
       {/* 예전: 사진 보관 기간이 지난 예약과 취소한 예약은 보이지 않아요. */}
-      <p className="cap muted mp-login-note">사진 보관 기간은 최대 3개월 입니다.</p>
+      <p className="cap muted mp-login-note">사진 보관 기간은 최대 {PHOTO_KEEP_DAYS}일 입니다.</p>
     </div>
   );
 }

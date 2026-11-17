@@ -33,5 +33,11 @@ export const ORDER_NOTICE = {
  */
 export const LEGACY_ORDER_ITEMS: readonly string[] = ["보정 추가", "인화", "액자"];
 
+/**
+ * 사진 보관 기간 (이용일 기준, 일). 2026-11: 3개월 → 30일
+ * 화면 문구·서버 판단(/api/mypage/bookings)·개인정보처리방침이 이 값을 씀. DB 는 supabase/migrations/002
+ */
+export const PHOTO_KEEP_DAYS = 30;
+
 /** 원화 콤마 표기: 15000 → "15,000원" */
 export const won = (n: number) => `${n.toLocaleString("ko-KR")}원`;

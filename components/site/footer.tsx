@@ -1,14 +1,8 @@
 import { Logo } from "@/components/site/logo";
 import { Sentences } from "@/components/site/sentences";
+import Link from "next/link";
 import { INSTAGRAM_URL, KAKAO_CHAT_URL, KAKAO_LABEL, PHONE } from "@/lib/nav";
-
-/** 사업자 정보 (푸터 맨 아래). 상호·대표·등록번호는 사장님이 준 값 */
-const BUSINESS = {
-  name: "블루티티 셀프스튜디오",
-  owner: "김승준",
-  regNo: "861-26-01888",
-  address: "경기 안산시 단원구 화랑로 130, 2동 2층 207호",
-} as const;
+import { BUSINESS } from "@/lib/studio-info";
 
 export function Footer() {
   return (
@@ -58,6 +52,10 @@ export function Footer() {
           <p>
             <span>주소: {BUSINESS.address}</span>
             <span className="num">대표전화: {PHONE}</span>
+          </p>
+          {/* 개인정보처리방침: 법령상 다른 링크보다 눈에 띄게(굵게) 표시 */}
+          <p className="foot-policy">
+            <Link href="/privacy">개인정보처리방침</Link>
           </p>
           <p className="foot-copy">
             Copyright ⓒ <span className="foot-brand">BLUTITI SELFIE STUDIO</span> All Rights Reserved.

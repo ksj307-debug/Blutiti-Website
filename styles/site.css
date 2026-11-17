@@ -935,3 +935,34 @@ body { padding-bottom: calc(var(--cta-bar-h) + env(safe-area-inset-bottom, 0px))
   .foot-biz p > span { display: block; }
   .foot-biz p > span + span::before { content: none; }
 }
+/* 푸터 개인정보처리방침 링크: 법령 관례대로 다른 정보보다 눈에 띄게 (600 굵기, on-night 밝은 색) */
+.foot-biz .foot-policy { margin-top: var(--space-2); }
+.foot-biz .foot-policy a { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-night); font-weight: 600; text-decoration: none; }
+.foot-biz .foot-policy a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* 개인정보처리방침 페이지 (/privacy) */
+.policy-wrap { max-width: 760px; }
+.policy-toc { list-style: none; margin: 0 0 var(--space-10); padding: var(--space-4) 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); display: grid; gap: 0; }
+.policy-toc a { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; color: var(--ink); text-decoration: none; font-size: 15px; }
+.policy-toc a:hover { color: var(--titi-navy); }
+.privacy-doc { font-size: 15px; line-height: 26px; word-break: keep-all; }
+.privacy-doc h2 { font-family: var(--font-serif-kr); font-weight: 400; font-size: 20px; line-height: 30px; margin: var(--space-10) 0 var(--space-2); scroll-margin-top: calc(var(--header-h) + 16px); }
+.privacy-doc h2:first-child { margin-top: 0; }
+.privacy-doc p { margin: 0 0 var(--space-2); }
+.privacy-doc ul { margin: 0 0 var(--space-2); padding-left: 20px; }
+.privacy-doc li + li { margin-top: 4px; }
+.policy-table { overflow-x: auto; margin: var(--space-2) 0 var(--space-4); }
+.policy-table:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.policy-table table { width: 100%; min-width: 520px; border-collapse: collapse; font-size: 14px; line-height: 22px; }
+.policy-table th, .policy-table td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.policy-table thead th { border-bottom: 1px solid var(--ink); font-weight: 600; color: var(--ink-muted); font-size: 13px; }
+.policy-table tbody th { font-weight: 600; white-space: nowrap; }
+.policy-kv { margin: 0 0 var(--space-2); }
+@media (max-width: 600px) {
+  /* 모바일: 표를 가로로 밀지 않게 행을 위아래로 쌓음 */
+  .policy-table table { min-width: 0; }
+  .policy-table thead { display: none; }
+  .policy-table tr { display: block; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .policy-table th, .policy-table td { display: block; padding: 2px 0; border: 0; }
+  .policy-table tbody th { white-space: normal; }
+}

@@ -44,7 +44,7 @@
 
 7. **Supabase Table Editor에서 확인**
    Supabase 대시보드 → **Table Editor → bookings**를 열어 시트의 예약이 들어왔는지 봐요.
-   - `phone_last4`(전화번호 뒷 4자리), `expires_at`(이용일시 + 3개월)은 자동으로 채워져요.
+   - `phone_last4`(전화번호 뒷 4자리), `expires_at`(이용일시 + 30일, `supabase/migrations/002_photo_keep_30days.sql` 실행 후. 예전 3개월)은 자동으로 채워져요.
    - 이후로는 1시간마다 자동으로 동기화돼요.
 
 ## 동작 요약

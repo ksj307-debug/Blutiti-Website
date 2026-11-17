@@ -38,3 +38,11 @@ export const STUDIO = {
   lat: 37.3242673 as number | null,
   lng: 126.8043051 as number | null,
 } as const;
+
+/** 사업자 정보 (푸터 맨 아래 · 개인정보처리방침). 상호·대표·등록번호는 사장님이 준 값 */
+export const BUSINESS = {
+  name: "블루티티 셀프스튜디오",
+  owner: "김승준",
+  regNo: "861-26-01888",
+  address: "경기 안산시 단원구 화랑로 130, 2동 2층 207호",
+} as const;

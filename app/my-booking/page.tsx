@@ -33,10 +33,10 @@ const dateLabel = (b: StoredBooking) => {
   const w = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
   return `${m}월 ${d}일(${DOW[w]}) ${b.start}~${b.end}`;
 };
-/** 사진 보관: 촬영일 기준 3개월 */
+/** 사진 보관: 촬영일 기준 30일 (예전 3개월. 이 페이지는 /my-booking → / 로 이동돼 화면에 안 보임) */
 const daysLeft = (b: StoredBooking) => {
   const [y, m, d] = b.date.split("-").map(Number);
-  const expire = Date.UTC(y, m - 1 + 3, d) - 9 * 3600e3;
+  const expire = Date.UTC(y, m - 1, d + 30) - 9 * 3600e3;
   return Math.ceil((expire - Date.now()) / 86400e3);
 };
 
@@ -191,7 +191,7 @@ function BookingDetail({ booking: b, backToList }: { booking: StoredBooking; bac
             flexWrap: "wrap",
           }}
         >
-          <span className="cap muted">사진 보관 · 촬영일 기준 3개월 후 삭제돼요</span>
+          <span className="cap muted">사진 보관 · 촬영일 기준 30일 후 삭제돼요</span>
           <span className="dday num">{left > 0 ? `D-${left}` : "보관 기간 종료"}</span>
         </div>
       </div>
