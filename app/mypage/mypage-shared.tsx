@@ -36,7 +36,12 @@ export type Booking = {
   photo_url?: string | null;
   /** 사진 다운로드 마감일(expires_at, 없으면 이용일 + 30일) 지남. 예전 칸 이름: expired */
   download_expired?: boolean;
-  responses: { select: Latest<SelectContent | LegacySelectContent>; order: Latest<OrderContent>; inquiry: Latest<InquiryContent> };
+  responses: {
+    /** 보정본 확인: 이상 없음(완료) / 수정 요청 (2026-11-20, 없으면 null) */
+    approve?: Latest<Record<string, never>>;
+    revision?: Latest<{ message: string }>;
+    select: Latest<SelectContent | LegacySelectContent>;
+    order: Latest<OrderContent>; inquiry: Latest<InquiryContent> };
 };
 
 export const FALLBACK_ERROR = "일시적인 오류가 생겼어요. 잠시 후 다시 시도해 주세요";

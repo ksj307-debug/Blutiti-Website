@@ -7,7 +7,9 @@
  *  - 가성비: 원본 무제한(웹사이즈)
  *  - 패키지: 원본 무제한 + 2컷 보정(수정 1회) + 2장 인화 + 종이액자 우편 발송
  * 금액 = 레퍼런스(_handoff/reference/index.html) '이용 요금' 값 + 확정 지시 (1~2인 기준)
- *  - 베이직 컬러·클래식 흑백·시즌(크리스마스·졸업): 가성비 59,000원 / 패키지 89,000원 (정가 99,000원)
+ *  - 베이직 컬러·클래식 흑백: 가성비 59,000원 / 패키지 89,000원 (정가 99,000원)
+ *  - (시즌) 크리스마스: 가성비 69,000원 / 패키지 99,000원 (정가 109,000원)  ← 2026-11-20
+ *  - (시즌) 졸업: 가성비 59,000원 / 패키지 99,000원 (정가 109,000원)  ← 2026-11-20 (예전 시즌 공통: 59,000 / 89,000, 정가 99,000)
  *  - 100일상: 가성비 79,000원 / 패키지 99,000원 (정가 109,000원)
  *  - 증명·여권: 가성비 판매 안 함 / 패키지 25,000원, 프로필: 가성비 판매 안 함 / 패키지 55,000원
  * 판매 안 함(available: false) → 화면 '–', 선택 불가
@@ -117,7 +119,8 @@ export const CONCEPTS: Concept[] = [
     name: "크리스마스",
     bookingName: "(시즌) 크리스마스",
     label: "SEASON",
-    variants: [{ id: "season-christmas", name: "크리스마스", plans: STANDARD }],
+    // 2026-11-20: 가성비 69,000원 / 패키지 99,000원 (정가 109,000원 취소선). 예전: STANDARD (59,000 / 89,000, 정가 99,000)
+    variants: [{ id: "season-christmas", name: "크리스마스", plans: { value: { amount: 69000 }, package: { amount: 99000, listAmount: 109000 } } }],
     naverItemUrl: "",
   },
   {
@@ -125,7 +128,8 @@ export const CONCEPTS: Concept[] = [
     name: "졸업",
     bookingName: "(시즌) 졸업",
     label: "SEASON",
-    variants: [{ id: "season-graduation", name: "졸업", plans: STANDARD }],
+    // 2026-11-20: 패키지 99,000원 (정가 109,000원 취소선). 가성비는 지시 없어 그대로 59,000원. 예전 패키지: 89,000 (정가 99,000)
+    variants: [{ id: "season-graduation", name: "졸업", plans: { value: STANDARD.value, package: { amount: 99000, listAmount: 109000 } } }],
     naverItemUrl: "",
   },
 ];

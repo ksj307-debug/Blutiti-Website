@@ -72,7 +72,8 @@ export function Gallery() {
         </h2>
       </div>
       {/* 사진을 누르면 크게 보기 (shared-element-gallery). 모바일 2열 · 태블릿 3열 · 데스크톱 5열, 자르지 않고 원본 비율 그대로 */}
-      <SharedGallery>
+      {/* items: 크게 보기에서 좌우 화살표로 01 → 10 순서대로 넘김 (2026-11) */}
+      <SharedGallery items={PHOTOS.map((p, i) => ({ id: `gallery-${i}`, src: p.src, alt: p.alt }))}>
         <GalleryGrid>
           {PHOTOS.map((p, i) => (
             <GalleryImage

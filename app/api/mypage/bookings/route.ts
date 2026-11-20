@@ -12,6 +12,8 @@ import { PHOTO_KEEP_DAYS } from "@/lib/mypage-config";
  * - 전화번호·이메일·결제금액·차량번호·이름은 반환하지 않음
  */
 type Latest = { content: unknown; created_at: string } | null;
+/** type 별 가장 최근 답변 자리 (approve·revision 은 보정본 확인 탭용, 2026-11-20 추가) */
+const emptyLatest = (): Record<ResponseType, Latest> => ({ select: null, order: null, inquiry: null, approve: null, revision: null });
 
 export async function GET() {
   const bookingNos = await getMypageSession();
@@ -40,7 +42,7 @@ export async function GET() {
   }
   const latest = new Map<string, Record<ResponseType, Latest>>();
   for (const r of responses.data ?? []) {
-    const byType = latest.get(r.booking_no) ?? { select: null, order: null, inquiry: null };
+    const byType = latest.get(r.booking_no) ?? emptyLatest();
     const type = r.type as ResponseType;
     if (RESPONSE_TYPES.includes(type) && !byType[type]) byType[type] = { content: r.content, created_at: r.created_at };
     latest.set(r.booking_no, byType);
@@ -66,7 +68,7 @@ export async function GET() {
         progress: b.progress,
         ...(downloadExpired ? {} : { photo_url: b.photo_url }),
         download_expired: downloadExpired,
-        responses: latest.get(b.booking_no) ?? { select: null, order: null, inquiry: null },
+        responses: latest.get(b.booking_no) ?? emptyLatest(),
       };
     }),
   });

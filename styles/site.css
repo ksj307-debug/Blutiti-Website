@@ -1000,3 +1000,20 @@ body { padding-bottom: calc(var(--cta-bar-h) + env(safe-area-inset-bottom, 0px))
 .mp-drive.is-off .mp-drive-logo { filter: grayscale(1); }
 .mp-photo-notes .mp-expired { color: var(--ink); font-weight: 600; }
 .mp-photo-notes .mp-expired:empty { display: none; }
+/* GALLERY 크게 보기: 이전·다음 화살표 (닫기 버튼과 같은 44px on-night 1px 테두리 원형) */
+.gal-nav { position: absolute; top: 50%; z-index: 50; transform: translateY(-50%); display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--radius-round); border: 1px solid var(--on-night); background: color-mix(in srgb, var(--night) 40%, transparent); color: var(--on-night); cursor: pointer; transition: background .2s, color .2s; }
+.gal-nav:hover { background: var(--on-night); color: var(--night); }
+.gal-nav:focus-visible { outline: 2px solid var(--on-night); outline-offset: 3px; }
+.gal-nav-prev { left: max(12px, env(safe-area-inset-left, 0px)); }
+.gal-nav-next { right: max(12px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 768px) { .gal-nav-prev { left: 24px; } .gal-nav-next { right: 24px; } }
+/* My Page 제출 버튼 옆 안내 (셀렉 탭). 모바일: 버튼 아래 / 768 이상: 버튼 오른쪽 */
+.mp-submit-row { display: grid; gap: var(--space-2); }
+.mp-submit-note { margin: 0; word-break: keep-all; }
+@media (min-width: 768px) {
+  .mp-submit-row { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--space-4); }
+}
+/* 보정본 확인 탭 */
+.mp-review { display: grid; }
+.mp-review .mp-q .mp-submit { margin-top: var(--space-2); }
+.mp-review-submit { margin-top: var(--space-2); }

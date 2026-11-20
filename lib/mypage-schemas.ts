@@ -7,8 +7,15 @@ import { z } from "zod";
 /** 진행상태 7단계 (DB bookings.progress check 제약과 같음) */
 export const PROGRESS_STAGES = ["촬영 완료", "원본 전달", "셀렉 완료", "보정 중", "보정본 확인", "인화·발송", "완료"] as const;
 
-/** 답변 종류: 셀렉(보정·인화할 컷) / 추가 주문 / 문의 */
-export const RESPONSE_TYPES = ["select", "order", "inquiry"] as const;
+/**
+ * 답변 종류: 셀렉 / 촬영 후 추가 구매(order) / 문의(화면에서 뺌) / 보정본 확인 완료(approve) / 보정본 수정 요청(revision)
+ * approve·revision 은 2026-11-20 추가 → DB responses_type_check 도 supabase/migrations/005 에서 함께 늘림
+ */
+export const RESPONSE_TYPES = ["select", "order", "inquiry", "approve", "revision"] as const;
+/** 보정본 확인 탭이 보이는 진행상태 (이 단계에서만 approve·revision 을 받음) */
+export const REVIEW_STAGE = "보정본 확인";
+/** 보정본 수정 요청 가능 횟수 */
+export const REVISION_LIMIT = 1;
 export type ResponseType = (typeof RESPONSE_TYPES)[number];
 
 /** 답변 안의 글자 수 합계 상한 */
@@ -26,10 +33,11 @@ export const responseSchema = z.discriminatedUnion("type", [
   z.object({
     booking_no: bookingNo,
     type: z.literal("select"),
-    // 2026-11 셀렉 질문 6개 (My Page 상세 '셀렉' 탭). 1번(retouch_files)만 필수
+    // 2026-11 셀렉 질문 6개 (My Page 상세 '셀렉' 탭)
+    // 1번(retouch_files)은 패키지 예약만 필수 → 화면에서 확인 (가성비 고객은 빈 문자열로 보낼 수 있음). 예전: 모두 필수(min 1)
     // 예전 형식 { cuts: "12, 35, 48" } 은 새로 받지 않음 (DB 에 저장된 예전 답변은 그대로, 화면에서 '이전 답변'으로 표시)
     content: z.strictObject({
-      retouch_files: z.string().trim().min(1), // 1) 보정·인화할 사진 파일명 (기본 2장)
+      retouch_files: z.string().trim(), // 1) [패키지] 보정·인화할 사진 파일명 (기본 2장)
       review_event_files: z.string().trim().optional(), // 2) 무료보정 이벤트(네이버 리뷰) 파일명
       sns_consent: z.boolean(), // 3) 무료 고화질 원본 이벤트: SNS 활용 동의
       option_files: z.string().trim().optional(), // 4) 추가 옵션명 + 파일명
@@ -48,6 +56,18 @@ export const responseSchema = z.discriminatedUnion("type", [
   z.object({
     booking_no: bookingNo,
     type: z.literal("inquiry"),
+    content: z.strictObject({ message: z.string().trim().min(1) }),
+  }),
+  // 보정본 확인: 이상 없음(완료)
+  z.object({
+    booking_no: bookingNo,
+    type: z.literal("approve"),
+    content: z.strictObject({}),
+  }),
+  // 보정본 확인: 수정 요청 (1회까지, 서버에서 횟수 확인)
+  z.object({
+    booking_no: bookingNo,
+    type: z.literal("revision"),
     content: z.strictObject({ message: z.string().trim().min(1) }),
   }),
 ]);

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { PROGRESS_STAGES, RESPONSE_MAX_CHARS, type ResponseType } from "@/lib/mypage-schemas";
-import { ORDER_ITEMS, ORDER_NOTICE, PHOTO_KEEP_DAYS, SELECT_QUESTIONS, won } from "@/lib/mypage-config";
-import { productLabel } from "@/lib/mypage-labels";
+import { PROGRESS_STAGES, RESPONSE_MAX_CHARS, REVIEW_STAGE, type ResponseType } from "@/lib/mypage-schemas";
+import { ORDER_ITEMS, ORDER_NOTICE, PHOTO_KEEP_DAYS, REVIEW_TEXT, SELECT_QUESTIONS, SELECT_SUBMIT_NOTE, won } from "@/lib/mypage-config";
+import { planKind, productLabel } from "@/lib/mypage-labels";
 import {
   FALLBACK_ERROR,
   Head,
@@ -29,15 +29,19 @@ import {
  * - 위: '← 목록으로' / 날짜·상품·옵션
  * - 진행 상태 7단계 (번호 + 이름) + 주석 '가성비 고객은 1, 2, 7만 제공'
  * - 사진 다운로드 (구글 드라이브 로고). 없으면 비활성 + 준비 중 안내 + 보관 기간
- * - 탭: 셀렉(질문 6개) / 촬영 후 추가 구매 (코발트 = 열린 탭의 제출 버튼 한 곳)
+ * - 탭: [보정본 확인] / 셀렉(질문 6개) / 촬영 후 추가 구매 (코발트 = 열린 탭의 제출·완료 버튼 한 곳)
+ *   보정본 확인 탭은 진행상태가 '보정본 확인'일 때만 맨 왼쪽에 보이고 처음 열림 (2026-11-20)
+ *   이때 사진 버튼 이름도 '보정본 다운로드' (링크는 같은 사진링크)
  *   문의 탭은 화면에서 뺌 (API·DB 의 inquiry 타입과 기존 문의 데이터는 그대로, InquiryForm 코드 보관)
  */
-type TabId = Exclude<ResponseType, "inquiry">;
+type TabId = "review" | Exclude<ResponseType, "inquiry" | "approve" | "revision">;
 const TABS: { id: TabId; label: string }[] = [
   { id: "select", label: "셀렉" },
   { id: "order", label: "촬영 후 추가 구매" }, // 예전 이름: 추가 주문 (저장 type 'order' 그대로)
   // 예전: { id: "inquiry", label: "문의" } → 2026-11 화면에서 뺌
 ];
+/** 진행상태가 '보정본 확인'일 때만 맨 앞에 붙는 탭 */
+const REVIEW_TAB: { id: TabId; label: string } = { id: "review", label: "보정본 확인" };
 
 export function BookingDetail() {
   const params = useParams<{ bookingNo: string }>();
@@ -67,7 +71,9 @@ export function BookingDetail() {
 }
 
 function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => void }) {
-  const [tab, setTab] = useState<TabId>("select");
+  const isReview = b.progress === REVIEW_STAGE;
+  const tabs = isReview ? [REVIEW_TAB, ...TABS] : TABS;
+  const [tab, setTab] = useState<TabId>(isReview ? "review" : "select");
   const [responses, setResponses] = useState(b.responses);
   const photo = safeUrl(b.photo_url);
   const id = `mp-b-${b.booking_no}`;
@@ -98,11 +104,16 @@ function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => 
           <p className="cap muted mp-steps-note">※상품 선택 및 이벤트 참여에 따라 위 단계는 달라질 수 있습니다.</p>
         </section>
 
-        <PhotoBlock id={id} photo={photo} downloadExpired={!!b.download_expired} />
+        <PhotoBlock
+          id={id}
+          photo={photo}
+          downloadExpired={!!b.download_expired}
+          label={isReview ? "보정본 다운로드" : "사진 다운로드"}
+        />
 
-        <section className="mp-block" aria-label="셀렉·촬영 후 추가 구매">
+        <section className="mp-block" aria-label={isReview ? "보정본 확인·셀렉·촬영 후 추가 구매" : "셀렉·촬영 후 추가 구매"}>
           <div className="mp-tabs" role="tablist" aria-label="보내실 내용">
-            {TABS.map((t) => (
+            {tabs.map((t) => (
               <button
                 key={t.id}
                 id={`${id}-tab-${t.id}`}
@@ -118,10 +129,21 @@ function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => 
             ))}
           </div>
           <div id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-tab-${tab}`} className="mp-panel">
-            {tab === "select" ? (
+            {tab === "review" ? (
+              <ReviewForm
+                key="review"
+                bookingNo={b.booking_no}
+                approve={responses.approve ?? null}
+                revision={responses.revision ?? null}
+                onApproved={(v) => setResponses((r) => ({ ...r, approve: v }))}
+                onRevised={(v) => setResponses((r) => ({ ...r, revision: v }))}
+                onExpired={onExpired}
+              />
+            ) : tab === "select" ? (
               <SelectForm
                 key="select"
                 bookingNo={b.booking_no}
+                isPackage={planKind(b.options) === "패키지"}
                 latest={responses.select}
                 onSaved={(v) => setResponses((r) => ({ ...r, select: v }))}
                 onExpired={onExpired}
@@ -150,7 +172,18 @@ function Detail({ booking: b, onExpired }: { booking: Booking; onExpired: () => 
  * - 마감 지남: 비활성 모양 버튼(누를 수는 있음). 누르면 아래에 '파일 다운로드 기간이 지났어요.' (서버가 링크를 보내지 않음)
  * 예전: 마감 지나면 버튼 없이 '사진 보관 기간(30일)이 지나…' 문구 / 준비 중에 '사진 파일은 최대 30일 간 보관합니다.' 주석 → 위 주석으로 합침
  */
-function PhotoBlock({ id, photo, downloadExpired }: { id: string; photo: string | null; downloadExpired: boolean }) {
+function PhotoBlock({
+  id,
+  photo,
+  downloadExpired,
+  label,
+}: {
+  id: string;
+  photo: string | null;
+  downloadExpired: boolean;
+  /** '사진 다운로드' / 진행상태 '보정본 확인'이면 '보정본 다운로드' (2026-11-20) */
+  label: string;
+}) {
   const [tried, setTried] = useState(false);
   const noteId = `${id}-photo`;
   return (
@@ -164,17 +197,17 @@ function PhotoBlock({ id, photo, downloadExpired }: { id: string; photo: string 
           onClick={() => setTried(true)}
         >
           <DriveLogo />
-          사진 다운로드
+          {label}
         </button>
       ) : photo ? (
         <a className="btn mp-wide mp-drive" href={photo} target="_blank" rel="noopener noreferrer" aria-describedby={noteId}>
           <DriveLogo />
-          사진 다운로드
+          {label}
         </a>
       ) : (
         <button className="btn mp-wide mp-drive" type="button" disabled aria-describedby={noteId}>
           <DriveLogo />
-          사진 다운로드
+          {label}
         </button>
       )}
       <div id={noteId} className="mp-photo-notes">
@@ -278,13 +311,17 @@ function useSubmit<T>(bookingNo: string, type: ResponseType, onSaved: (v: Latest
 }
 
 /** 제출 버튼 + 상태 문구 (열린 탭의 제출 버튼 = 화면의 유일한 코발트) */
-function SubmitRow({ status, hasPrevious }: { status: Status; hasPrevious: boolean }) {
+function SubmitRow({ status, hasPrevious, note }: { status: Status; hasPrevious: boolean; note?: string }) {
   const pending = status.kind === "pending";
   return (
     <div className="mp-submit">
-      <button className="btn btn-primary mp-wide" type="submit" disabled={pending}>
-        {pending ? "보내는 중이에요" : hasPrevious ? "수정해서 다시 제출하기" : "제출하기"}
-      </button>
+      {/* note: 제출 버튼 옆 안내 (PC 는 버튼 오른쪽, 모바일은 버튼 아래) */}
+      <div className="mp-submit-row">
+        <button className="btn btn-primary mp-wide" type="submit" disabled={pending}>
+          {pending ? "보내는 중이에요" : hasPrevious ? "수정해서 다시 제출하기" : "제출하기"}
+        </button>
+        {note && <p className="cap muted mp-submit-note">{note}</p>}
+      </div>
       <p className={status.kind === "error" ? "err" : "cap muted"} role={status.kind === "error" ? "alert" : "status"}>
         {status.kind === "error" ? status.message : status.kind === "done" ? "제출했어요." : ""}
       </p>
@@ -313,7 +350,8 @@ type FormProps<T> = { bookingNo: string; latest: Latest<T>; onSaved: (v: Latest<
 
 /* ------------------------------------------------------------------
  * 셀렉: 질문 6개를 한 번에 제출 (문구는 lib/mypage-config.ts SELECT_QUESTIONS)
- * - 1번(retouch_files)만 필수, 나머지는 선택. 빈 칸은 저장하지 않음
+ * - 1번(retouch_files)은 패키지 예약만 필수(필수 표시 * 없음), 나머지는 선택. 빈 칸은 저장하지 않음 (2026-11-20)
+ * - 가성비 등: 아무것도 적지 않고 체크도 안 했으면 '한 가지 이상' 안내
  * - 예전 형식 { cuts } 답변은 지우거나 바꾸지 않고 위에 '이전 답변'으로 원문 표시 (폼은 빈 상태로 시작)
  * 예전(2026-11 첫 버전): '셀렉한 컷 파일명' 한 칸 → content.cuts
  * ------------------------------------------------------------------ */
@@ -324,11 +362,14 @@ const isLegacySelect = (c: unknown): c is LegacySelectContent => !!c && typeof c
 
 function SelectForm({
   bookingNo,
+  isPackage,
   latest,
   onSaved,
   onExpired,
 }: {
   bookingNo: string;
+  /** 예약 옵션에 '패키지 셀프촬영'이 있으면 true → 1번 필수 */
+  isPackage: boolean;
   latest: Latest<SelectContent | LegacySelectContent>;
   onSaved: (v: Latest<SelectContent>) => void;
   onExpired: () => void;
@@ -356,7 +397,10 @@ function SelectForm({
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
-        if (!text.retouch_files.trim()) return setStatus({ kind: "error", message: "1번 질문은 꼭 적어주세요" });
+        if (isPackage && !text.retouch_files.trim()) return setStatus({ kind: "error", message: "1번 질문은 꼭 적어 주세요" });
+        if (!sns && SELECT_TEXT_KEYS.every((k) => !text[k].trim())) {
+          return setStatus({ kind: "error", message: "적은 내용이 없어요. 한 가지 이상 적어 주세요" });
+        }
         if (used > RESPONSE_MAX_CHARS) return setStatus({ kind: "error", message: "내용은 2,000자 이내로 적어 주세요" });
         const content: SelectContent = { retouch_files: text.retouch_files.trim(), sns_consent: sns };
         for (const k of SELECT_TEXT_KEYS) {
@@ -378,14 +422,8 @@ function SelectForm({
           <li key={q.key} className="mp-q">
             <p className="mp-q-title" id={`${qid(q.key)}-t`}>
               <span className="mp-q-no num">{i + 1}</span>
-              <span>
-                {q.title}
-                {q.kind === "line" && q.required && (
-                  <span className="req" aria-label="필수">
-                    *
-                  </span>
-                )}
-              </span>
+              {/* 예전: 1번 제목 뒤 필수 표시 <span className="req">*</span> → 2026-11-20 뺌 (1번은 패키지 예약만 필수) */}
+              <span>{q.title}</span>
             </p>
             {q.desc && (
               <p className="mp-q-desc" id={`${qid(q.key)}-d`}>
@@ -411,7 +449,7 @@ function SelectForm({
                 id={qid(q.key)}
                 aria-labelledby={`${qid(q.key)}-t`}
                 aria-describedby={q.desc ? `${qid(q.key)}-d` : undefined}
-                aria-required={q.required || undefined}
+                aria-required={(q.required && isPackage) || undefined}
                 inputMode="text"
                 autoComplete="off"
                 placeholder={q.placeholder}
@@ -437,8 +475,122 @@ function SelectForm({
       <p className="mp-q-count">
         <CharCount used={used} />
       </p>
-      <SubmitRow status={status} hasPrevious={!!prev} />
+      <SubmitRow status={status} hasPrevious={!!prev} note={SELECT_SUBMIT_NOTE} />
     </form>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * 보정본 확인 (진행상태 '보정본 확인'일 때만 탭이 보임, 2026-11-20)
+ * 1. 이상이 없으면 [완료] → responses type 'approve'
+ * 2. 수정은 1회까지 → 내용 적고 [제출] → type 'revision'
+ * - 완료 뒤에는 두 버튼 모두 숨기고 완료 시각만. 수정 요청을 이미 보냈으면 요청 내용만 보이고 다시 보낼 수 없음
+ *   (서버도 같은 규칙으로 막음: app/api/mypage/responses)
+ * - 코발트는 [완료] 한 곳, [제출]은 보조 버튼
+ * ------------------------------------------------------------------ */
+function ReviewForm({
+  bookingNo,
+  approve,
+  revision,
+  onApproved,
+  onRevised,
+  onExpired,
+}: {
+  bookingNo: string;
+  approve: Latest<Record<string, never>>;
+  revision: Latest<{ message: string }>;
+  onApproved: (v: Latest<Record<string, never>>) => void;
+  onRevised: (v: Latest<{ message: string }>) => void;
+  onExpired: () => void;
+}) {
+  const [message, setMessage] = useState("");
+  const ok = useSubmit<Record<string, never>>(bookingNo, "approve", onApproved, onExpired);
+  const fix = useSubmit<{ message: string }>(bookingNo, "revision", onRevised, onExpired);
+  const id = `mp-rev-${bookingNo}`;
+
+  if (approve) {
+    return (
+      <div className="mp-review">
+        <p className="mp-prev cap">{submittedAt(approve.created_at)}에 보정본 확인을 완료했어요. 감사합니다.</p>
+        {revision && <RevisionSent revision={revision} />}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mp-review">
+      <section className="mp-q" aria-labelledby={`${id}-1`}>
+        <p className="mp-q-title" id={`${id}-1`}>
+          <span className="mp-q-no num">1</span>
+          <span>{REVIEW_TEXT.approve}</span>
+        </p>
+        <div className="mp-submit">
+          <button
+            className="btn btn-primary mp-wide"
+            type="button"
+            disabled={ok.status.kind === "pending"}
+            onClick={() => void ok.submit({})}
+          >
+            {ok.status.kind === "pending" ? "보내는 중이에요" : "완료"}
+          </button>
+          <p className={ok.status.kind === "error" ? "err" : "cap muted"} role={ok.status.kind === "error" ? "alert" : "status"}>
+            {ok.status.kind === "error" ? ok.status.message : ""}
+          </p>
+        </div>
+      </section>
+
+      <section className="mp-q" aria-labelledby={`${id}-2`}>
+        <p className="mp-q-title" id={`${id}-2`}>
+          <span className="mp-q-no num">2</span>
+          <span>{REVIEW_TEXT.revision}</span>
+        </p>
+        {revision ? (
+          <RevisionSent revision={revision} />
+        ) : (
+          <form
+            noValidate
+            onSubmit={(e) => {
+              e.preventDefault();
+              const v = message.trim();
+              if (!v) return fix.setStatus({ kind: "error", message: "수정 사항을 적어 주세요" });
+              if (v.length > RESPONSE_MAX_CHARS) return fix.setStatus({ kind: "error", message: "내용은 2,000자 이내로 적어 주세요" });
+              void fix.submit({ message: v });
+            }}
+          >
+            <textarea
+              className="mp-textarea"
+              id={`${id}-msg`}
+              aria-labelledby={`${id}-2`}
+              rows={4}
+              placeholder="예: IMG_0012 얼굴 잡티를 조금 더 지워 주세요"
+              value={message}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                fix.touch();
+              }}
+            />
+            <div className="mp-submit mp-review-submit">
+              <button className="btn mp-wide" type="submit" disabled={fix.status.kind === "pending"}>
+                {fix.status.kind === "pending" ? "보내는 중이에요" : "제출"}
+              </button>
+              <p className={fix.status.kind === "error" ? "err" : "cap muted"} role={fix.status.kind === "error" ? "alert" : "status"}>
+                {fix.status.kind === "error" ? fix.status.message : ""}
+              </p>
+            </div>
+          </form>
+        )}
+      </section>
+    </div>
+  );
+}
+
+/** 이미 보낸 수정 요청 (1회 제한이라 다시 보낼 수 없음) */
+function RevisionSent({ revision }: { revision: NonNullable<Latest<{ message: string }>> }) {
+  return (
+    <div className="mp-legacy">
+      <p className="cap muted">{submittedAt(revision.created_at)}에 수정 요청을 받았어요. 수정은 1회까지 가능해요.</p>
+      <p className="mp-legacy-text">{revision.content.message}</p>
+    </div>
   );
 }
 

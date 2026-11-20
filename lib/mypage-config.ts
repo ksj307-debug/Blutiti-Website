@@ -23,8 +23,17 @@ export const ORDER_ITEMS: readonly OrderItem[] = [
  * 셀렉 탭 질문 6개 (2026-11). 문구·줄바꿈(\n)은 사장님이 준 그대로
  * - key: responses.content 의 칸 이름 (바꾸면 저장 구조가 달라지니 key 는 그대로 두세요)
  * - kind: line 한 줄 입력 / text 여러 줄 입력 / check 체크박스 1개
- * - 1번(retouch_files)만 필수
+ * - 1번(retouch_files)은 패키지 예약만 필수 (required = '패키지면 필수'), 나머지는 선택
  */
+
+/** 셀렉 탭 제출 버튼 옆 안내 (2026-11-20) */
+export const SELECT_SUBMIT_NOTE = "*보정본이 완료되면 카카오톡으로 알림 메시지가 전달됩니다. 홈페이지에서 보정본을 확인해 주세요.";
+
+/** 보정본 확인 탭 안내 (2026-11-20). 번호는 화면에서 붙임 */
+export const REVIEW_TEXT = {
+  approve: "이상이 없으시면 아래 완료 버튼을 눌러 주세요.",
+  revision: "수정은 1회까지 가능합니다. 수정 사항을 적은 후 제출해 주세요.",
+} as const;
 export type SelectQuestion =
   | { key: "retouch_files" | "review_event_files"; kind: "line"; title: string; desc?: string; required?: boolean; placeholder?: string }
   | { key: "option_files" | "lettering_request" | "retouch_request"; kind: "text"; title: string; desc?: string; placeholder?: string }
@@ -34,9 +43,10 @@ export const SELECT_QUESTIONS: readonly SelectQuestion[] = [
   {
     key: "retouch_files",
     kind: "line",
+    // 패키지 예약(options 에 '패키지 셀프촬영')만 필수. 필수 표시(*)는 화면에 안 보임 (2026-11-20)
     required: true,
-    // 2026-11-18: 다른 질문처럼 대괄호 제목 + 설명. 예전 title: 보정 및 인화를 원하는 사진의 파일명을 알려주세요.(기본 2장)
-    title: "[패키지 상품]",
+    // 예전 title: 보정 및 인화를 원하는 사진의 파일명을 알려주세요.(기본 2장) → [패키지 상품] → 지금
+    title: "[패키지 셀프촬영을 선택하신 경우 (가성비 상품은 해당 없음)]",
     desc: "보정 및 인화를 원하는 사진의 파일명을 알려주세요.(기본 2장)",
     placeholder: "예: IMG_0012, IMG_0035",
   },

@@ -11,6 +11,9 @@ export const MSG = {
   forbidden: "이 예약에 대한 권한이 없어요",
   tooLong: "내용은 2,000자 이내로 적어 주세요",
   server: "일시적인 오류가 생겼어요. 잠시 후 다시 시도해 주세요",
+  notReviewStage: "보정본 확인 단계에서만 보낼 수 있어요",
+  reviewDone: "이미 보정본 확인을 완료했어요",
+  revisionLimit: "수정 요청은 1회까지 가능해요",
 } as const;
 
 export function json(data: unknown, status = 200) {

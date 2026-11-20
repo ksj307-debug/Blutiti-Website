@@ -23,8 +23,9 @@ export function Review() {
         <div className="rev-head">
           <div className="section-head" style={{ marginBottom: 0 }}>
             <p className="eyebrow">REVIEW</p>
+            {/* 예전: Kind <em>words</em> from families. 이탤릭은 연결어(from) 하나만 (디자인 시스템) */}
             <h2 id="rev-h" className="display">
-              Kind <em>words</em> from families
+              Words <em>from</em> our families
             </h2>
             <p className="muted cap" style={{ margin: 0 }}>
               <Sentences
