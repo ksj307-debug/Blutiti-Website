@@ -37,7 +37,7 @@ export const OG_IMAGE = { url: "/og/blutiti-og.jpg", width: 1200, height: 630, a
  * - naver : 네이버 서치어드바이저 > 사이트 등록 > 'HTML 태그' 방식의 content 값
  * 비어 있으면 태그를 넣지 않음
  */
-export const SEARCH_VERIFICATION = { google: "", naver: "" };
+export const SEARCH_VERIFICATION = { google: "", naver: "fbb1e339b97ab562c6165d6618d1f8890ce3b6cd" };
 
 /** 영업시간 (푸터 '매일 10:00~21:50'과 같게) */
 const OPEN = "10:00";
