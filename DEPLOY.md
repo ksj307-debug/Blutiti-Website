@@ -28,6 +28,6 @@
 1. Vercel → 프로젝트 → **Settings → Cron Jobs**에 `/api/cron/keepalive` (`0 19 * * *`)가 보이는지 확인
 2. 같은 화면의 **Run** 버튼으로 한 번 실행 → **Logs**에서 상태 200 확인
 3. 인증 없이 열면 401 이 나와야 정상:
-   `https://blutiti-website.vercel.app/api/cron/keepalive` → `{"ok":false}`
+   `https://blutiti.com/api/cron/keepalive` → `{"ok":false}`
 4. 함수 리전: Deployments → 최신 배포 → **Functions** 탭(또는 Logs)에서 Region 이 `sin1`인지 확인
-5. 마이페이지: `https://blutiti-website.vercel.app/mypage`에서 실제 예약으로 로그인
+5. 마이페이지: `https://blutiti.com/mypage`에서 실제 예약으로 로그인
