@@ -6,7 +6,11 @@ import { Sentences } from "@/components/site/sentences";
 import { ReviewGroups } from "./review-groups";
 import { NAVER_URL } from "@/lib/reviews";
 
-export const metadata: Metadata = { title: "리뷰 · 블루티티 셀프스튜디오" };
+export const metadata: Metadata = {
+  title: "리뷰 · 블루티티 셀프스튜디오",
+  description: "블루티티 셀프스튜디오를 다녀간 가족들이 네이버 예약에 남긴 방문자 리뷰를 모아 보여드려요.",
+  alternates: { canonical: "/reviews" },
+};
 
 /** 리뷰 전체 (레퍼런스의 #reviews 화면을 별도 페이지로) */
 export default function ReviewsPage() {

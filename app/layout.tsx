@@ -4,6 +4,15 @@ import "./globals.css";
 import { KakaoSdkLoader } from "@/components/site/kakao";
 import { FloatingActions } from "@/components/site/floating-actions";
 import { BottomBar } from "@/components/site/bottom-bar";
+import {
+  OG_IMAGE,
+  SEARCH_VERIFICATION,
+  SITE_DESCRIPTION,
+  SITE_KEYWORDS,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/lib/seo";
 
 // Pretendard 는 styles/blutiti-tokens.css 의 @font-face(public/fonts) 로 로드
 const cormorant = Cormorant_Garamond({
@@ -26,11 +35,34 @@ const plexMono = IBM_Plex_Mono({
   weight: "400",
 });
 
+/**
+ * 사이트 공통 메타데이터 (검색엔진·공유 미리보기, 값은 lib/seo.ts)
+ * - 대표 주소(canonical)는 페이지마다 따로 지정 (여기서 지정하면 모든 페이지가 메인을 가리키게 됨)
+ * 예전: title '블루티티 셀프스튜디오' / description '안산 초지역 셀프 사진관 블루티티. 세팅은 끝났어요, 리모콘 버튼만 누르고 웃어주세요.'
+ */
 export const metadata: Metadata = {
-  // 사이트 기본 주소 (2026-11-23 blutiti.com 연결). 공유 미리보기 등 절대 주소의 기준. 예전: 설정 없음(vercel.app 주소로 열림)
-  metadataBase: new URL("https://blutiti.com"),
-  title: "블루티티 셀프스튜디오",
-  description: "안산 초지역 셀프 사진관 블루티티. 세팅은 끝났어요, 리모콘 버튼만 누르고 웃어주세요.",
+  // 사이트 기본 주소 (2026-11-23 blutiti.com 연결). 공유 미리보기 등 절대 주소의 기준
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  keywords: SITE_KEYWORDS,
+  applicationName: SITE_NAME,
+  formatDetection: { telephone: true, address: false, email: false },
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    siteName: SITE_NAME,
+    url: SITE_URL,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE],
+  },
+  twitter: { card: "summary_large_image", title: SITE_TITLE, description: SITE_DESCRIPTION, images: [OG_IMAGE.url] },
+  robots: { index: true, follow: true },
+  verification: {
+    ...(SEARCH_VERIFICATION.google ? { google: SEARCH_VERIFICATION.google } : {}),
+    ...(SEARCH_VERIFICATION.naver ? { other: { "naver-site-verification": SEARCH_VERIFICATION.naver } } : {}),
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

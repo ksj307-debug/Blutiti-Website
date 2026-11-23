@@ -9,6 +9,7 @@ import { PHOTO_KEEP_DAYS } from "@/lib/mypage-config";
 export const metadata: Metadata = {
   title: "개인정보처리방침 · 블루티티 셀프스튜디오",
   description: "블루티티 셀프스튜디오가 예약·사진 전달·My Page 이용 과정에서 개인정보를 어떻게 처리하는지 안내해요.",
+  alternates: { canonical: "/privacy" },
 };
 
 /** 시행일 (내용을 바꾸면 날짜도 바꾸고, 이전 방침은 아래 '변경 이력'에 남기기) */
