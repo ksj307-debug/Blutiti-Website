@@ -9,6 +9,7 @@ import { CONCEPTS } from "@/lib/concepts";
  * - 검색엔진 소유 확인 코드: 구글 서치 콘솔 / 네이버 서치어드바이저에서 받은 값을 아래에 넣으면 <meta> 로 나감
  */
 export const SITE_URL = "https://blutiti.com";
+// 방문 통계(구글 애널리틱스) 설정은 lib/analytics.ts
 export const SITE_NAME = "블루티티 셀프스튜디오";
 
 export const SITE_TITLE = "블루티티 셀프스튜디오 | 안산 초지역 셀프사진관";

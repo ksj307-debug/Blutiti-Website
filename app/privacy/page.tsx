@@ -13,7 +13,12 @@ export const metadata: Metadata = {
 };
 
 /** 시행일 (내용을 바꾸면 날짜도 바꾸고, 이전 방침은 아래 '변경 이력'에 남기기) */
-const EFFECTIVE_DATE = "2026년 11월 17일";
+const EFFECTIVE_DATE = "2026년 11월 23일";
+/** 변경 이력 (최신이 위) */
+const HISTORY = [
+  "2026년 11월 23일: 웹사이트 방문 통계(구글 애널리틱스) 수집 추가",
+  "2026년 11월 17일: 최초 시행",
+];
 
 /**
  * 개인정보처리방침 (/privacy) — 푸터 맨 아래 링크
@@ -100,7 +105,8 @@ export default function PrivacyPage() {
                       <th scope="row">자동 생성</th>
                       <td>
                         로그인 유지 쿠키(예약번호만 담음), 로그인 실패 기록(접속 IP를 알아볼 수 없게 변환한 값), 웹사이트 접속 기록(IP
-                        주소, 접속 일시, 브라우저 정보)
+                        주소, 접속 일시, 브라우저 정보), 방문 통계(본 페이지, 머문 시간, 누른 버튼, 들어온 경로, 기기·브라우저 종류, 대략적인
+                        지역, 방문 통계 쿠키 식별값). 방문 통계는 My Page 화면에서는 수집하지 않아요.
                       </td>
                       <td>웹사이트를 이용할 때 자동으로 생성돼요.</td>
                     </tr>
@@ -173,7 +179,7 @@ export default function PrivacyPage() {
                     </tr>
                     <tr>
                       <th scope="row">Google LLC</th>
-                      <td>예약 관리(구글 시트), 사진 파일 보관·전달(구글 드라이브), 메일 발송</td>
+                      <td>예약 관리(구글 시트), 사진 파일 보관·전달(구글 드라이브), 메일 발송, 웹사이트 방문 통계(구글 애널리틱스)</td>
                       <td>미국 등 Google 데이터센터</td>
                     </tr>
                   </tbody>
@@ -201,9 +207,21 @@ export default function PrivacyPage() {
 
               <h2 id="p-cookie">8. 쿠키 사용</h2>
               <p>
-                블루티티는 My Page 로그인을 유지하는 데만 쿠키를 써요(2시간). 광고나 방문 분석 목적의 쿠키는 쓰지 않아요. 브라우저 설정에서
-                쿠키를 막을 수 있지만, 그러면 My Page 로그인이 유지되지 않아요. 지도(네이버 지도)와 카카오톡 채널 버튼은 각 회사의
-                개인정보처리방침을 따라요.
+                블루티티는 두 가지 목적으로 쿠키를 써요. 광고 목적의 쿠키는 쓰지 않아요.
+              </p>
+              <ul>
+                <li>My Page 로그인 유지 (2시간, 로그아웃하면 바로 삭제)</li>
+                <li>
+                  웹사이트 방문 통계: 구글 애널리틱스로 어떤 페이지를 얼마나 보는지, 어떤 경로로 들어오는지를 이름·연락처 없이 통계로만 봐요.
+                  통계 데이터는 구글 애널리틱스에 최대 14개월 보관돼요. My Page 화면에서는 수집하지 않아요.
+                </li>
+              </ul>
+              <p>
+                브라우저 설정에서 쿠키를 막을 수 있어요. 다만 그러면 My Page 로그인이 유지되지 않아요. 방문 통계만 거부하시려면{" "}
+                <a className="text-link" href="https://tools.google.com/dlpage/gaoptout?hl=ko" target="_blank" rel="noopener">
+                  구글 애널리틱스 차단 부가기능
+                </a>
+                을 설치하시면 돼요. 지도(네이버 지도)와 카카오톡 채널 버튼은 각 회사의 개인정보처리방침을 따라요.
               </p>
 
               <h2 id="p-officer">9. 개인정보 보호책임자</h2>
@@ -233,6 +251,11 @@ export default function PrivacyPage() {
               <p>
                 이 개인정보처리방침은 {EFFECTIVE_DATE}부터 적용돼요. 내용이 바뀌면 시행 7일 전부터 이 페이지에 알려 드려요.
               </p>
+              <ul className="cap muted">
+                {HISTORY.map((h) => (
+                  <li key={h}>{h}</li>
+                ))}
+              </ul>
               <p className="cap muted">
                 {BUSINESS.name} · 대표 {BUSINESS.owner} · 사업자등록번호 {BUSINESS.regNo} · {BUSINESS.address}
               </p>

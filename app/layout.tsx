@@ -4,6 +4,8 @@ import "./globals.css";
 import { KakaoSdkLoader } from "@/components/site/kakao";
 import { FloatingActions } from "@/components/site/floating-actions";
 import { BottomBar } from "@/components/site/bottom-bar";
+import { Analytics } from "@/components/site/analytics";
+import { Suspense } from "react";
 import {
   OG_IMAGE,
   SEARCH_VERIFICATION,
@@ -79,6 +81,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* 화면 아래 고정 바: 예약하기 · 카카오톡 문의하기 (모든 페이지 공통) */}
         <BottomBar />
         <KakaoSdkLoader />
+        {/* 구글 애널리틱스 (현재 주소를 읽어 고객 전용 화면은 제외 → 동적 주소 페이지를 위해 Suspense 안) */}
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
       </body>
     </html>
   );
