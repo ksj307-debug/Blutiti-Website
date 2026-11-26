@@ -48,9 +48,11 @@ const COPY: Record<
   },
   "season-christmas": {
     description: "매년 새롭게 변경되는 크리스마스 컨셉으로 가족 또는 연인과 함께 특별한 크리스마스 추억을 남겨보세요.",
-    image: "/images/concepts/season.webp",
-    srcSet: srcSet("/images/concepts/season.webp", [400, 560, 640, 680], 1200),
-    imageAlt: "시즌 크리스마스 - 크리스마스 트리 앞 가족 사진",
+    // 2026-11-27 크리스마스 2026 시즌: '크리스마스 2026/insta_blutiti_상품사진템플렛-복구됨-복구됨 복사.jpg'
+    // 예전: season.webp (크리스마스 트리 앞 가족 사진, 파일은 보관)
+    image: "/images/concepts/season-christmas-2026.webp",
+    srcSet: srcSet("/images/concepts/season-christmas-2026.webp", [400, 560, 640, 680], 800, [["/images/concepts/season-christmas-2026@2x.webp", 1600]]),
+    imageAlt: "시즌 크리스마스 - 트리 옆 빨간 의자에 앉은 아이와 웃는 부모",
   },
   "season-graduation": {
     description: "아이의 졸업사진을 특별하게 남겨주세요. 학사모와 가운은 모두 준비되어 있답니다.",

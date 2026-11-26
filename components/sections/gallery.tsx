@@ -18,7 +18,8 @@ function InstagramGlyph() {
  * - 라벨은 사진 내용(만삭·셀프웨딩 등)이 아니라 컨셉명. 셀프웨딩 사진은 원본이 흑백(클래식흑백4)이라 클래식 흑백
  * - 08~10 은 구글 드라이브 폴더 사진 중 FOR YOU 와 다른 사진
  *   만삭 '지보미48376.jpg' / 셀프웨딩 'blutiti_상품사진템플렛_클래식흑백4.jpg' / 아이 '이슬기.jpg' (템플릿 테두리 잘라냄)
- * - 시즌 컨셉: 샘플사진 'So This Is Christmas' 폴더 '지안_크리스마스5.jpg' (히어로·CONCEPTS 와 다른 사진)
+ * - 시즌 컨셉: 샘플사진 '크리스마스 2026' 폴더 'insta_blutiti_지안크리스마스10.jpg' (2026-11-27 새 시즌. 히어로·CONCEPTS 와 다른 사진)
+ *   예전: 'So This Is Christmas' 폴더 '지안_크리스마스5.jpg' → gallery-season.webp (파일은 보관)
  * - 원목 액자는 레퍼런스 사진(292px)뿐이라 작은 그대로 webp 변환 (큰 사진이 생기면 교체)
  * 화면에서 뺀 예전 사진(파일은 그대로): gallery-06-basic-family, gallery-08-basic-baby, reference/letter.jpg(레터링 & 드로잉)
  */
@@ -47,7 +48,7 @@ const PHOTOS: Photo[] = [
     width: 800,
     height: 1040,
   },
-  { src: "/images/gallery/gallery-season.webp", alt: "시즌 컨셉 크리스마스 - 트리 옆에 모인 가족", caption: "시즌 컨셉", width: 756, height: 1000 },
+  { src: "/images/gallery/gallery-season-2026.webp", alt: "시즌 컨셉 크리스마스 - 붉은 벨벳 커튼 사이로 얼굴을 내민 가족", caption: "시즌 컨셉", width: 800, height: 1000 },
   { src: "/images/gallery/gallery-01-four-cut.webp", alt: "베이직 컬러 4컷 프레임 - 풍선과 함께한 아이", caption: "4컷 프레임", width: 800, height: 1000 },
   { src: "/images/gallery/gallery-04-nine-cut.webp", alt: "크리스마스 9컷 프레임 포스터", caption: "9컷 프레임", width: 800, height: 1132 },
   { src: "/images/gallery/gallery-05-100days.webp", alt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기", caption: "100일상", width: 800, height: 1040 },

@@ -10,7 +10,9 @@ import { SIZES, srcSet } from "@/lib/img";
 const HERO_IMAGES: HeroImage[] = [
   { src: "/images/hero/hero-01-basic-couple.webp", alt: "베이직 컬러 - 꽃가지를 들고 장난스럽게 포즈를 취한 커플" },
   { src: "/images/hero/hero-02-bw-family.webp", alt: "클래식 흑백 - 아기를 안고 활짝 웃는 부부" },
-  { src: "/images/hero/hero-03-christmas-family.webp", alt: "시즌 컨셉 크리스마스 - 트리 앞 바닥에 둘러앉은 가족" },
+  // 2026-11-27 크리스마스 2026 시즌으로 교체: '크리스마스 2026/insta_blutiti_지안크리스마스4.jpg'
+  // 예전: hero-03-christmas-family.webp (트리 앞 바닥에 둘러앉은 가족, 파일은 보관)
+  { src: "/images/hero/hero-03-christmas-2026-family.webp", alt: "시즌 컨셉 크리스마스 - 붉은 벨벳 커튼과 트리 앞에서 웃는 가족" },
   { src: "/images/hero/hero-04-basic-birthday.webp", alt: "베이직 컬러 - 고깔모자를 쓰고 풍선을 든 생일 아이" },
   { src: "/images/hero/hero-05-bw-maternity.webp", alt: "클래식 흑백 - 아이를 안고 웃는 만삭 가족" },
   { src: "/images/hero/hero-06-100days-baby.webp", alt: "100일상 - 한복을 입고 백일상 뒤에 앉은 아기" },
@@ -18,7 +20,9 @@ const HERO_IMAGES: HeroImage[] = [
   { src: "/images/hero/hero-08-graduation.webp", alt: "시즌 컨셉 졸업 - 학사모를 쓰고 크게 웃는 아이" },
   { src: "/images/hero/hero-09-basic-maternity.webp", alt: "베이직 컬러 - 사진 띠를 들고 나란히 선 만삭 부부" },
   { src: "/images/hero/hero-10-bw-wedding.webp", alt: "클래식 흑백 - 베일을 함께 쓰고 웃는 웨딩 전 커플" },
-  { src: "/images/hero/hero-11-christmas-tree.webp", alt: "시즌 컨셉 크리스마스 - 트리와 선물 상자 앞의 가족" },
+  // 2026-11-27 크리스마스 2026 시즌으로 교체: '크리스마스 2026/insta_blutiti_지안크리스마스8.jpg'
+  // 예전: hero-11-christmas-tree.webp (트리와 선물 상자 앞의 가족, 파일은 보관)
+  { src: "/images/hero/hero-11-christmas-2026-star.webp", alt: "시즌 컨셉 크리스마스 - 빨간 별 장식을 들고 신난 아이와 부모" },
   { src: "/images/hero/hero-12-basic-baby-family.webp", alt: "베이직 컬러 - 아기를 가운데 두고 웃는 부부" },
   { src: "/images/hero/hero-13-100days-parents.webp", alt: "100일상 - 백일상 뒤에서 아기와 함께한 부모" },
   { src: "/images/hero/hero-14-bw-family-stools.webp", alt: "클래식 흑백 - 스툴에 앉아 아이와 웃는 가족" },
