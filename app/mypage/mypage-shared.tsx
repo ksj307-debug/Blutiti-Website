@@ -135,7 +135,7 @@ export function stageIndex(progress: string | null): number {
 /* ------------------------------------------------------------------
  * 제목
  * ------------------------------------------------------------------ */
-export function Head({ title, desc, eyebrow = "MY PAGE" }: { title: string; desc?: string; eyebrow?: string }) {
+export function Head({ title, desc, eyebrow = "MY PAGE" }: { title: string; desc?: React.ReactNode; eyebrow?: string }) {
   return (
     <div className="section-head mp-head">
       <p className="eyebrow">{eyebrow}</p>
@@ -187,7 +187,17 @@ export function LoginView({ notice, onSuccess }: { notice?: string; onSuccess: (
     <div className="mp-narrow">
       {/* 큰 제목: 예전 'My Page' → 2026-11 'Log In' (위 작은 라벨은 MY PAGE 그대로) */}
       {/* 예전 설명: 예약할 때 입력한 이름과 휴대폰 번호 뒷 4자리로 확인해요. */}
-      <Head title="Log In" desc="예약할 때 적어 주신 촬영 파일 받을 이메일과 휴대폰 번호 뒷 4자리로 확인해요." />
+      {/* '이메일과' 뒤에서 줄바꿈 (2026-11-28) */}
+      <Head
+        title="Log In"
+        desc={
+          <>
+            예약할 때 적어 주신 촬영 파일 받을 이메일과
+            <br />
+            휴대폰 번호 뒷 4자리로 확인해요.
+          </>
+        }
+      />
       <form className="mp-login" onSubmit={submit} noValidate>
         <div className="field">
           <label htmlFor="mp-email">이메일</label>
