@@ -151,15 +151,16 @@ export function Head({ title, desc, eyebrow = "MY PAGE" }: { title: string; desc
  * 로그인
  * ------------------------------------------------------------------ */
 export function LoginView({ notice, onSuccess }: { notice?: string; onSuccess: () => void }) {
-  const [name, setName] = useState("");
+  // 2026-11-28 로그인 정보: 이름 → 이메일 (네이버 예약에서 이름을 받지 못함)
+  const [email, setEmail] = useState("");
   const [phone4, setPhone4] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(notice ?? "");
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !/^\d{4}$/.test(phone4)) {
-      setError("이름과 휴대폰 번호 뒷 4자리를 확인해 주세요");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) || !/^\d{4}$/.test(phone4)) {
+      setError("이메일과 휴대폰 번호 뒷 4자리를 확인해 주세요");
       return;
     }
     setPending(true);
@@ -168,7 +169,7 @@ export function LoginView({ notice, onSuccess }: { notice?: string; onSuccess: (
       const res = await fetch("/api/mypage/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone4 }),
+        body: JSON.stringify({ email, phone4 }),
       });
       if (!res.ok) {
         setError(await readError(res));
@@ -185,17 +186,23 @@ export function LoginView({ notice, onSuccess }: { notice?: string; onSuccess: (
   return (
     <div className="mp-narrow">
       {/* 큰 제목: 예전 'My Page' → 2026-11 'Log In' (위 작은 라벨은 MY PAGE 그대로) */}
-      <Head title="Log In" desc="예약할 때 입력한 이름과 휴대폰 번호 뒷 4자리로 확인해요." />
+      {/* 예전 설명: 예약할 때 입력한 이름과 휴대폰 번호 뒷 4자리로 확인해요. */}
+      <Head title="Log In" desc="예약할 때 적어 주신 촬영 파일 받을 이메일과 휴대폰 번호 뒷 4자리로 확인해요." />
       <form className="mp-login" onSubmit={submit} noValidate>
         <div className="field">
-          <label htmlFor="mp-name">이름</label>
+          <label htmlFor="mp-email">이메일</label>
           <input
-            id="mp-name"
-            name="name"
-            autoComplete="name"
-            maxLength={50}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            id="mp-email"
+            name="email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            spellCheck={false}
+            maxLength={254}
+            placeholder="name@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>

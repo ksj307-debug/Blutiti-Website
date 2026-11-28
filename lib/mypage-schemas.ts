@@ -21,10 +21,22 @@ export type ResponseType = (typeof RESPONSE_TYPES)[number];
 /** 답변 안의 글자 수 합계 상한 */
 export const RESPONSE_MAX_CHARS = 2000;
 
+/**
+ * My Page 로그인: 예약 때 적은 '촬영 파일 받을 이메일'(시트 F열) + 휴대폰 뒷 4자리(D열)
+ * 2026-11-28 네이버 예약에서 이름을 받지 못하게 되어 바꿈. 예전: { name: 1~50자, phone4 }
+ * 이메일은 앞뒤 공백 제거 + 소문자로 맞춰 비교
+ */
 export const loginSchema = z.object({
-  name: z.string().trim().min(1).max(50),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(254)
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
   phone4: z.string().regex(/^\d{4}$/),
 });
+/** 이메일 비교용: 앞뒤 공백 제거 + 소문자 */
+export const normalizeEmail = (v: string | null | undefined) => (v ?? "").trim().toLowerCase();
 
 const bookingNo = z.string().trim().min(1).max(64);
 

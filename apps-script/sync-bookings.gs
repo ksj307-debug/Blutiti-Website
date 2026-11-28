@@ -32,7 +32,9 @@ var PROGRESS_STAGES = ['촬영 완료', '원본 전달', '셀렉 완료', '보�
 var COLUMNS = [
   { header: '예약번호', field: 'booking_no', kind: 'text', required: true },
   { header: '상태', field: 'naver_status', kind: 'text', required: true },
-  { header: '예약자', field: 'name', kind: 'text', required: true },
+  // 2026-11-28: 네이버 예약 정책 변경으로 이름이 비어 있을 수 있음 → 비어 있으면 보내지 않음(DB 의 예전 이름 유지),
+  // 헤더가 없어도 진행 (supabase/migrations/006_login_by_email.sql 실행 후). 예전: required: true, 이름 없으면 그 행은 실패
+  { header: '예약자', field: 'name', kind: 'text', keepIfEmpty: true },
   { header: '전화번호', field: 'phone', kind: 'phone', required: true },
   { header: '이메일(예약자정보)', field: 'email_booker', kind: 'text', required: true },
   { header: '촬영파일 이메일(입력)', field: 'email_files', kind: 'text', required: true },
@@ -123,7 +125,7 @@ function syncNowFromMenu() {
   SpreadsheetApp.getActiveSpreadsheet().toast('전송 ' + result.sent + '건, 실패 ' + result.failed + '건', '블루티티 동기화', 5);
 }
 
-/** 한 행 → DB 레코드. 이름·전화번호가 없으면 null (실패로 셈) */
+/** 한 행 → DB 레코드. 전화번호가 없으면 null (실패로 셈). 이름은 없어도 됨 (2026-11-28) */
 function buildRecord_(row, colIndex, bookingNo) {
   var rec = { booking_no: bookingNo };
   for (var i = 0; i < COLUMNS.length; i++) {
@@ -163,9 +165,13 @@ function buildRecord_(row, colIndex, bookingNo) {
     }
     rec[c.field] = value;
   }
-  if (!rec.name || !rec.phone) {
-    console.log('예약자 또는 전화번호가 비어 있어 보내지 않음: 예약번호 ' + bookingNo);
+  // My Page 로그인 = 촬영파일 이메일(F열) + 전화번호 뒷 4자리(D열). 전화번호가 없으면 로그인할 수 없어 보내지 않음
+  if (!rec.phone) {
+    console.log('전화번호가 비어 있어 보내지 않음: 예약번호 ' + bookingNo);
     return null;
+  }
+  if (!rec.email_files) {
+    console.log('촬영파일 이메일이 비어 있어 이 예약은 My Page 로그인이 안 돼요: 예약번호 ' + bookingNo);
   }
   return rec;
 }

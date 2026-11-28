@@ -1,11 +1,13 @@
-import { loginSchema } from "@/lib/mypage-schemas";
+import { loginSchema, normalizeEmail } from "@/lib/mypage-schemas";
 import { ipHash, setMypageSession } from "@/lib/mypage-session";
 import { MSG, fail, json, readJson } from "@/lib/mypage-http";
 import { logDbError, supabaseServer } from "@/lib/supabase-server";
 
 /**
- * POST /api/mypage/login  { name, phone4 }
- * - 이름(앞뒤 공백 제거) + 전화번호 뒷 4자리가 같고, 취소되지 않은 예약 (기간 제한 없음. 예전: 보관 기간(expires_at)이 남은 예약만)
+ * POST /api/mypage/login  { email, phone4 }
+ * - 촬영 파일 받을 이메일(bookings.email_files, 시트 F열. 대소문자·앞뒤 공백 무시) + 전화번호 뒷 4자리(D열)가 같고,
+ *   취소되지 않은 예약 (기간 제한 없음)
+ * - 2026-11-28 네이버 예약에서 이름을 받지 못해 바꿈. 예전: 이름 + 뒷 4자리
  * - 찾으면 세션 쿠키(예약번호 목록, 2시간) 발급
  * - 못 찾으면 무엇이 틀렸는지 구분하지 않고 한 가지 메시지
  * - 시도 제한: IP 해시 기준 10분 안에 5회 실패하면 429. 하루 지난 기록은 정리
@@ -16,8 +18,8 @@ const KEEP_MS = 24 * 60 * 60 * 1000;
 
 export async function POST(request: Request) {
   const parsed = loginSchema.safeParse(await readJson(request));
-  if (!parsed.success) return fail(400, "이름과 휴대폰 번호 뒷 4자리를 확인해 주세요");
-  const { name, phone4 } = parsed.data;
+  if (!parsed.success) return fail(400, "이메일과 휴대폰 번호 뒷 4자리를 확인해 주세요");
+  const { email, phone4 } = parsed.data;
 
   const db = supabaseServer();
   const now = Date.now();
@@ -39,7 +41,8 @@ export async function POST(request: Request) {
   if ((recent.count ?? 0) >= MAX_FAILS) return fail(429, MSG.tooMany);
 
   // expires_at(사진 다운로드 마감일)은 로그인 판단에 쓰지 않음 → 조회하지 않음
-  const found = await db.from("bookings").select("booking_no, naver_status").eq("name", name).eq("phone_last4", phone4);
+  // 뒷 4자리로 먼저 좁히고 이메일은 서버에서 같은지 비교 (이메일의 '_'·'%' 가 검색 기호로 해석되지 않게 DB 검색에 넣지 않음)
+  const found = await db.from("bookings").select("booking_no, naver_status, email_files").eq("phone_last4", phone4);
   if (found.error) {
     logDbError("bookings 조회", found.error);
     return fail(500, MSG.server);
@@ -48,6 +51,7 @@ export async function POST(request: Request) {
   // 취소된 예약만 제외. 오래된 예약(사진 다운로드 마감이 지난 예약)도 로그인·조회 가능 (기간 제한 없음)
   // (사진 링크는 /api/mypage/bookings 에서 빼고 보냄). 예전: 보관 기간이 지난 예약은 로그인 대상에서 제외
   const bookingNos = (found.data ?? [])
+    .filter((b) => normalizeEmail(b.email_files) === email)
     .filter((b) => !(b.naver_status ?? "").includes("취소"))
     .map((b) => b.booking_no as string);
 
